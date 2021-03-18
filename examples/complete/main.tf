@@ -16,15 +16,15 @@ resource "random_pet" "this" {
 module "eventbridge" {
   source = "../../"
 
-  bus_name = "${random_pet.this.id}-eventbridge"
+  bus_name = "${random_pet.this.id}-bus"
 
   create_archive = false
 
   attach_sqs_policy     = true
   attach_kinesis_policy = true
 
-  sqs_target_arn     = aws_sqs_queue.queue.arn
-  kinesis_target_arn = aws_kinesis_stream.this.arn
+  sqs_target_arns     = [aws_sqs_queue.queue.arn]
+  kinesis_target_arns = [aws_kinesis_stream.this.arn]
 
   archive_config = {
     description    = "some archive"
@@ -52,37 +52,23 @@ module "eventbridge" {
         dlq_arn = aws_sqs_queue.dlq.arn
       },
       {
-        name    = "send-orders-to-kinesis",
-        arn     = aws_kinesis_stream.this.arn
-        dlq_arn = aws_sqs_queue.dlq.arn
-      },
-      {
-        name              = "send-orders-to-dynamodb",
-        arn               = aws_dynamodb_table.this.arn
-        dlq_arn           = aws_sqs_queue.dlq.arn
-        input_transformer = local.dynamodb_input_transformer
+        name              = "send-orders-to-kinesis",
+        arn               = aws_kinesis_stream.this.arn
+        dlq_arn           = aws_sqs_queue.dlq.arn,
+        input_transformer = local.kinesis_input_transformer
       }
     ]
   }
 }
 
 locals {
-  dynamodb_input_transformer = {
+  kinesis_input_transformer = {
     input_paths = {
-      user_id       = "$.detail.user_id"
-      iso_code      = "$.detail.iso_code"
-      total_paid    = "$.detail.total_payment_debited"
-      location_name = "$.detail.location_name"
-      order_id      = "$.detail.order_id"
+      order_id = "$.detail.order_id"
     }
     input_template = <<EOF
     {
-      "id_employee": "98",
-      "id_customer": <user_id>,
-      "currency_iso": <iso_code>,
-      "total_paid": <total_paid>,
-      "store_name": <location_name>,
-      "id_order": <order_id>
+      "id": <order_id>
     }
     EOF
   }

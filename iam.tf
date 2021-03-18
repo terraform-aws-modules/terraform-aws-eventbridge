@@ -42,15 +42,9 @@ data "aws_iam_policy_document" "kinesis" {
   count = local.create_role && var.attach_kinesis_policy ? 1 : 0
 
   statement {
-    effect = "Allow"
-
-    actions = [
-      "kinesis:PutRecord"
-    ]
-
-    resources = [
-      var.kinesis_target_arn
-    ]
+    effect    = "Allow"
+    actions   = ["kinesis:PutRecord"]
+    resources = var.kinesis_target_arns
   }
 }
 
@@ -77,15 +71,9 @@ data "aws_iam_policy_document" "sqs" {
   count = local.create_role && var.attach_sqs_policy ? 1 : 0
 
   statement {
-    effect = "Allow"
-
-    actions = [
-      "sqs:sendMessage"
-    ]
-
-    resources = [
-      var.sqs_target_arn
-    ]
+    effect    = "Allow"
+    actions   = ["sqs:sendMessage"]
+    resources = var.sqs_target_arns
   }
 }
 

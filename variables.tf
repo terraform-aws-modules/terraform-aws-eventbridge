@@ -47,6 +47,12 @@ variable "create_bus" {
   default     = true
 }
 
+variable "create_targets" {
+  description = ""
+  type        = bool
+  default     = true
+}
+
 variable "create_permissions" {
   description = ""
   type        = bool
@@ -111,14 +117,14 @@ variable "role_tags" {
   default     = {}
 }
 
-variable "kinesis_target_arn" {
-  type    = string
-  default = ""
+variable "kinesis_target_arns" {
+  type    = list(string)
+  default = []
 }
 
-variable "sqs_target_arn" {
-  type    = string
-  default = ""
+variable "sqs_target_arns" {
+  type    = list(string)
+  default = []
 }
 
 variable "archive_config" {
