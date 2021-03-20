@@ -16,7 +16,71 @@ Terraform 0.12 or newer is supported.
 
 ## Usage
 
+### EventBridge Bus
+
 ```hcl
+module "eventbridge" {
+  source = ""
+
+  bus_name = "my-bus"
+
+  tags = {
+    Name = "my-bus"
+  }
+}
+```
+
+### EventBridge Archive
+
+```hcl
+module "eventbridge" {
+  source = ""
+
+  bus_name = "my-bus"
+  
+  create_archives = true
+
+  archive_configs = [
+    {
+      name           = "my-bus-launch-archive",
+      description    = "EC2 AutoScaling Event archive",
+      retention_days = 1
+      event_pattern  = <<PATTERN
+      {
+        "source": ["aws.autoscaling"],
+        "detail-type": ["EC2 Instance Launch Successful"]
+      }
+      PATTERN
+    }
+  ]
+
+  tags = {
+    Name = "my-bus"
+  }
+}
+```
+
+### EventBridge Permission 
+
+```hcl
+module "eventbridge" {
+  source = ""
+
+  bus_name = "my-bus"
+
+  create_permissions = true
+
+  permissions = [
+    {
+      account_id   = "YOUR_ACCOUNT_ID",
+      statement_id = "development_account"
+    }
+  ]
+
+  tags = {
+    Name = "my-bus"
+  }
+}
 ```
 
 ## Examples
