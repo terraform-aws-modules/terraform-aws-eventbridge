@@ -34,6 +34,32 @@ resource "aws_iam_role" "eventbridge" {
   tags = merge(var.tags, var.role_tags)
 }
 
+#####################
+# Tracing with X-Ray
+#####################
+
+# Copying AWS managed policy to be able to attach the same policy with multiple roles without overwrites by another function
+data "aws_iam_policy" "tracing" {
+  count = local.create_role && var.attach_tracing_policy ? 1 : 0
+
+  arn = "arn:aws:iam::aws:policy/AWSXrayWriteOnlyAccess"
+}
+
+resource "aws_iam_policy" "tracing" {
+  count = local.create_role && var.attach_tracing_policy ? 1 : 0
+
+  name   = "${local.role_name}-tracing"
+  policy = data.aws_iam_policy.tracing[0].policy
+}
+
+resource "aws_iam_policy_attachment" "tracing" {
+  count = local.create_role && var.attach_tracing_policy ? 1 : 0
+
+  name       = "${local.role_name}-tracing"
+  roles      = [aws_iam_role.eventbridge[0].name]
+  policy_arn = aws_iam_policy.tracing[0].arn
+}
+
 ##################
 # Kinesis Config
 ##################

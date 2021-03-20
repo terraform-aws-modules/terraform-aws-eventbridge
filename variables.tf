@@ -27,6 +27,12 @@ variable "create_bus" {
   default     = true
 }
 
+variable "create_rules" {
+  description = ""
+  type        = bool
+  default     = true
+}
+
 variable "create_targets" {
   description = ""
   type        = bool
@@ -88,6 +94,12 @@ variable "role_tags" {
 ###########
 # Policies
 ###########
+
+variable "attach_tracing_policy" {
+  description = "Controls whether X-Ray tracing policy should be added to IAM role for EventBridge"
+  type        = bool
+  default     = false
+}
 
 variable "attach_kinesis_policy" {
   description = "Controls whether the Kinesis policy should be added to IAM role for EventBridge Target"

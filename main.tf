@@ -19,7 +19,9 @@ resource "aws_cloudwatch_event_bus" "this" {
 }
 
 resource "aws_cloudwatch_event_rule" "this" {
-  for_each = { for rule in local.eventbridge_rules : rule.name => rule }
+  for_each = var.create && var.create_rules ? {
+    for rule in local.eventbridge_rules : rule.name => rule
+  } : {}
 
   name = "${each.value.name}-rule"
 
@@ -39,7 +41,9 @@ resource "aws_cloudwatch_event_rule" "this" {
 }
 
 resource "aws_cloudwatch_event_target" "this" {
-  for_each = { for target in local.eventbridge_targets : target.name => target }
+  for_each = var.create && var.create_targets ? {
+    for target in local.eventbridge_targets : target.name => target
+  } : {}
 
   event_bus_name = aws_cloudwatch_event_bus.this[0].name
 
@@ -119,10 +123,12 @@ resource "aws_cloudwatch_event_target" "this" {
       input_template = input_transformer.value.input_template
     }
   }
+
+  depends_on = [aws_cloudwatch_event_bus.this[0]]
 }
 
 resource "aws_cloudwatch_event_archive" "this" {
-  for_each = var.create_archives ? {
+  for_each = var.create && var.create_archives ? {
     for k, v in var.archive_configs : k => v
   } : {}
 
@@ -131,14 +137,18 @@ resource "aws_cloudwatch_event_archive" "this" {
   description      = lookup(each.value, "description", null)
   event_pattern    = lookup(each.value, "event_pattern", null)
   retention_days   = lookup(each.value, "retention_days", null)
+
+  depends_on = [aws_cloudwatch_event_bus.this[0]]
 }
 
 resource "aws_cloudwatch_event_permission" "this" {
-  for_each = var.create_permissions ? {
+  for_each = var.create && var.create_permissions ? {
     for permission in var.permissions : permission.statement_id => permission
   } : {}
 
   principal      = each.value.account_id
   statement_id   = each.value.statement_id
   event_bus_name = aws_cloudwatch_event_bus.this[0].name
+
+  depends_on = [aws_cloudwatch_event_bus.this[0]]
 }
