@@ -119,7 +119,6 @@ resource "aws_cloudwatch_event_target" "this" {
       input_template = input_transformer.value.input_template
     }
   }
-
 }
 
 resource "aws_cloudwatch_event_archive" "this" {

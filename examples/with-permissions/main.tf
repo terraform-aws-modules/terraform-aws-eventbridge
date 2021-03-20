@@ -22,6 +22,10 @@ module "eventbridge" {
     {
       account_id   = "099720109477",
       statement_id = "canonical"
+    },
+    {
+      account_id   = "099720109466",
+      statement_id = "canonical_two"
     }
   ]
 
