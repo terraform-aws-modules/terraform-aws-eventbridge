@@ -120,7 +120,7 @@ module "eventbridge" {
 * [Archive](/examples/with-archive)
 * [Permissions](/examples/with-permissions)
 * [SQS Target](/examples/sqs-target)
-* [API-Gateway](/examples/api-gateway)
+* [API-Gateway](/examples/api-gateway-event-source)
 
 ## Change log
 
