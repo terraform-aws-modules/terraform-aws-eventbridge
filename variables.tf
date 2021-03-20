@@ -1,6 +1,7 @@
 variable "bus_name" {
-  type    = string
-  default = ""
+  description = "A unique name for your EventBridge Bus"
+  type        = string
+  default     = ""
 }
 
 variable "tags" {
@@ -9,44 +10,44 @@ variable "tags" {
   default     = {}
 }
 
-variable "trusted_entities" {
-  description = "EventBridge additional trusted entities for assuming roles (trust relationship)"
-  type        = list(string)
-  default     = []
+variable "create" {
+  description = "Controls whether resources should be created"
+  type        = bool
+  default     = true
 }
 
-variable "create" {
-  description = ""
+variable "create_role" {
+  description = "Controls whether IAM role for Lambda Function should be created"
   type        = bool
   default     = true
 }
 
 variable "create_bus" {
-  description = ""
+  description = "Controls whether EventBridge Bus resource should be created"
   type        = bool
   default     = true
 }
 
 variable "create_rules" {
-  description = ""
+  description = "Controls whether EventBridge Rule resources should be created"
   type        = bool
   default     = true
 }
 
 variable "create_targets" {
-  description = ""
+  description = "Controls whether EventBridge Target resources should be created"
   type        = bool
   default     = true
 }
 
 variable "create_permissions" {
-  description = ""
+  description = "Controls whether EventBridge Permission resources should be created"
   type        = bool
   default     = true
 }
 
 variable "create_archives" {
-  description = ""
+  description = "Controls whether EventBridge Archive resources should be created"
   type        = bool
   default     = false
 }
@@ -143,67 +144,68 @@ variable "attach_cloudwatch_policy" {
   default     = false
 }
 
-variable "attach_target_role_arn" {
-  description = ""
-  type        = bool
-  default     = false
-}
-
 variable "kinesis_target_arns" {
-  type    = list(string)
-  default = []
+  description = "The Amazon Resource Name (ARN) of the Kinesis Streams you want to use as EventBridge targets"
+  type        = list(string)
+  default     = []
 }
 
 variable "kinesis_firehose_target_arns" {
-  type    = list(string)
-  default = []
+  description = "The Amazon Resource Name (ARN) of the Kinesis Firehose Delivery Streams you want to use as EventBridge targets"
+  type        = list(string)
+  default     = []
 }
 
 variable "sqs_target_arns" {
-  type    = list(string)
-  default = []
+  description = "The Amazon Resource Name (ARN) of the AWS SQS Queues you want to use as EventBridge targets"
+  type        = list(string)
+  default     = []
 }
 
 variable "ecs_target_arns" {
-  type    = list(string)
-  default = []
+  description = "The Amazon Resource Name (ARN) of the AWS ECS Tasks you want to use as EventBridge targets"
+  type        = list(string)
+  default     = []
 }
 
 variable "lambda_target_arns" {
-  type    = list(string)
-  default = []
+  description = "The Amazon Resource Name (ARN) of the Lambda Functions you want to use as EventBridge targets"
+  type        = list(string)
+  default     = []
 }
 
 variable "sfn_target_arns" {
-  type    = list(string)
-  default = []
+  description = "The Amazon Resource Name (ARN) of the StepFunctions you want to use as EventBridge targets"
+  type        = list(string)
+  default     = []
 }
 
 variable "cloudwatch_target_arns" {
-  type    = list(string)
-  default = []
+  description = "The Amazon Resource Name (ARN) of the Cloudwatch Log Streams you want to use as EventBridge targets"
+  type        = list(string)
+  default     = []
 }
 
 variable "archive_configs" {
-  description = ""
+  description = "A list of objects with the EventBridge Archive definitions."
   type        = list(any)
   default     = []
 }
 
 variable "permissions" {
-  description = "A list of objects with the permission definitions."
+  description = "A list of objects with EventBridge Permission definitions."
   type        = list(any)
   default     = []
 }
 
 variable "rules" {
-  description = "A map of objects with the rules definitions."
+  description = "A map of objects with EventBridge Rule definitions."
   type        = map(any)
   default     = {}
 }
 
 variable "targets" {
-  description = "A Map of objects with the target definitions."
+  description = "A Map of objects with EventBridge Target definitions."
   type        = any
   default     = {}
 }

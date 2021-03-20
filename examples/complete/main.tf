@@ -58,9 +58,9 @@ module "eventbridge" {
   targets = {
     orders = [
       {
-        name       = "send-orders-to-sqs"
-        arn        = aws_sqs_queue.queue.arn
-        dlq_arn    = aws_sqs_queue.dlq.arn
+        name    = "send-orders-to-sqs"
+        arn     = aws_sqs_queue.queue.arn
+        dlq_arn = aws_sqs_queue.dlq.arn
       },
       {
         name              = "send-orders-to-kinesis"

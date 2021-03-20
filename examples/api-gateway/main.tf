@@ -42,10 +42,10 @@ module "eventbridge" {
   targets = {
     orders_create = [
       {
-        name                   = "send-orders-to-sqs"
-        arn                    = aws_sqs_queue.queue.arn
-        dead_letter_arn        = aws_sqs_queue.dlq.arn
-        target_id              = "send-orders-to-sqs"
+        name            = "send-orders-to-sqs"
+        arn             = aws_sqs_queue.queue.arn
+        dead_letter_arn = aws_sqs_queue.dlq.arn
+        target_id       = "send-orders-to-sqs"
       }
     ]
   }

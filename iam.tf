@@ -1,5 +1,5 @@
 locals {
-  create_role = var.create && var.create_bus
+  create_role = var.create && var.create_bus && var.create_role
   role_name   = local.create_role ? coalesce(var.role_name, var.bus_name, "*") : null
 }
 
@@ -15,7 +15,7 @@ data "aws_iam_policy_document" "assume_role" {
     actions = ["sts:AssumeRole"]
 
     principals {
-      type        = "Service"
+      type = "Service"
       identifiers = [
         "cloudwatch.amazonaws.com",
         "events.amazonaws.com"
@@ -131,9 +131,13 @@ data "aws_iam_policy_document" "sqs" {
   count = local.create_role && var.attach_sqs_policy ? 1 : 0
 
   statement {
-    sid       = "SQSAccess"
-    effect    = "Allow"
-    actions   = ["sqs:sendMessage"]
+    sid    = "SQSAccess"
+    effect = "Allow"
+    actions = [
+      "sqs:sendMessage*",
+      "kms:Decrypt",
+      "kms:GenerateDataKey"
+    ]
     resources = var.sqs_target_arns
   }
 }
@@ -258,9 +262,9 @@ data "aws_iam_policy_document" "cloudwatch" {
   count = local.create_role && var.attach_cloudwatch_policy ? 1 : 0
 
   statement {
-    sid       = "CloudwatchAccess"
-    effect    = "Allow"
-    actions   = [
+    sid    = "CloudwatchAccess"
+    effect = "Allow"
+    actions = [
       "logs:CreateLogStream",
       "logs:PutLogEvents"
     ]
