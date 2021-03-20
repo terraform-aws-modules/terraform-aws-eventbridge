@@ -21,7 +21,9 @@ Terraform 0.12 or newer is supported.
 
 ## Examples
 
-* [Complete_example](https://github.com/)
+* [Complete_example](/examples/complete)
+* [Simple_example](/examples/simple)
+* [Permissions_example](/examples/permissions)
 
 ## Change log
 
