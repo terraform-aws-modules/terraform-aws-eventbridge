@@ -3,26 +3,6 @@ variable "bus_name" {
   default = ""
 }
 
-variable "stage" {
-  type    = string
-  default = ""
-}
-
-variable "environment" {
-  type    = string
-  default = ""
-}
-
-variable "cloudwatch_logging_enabled" {
-  type    = bool
-  default = true
-}
-
-variable "cloudwatch_retention_days" {
-  type    = number
-  default = 7
-}
-
 variable "tags" {
   description = "A map of tags to assign to resources."
   type        = map(string)
@@ -65,35 +45,6 @@ variable "create_archive" {
   default     = false
 }
 
-variable "attach_kinesis_policy" {
-  description = ""
-  type        = bool
-  default     = true
-}
-
-variable "attach_kinesis_firehose_policy" {
-  description = ""
-  type        = bool
-  default     = true
-}
-
-variable "attach_sqs_policy" {
-  description = ""
-  type        = bool
-  default     = true
-}
-
-variable "attach_ecs_policy" {
-  description = ""
-  type        = bool
-  default     = true
-}
-
-variable "attach_sfn_policy" {
-  description = ""
-  type        = bool
-  default     = true
-}
 ######
 # IAM
 ######
@@ -132,6 +83,40 @@ variable "role_tags" {
   description = "A map of tags to assign to IAM role"
   type        = map(string)
   default     = {}
+}
+
+###########
+# Policies
+###########
+
+variable "attach_kinesis_policy" {
+  description = "Controls whether the Kinesis policy should be added to IAM role for EventBridge Target"
+  type        = bool
+  default     = false
+}
+
+variable "attach_kinesis_firehose_policy" {
+  description = "Controls whether the Kinesis Firehose policy should be added to IAM role for EventBridge Target"
+  type        = bool
+  default     = false
+}
+
+variable "attach_sqs_policy" {
+  description = "Controls whether the SQS policy should be added to IAM role for EventBridge Target"
+  type        = bool
+  default     = false
+}
+
+variable "attach_ecs_policy" {
+  description = "Controls whether the ECS policy should be added to IAM role for EventBridge Target"
+  type        = bool
+  default     = false
+}
+
+variable "attach_sfn_policy" {
+  description = "Controls whether the StepFunction policy should be added to IAM role for EventBridge Target"
+  type        = bool
+  default     = false
 }
 
 variable "kinesis_target_arns" {
