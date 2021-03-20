@@ -156,4 +156,3 @@ data "aws_iam_policy_document" "queue" {
     resources = [aws_sqs_queue.queue.arn]
   }
 }
-

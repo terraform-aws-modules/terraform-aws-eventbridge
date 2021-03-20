@@ -27,7 +27,10 @@ module "eventbridge" {
 
   bus_name = "${random_pet.this.id}-bus"
 
-  create_archives = false
+  create_bus      = true
+  create_rule     = true
+  create_targets  = true
+  create_archives = true
 
   attach_sqs_policy     = true
   attach_kinesis_policy = true
