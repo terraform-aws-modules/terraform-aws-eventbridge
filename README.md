@@ -36,22 +36,42 @@ No requirements.
 |------|---------|
 | aws | n/a |
 
+## Modules
+
+No Modules.
+
+## Resources
+
+| Name |
+|------|
+| [aws_cloudwatch_event_archive](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/cloudwatch_event_archive) |
+| [aws_cloudwatch_event_bus](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/cloudwatch_event_bus) |
+| [aws_cloudwatch_event_permission](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/cloudwatch_event_permission) |
+| [aws_cloudwatch_event_rule](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/cloudwatch_event_rule) |
+| [aws_cloudwatch_event_target](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/cloudwatch_event_target) |
+| [aws_iam_policy](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/iam_policy) |
+| [aws_iam_policy_attachment](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/iam_policy_attachment) |
+| [aws_iam_policy_document](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/iam_policy_document) |
+| [aws_iam_role](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/iam_role) |
+
 ## Inputs
 
 | Name | Description | Type | Default | Required |
 |------|-------------|------|---------|:--------:|
 | archive\_config | n/a | `map(any)` | `{}` | no |
-| attach\_kinesis\_policy | n/a | `bool` | `true` | no |
-| attach\_sqs\_policy | n/a | `bool` | `true` | no |
+| attach\_ecs\_policy | Controls whether the ECS policy should be added to IAM role for EventBridge Target | `bool` | `false` | no |
+| attach\_kinesis\_firehose\_policy | Controls whether the Kinesis Firehose policy should be added to IAM role for EventBridge Target | `bool` | `false` | no |
+| attach\_kinesis\_policy | Controls whether the Kinesis policy should be added to IAM role for EventBridge Target | `bool` | `false` | no |
+| attach\_sfn\_policy | Controls whether the StepFunction policy should be added to IAM role for EventBridge Target | `bool` | `false` | no |
+| attach\_sqs\_policy | Controls whether the SQS policy should be added to IAM role for EventBridge Target | `bool` | `false` | no |
 | bus\_name | n/a | `string` | `""` | no |
-| cloudwatch\_logging\_enabled | n/a | `bool` | `true` | no |
-| cloudwatch\_retention\_days | n/a | `number` | `7` | no |
 | create | n/a | `bool` | `true` | no |
 | create\_archive | n/a | `bool` | `false` | no |
 | create\_bus | n/a | `bool` | `true` | no |
 | create\_permissions | n/a | `bool` | `true` | no |
 | create\_targets | n/a | `bool` | `true` | no |
-| environment | n/a | `string` | `""` | no |
+| ecs\_target\_arns | n/a | `list(string)` | `[]` | no |
+| kinesis\_firehose\_target\_arns | n/a | `list(string)` | `[]` | no |
 | kinesis\_target\_arns | n/a | `list(string)` | `[]` | no |
 | permissions | A list of objects with the permission definitions. | `list(any)` | `[]` | no |
 | role\_description | Description of IAM role to use for Lambda Function | `string` | `null` | no |
@@ -61,8 +81,8 @@ No requirements.
 | role\_permissions\_boundary | The ARN of the policy that is used to set the permissions boundary for the IAM role used by Lambda Function | `string` | `null` | no |
 | role\_tags | A map of tags to assign to IAM role | `map(string)` | `{}` | no |
 | rules | A map of objects with the rules definitions. | `map(any)` | `{}` | no |
+| sfn\_target\_arns | n/a | `list(string)` | `[]` | no |
 | sqs\_target\_arns | n/a | `list(string)` | `[]` | no |
-| stage | n/a | `string` | `""` | no |
 | tags | A map of tags to assign to resources. | `map(string)` | `{}` | no |
 | targets | A Map of objects with the target definitions. | `any` | `{}` | no |
 | trusted\_entities | Lambda Function additional trusted entities for assuming roles (trust relationship) | `list(string)` | `[]` | no |
@@ -71,9 +91,9 @@ No requirements.
 
 | Name | Description |
 |------|-------------|
+| this\_eventbridge\_bus\_arn | The EventBridge Bus Arn |
 | this\_eventbridge\_rule\_arns | ARNs |
 | this\_eventbridge\_rule\_ids | IDs |
-
 <!-- END OF PRE-COMMIT-TERRAFORM DOCS HOOK -->
 
 ## Authors
