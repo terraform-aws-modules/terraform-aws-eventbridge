@@ -85,6 +85,11 @@ locals {
   }
 }
 
+resource "aws_kinesis_stream" "this" {
+  name        = random_pet.this.id
+  shard_count = 1
+}
+
 resource "aws_sqs_queue" "queue" {
   name = "${random_pet.this.id}-queue"
 }
@@ -93,7 +98,23 @@ resource "aws_sqs_queue" "dlq" {
   name = "${random_pet.this.id}-dlq"
 }
 
-resource "aws_kinesis_stream" "this" {
-  name        = random_pet.this.id
-  shard_count = 1
+resource "aws_sqs_queue_policy" "queue" {
+  queue_url = aws_sqs_queue.queue.id
+  policy    = data.aws_iam_policy_document.queue.json
 }
+
+data "aws_iam_policy_document" "queue" {
+  statement {
+    sid     = "events-policy"
+    actions = ["sqs:SendMessage"]
+    principals {
+      type        = "Service"
+      identifiers = ["events.amazonaws.com"]
+    }
+    resources = [
+      aws_sqs_queue.queue.arn,
+      aws_sqs_queue.fifo.arn
+    ]
+  }
+}
+

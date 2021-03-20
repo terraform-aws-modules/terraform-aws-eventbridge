@@ -17,7 +17,6 @@ data "aws_iam_policy_document" "assume_role" {
     principals {
       type = "Service"
       identifiers = [
-        "cloudwatch.amazonaws.com",
         "events.amazonaws.com"
       ]
     }
@@ -41,7 +40,8 @@ resource "aws_iam_role" "eventbridge" {
 # Tracing with X-Ray
 #####################
 
-# Copying AWS managed policy to be able to attach the same policy with multiple roles without overwrites by another function
+# Copying AWS managed policy to be able to attach the same policy with
+# multiple roles without overwrites by another resources
 data "aws_iam_policy" "tracing" {
   count = local.create_role && var.attach_tracing_policy ? 1 : 0
 
@@ -265,7 +265,8 @@ data "aws_iam_policy_document" "cloudwatch" {
     sid    = "CloudwatchAccess"
     effect = "Allow"
     actions = [
-      "logs:CreateLogStream",
+      "logs:DescribeLogGroups",
+      "logs:DescribeLogStreams",
       "logs:PutLogEvents"
     ]
     resources = var.cloudwatch_target_arns

@@ -55,6 +55,7 @@ module "eventbridge" {
   }
 }
 
+
 ##################
 # Extra resources
 ##################
@@ -131,10 +132,28 @@ data "aws_iam_policy_document" "apigateway_put_events_to_eventbridge_policy" {
   depends_on = [module.eventbridge]
 }
 
+resource "aws_sqs_queue" "dlq" {
+  name = "${random_pet.this.id}-dlq"
+}
+
 resource "aws_sqs_queue" "queue" {
   name = random_pet.this.id
 }
 
-resource "aws_sqs_queue" "dlq" {
-  name = "${random_pet.this.id}-dlq"
+resource "aws_sqs_queue_policy" "queue" {
+  queue_url = aws_sqs_queue.queue.id
+  policy    = data.aws_iam_policy_document.queue.json
 }
+
+data "aws_iam_policy_document" "queue" {
+  statement {
+    sid     = "events-policy"
+    actions = ["sqs:SendMessage"]
+    principals {
+      type        = "Service"
+      identifiers = ["events.amazonaws.com"]
+    }
+    resources = [aws_sqs_queue.queue.arn]
+  }
+}
+
