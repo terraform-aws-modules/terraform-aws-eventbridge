@@ -39,7 +39,7 @@ variable "create_permissions" {
   default     = true
 }
 
-variable "create_archive" {
+variable "create_archives" {
   description = ""
   type        = bool
   default     = false
@@ -144,10 +144,10 @@ variable "sfn_target_arns" {
   default = []
 }
 
-variable "archive_config" {
+variable "archive_configs" {
   description = ""
-  type        = map(any)
-  default     = {}
+  type        = list(any)
+  default     = []
 }
 
 variable "permissions" {

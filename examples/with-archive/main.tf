@@ -16,17 +16,35 @@ resource "random_pet" "this" {
 module "eventbridge" {
   source = "../../"
 
-  create_archive = true
+  create_archives = true
 
-  archive_config = {
-    description    = "${random_pet.this.id}-archive",
-    retention_days = 1
-    event_pattern  = <<PATTERN
+  archive_configs = [
     {
-      "source": ["co.twitter"]
+      name           = "${random_pet.this.id}-launch-archive",
+      description    = "${random_pet.this.id}-launch-archive",
+      retention_days = 1
+      event_pattern  = <<PATTERN
+      {
+        "source": ["aws.autoscaling"],
+        "detail-type": ["EC2 Instance Launch Successful"]
+      }
+      PATTERN
+    },
+    {
+      name           = "${random_pet.this.id}-termination-archive",
+      description    = "${random_pet.this.id}-termination-archive",
+      retention_days = 1
+      event_pattern  = <<PATTERN
+      {
+        "source": ["aws.ec2"],
+        "detail-type": ["EC2 Instance State-change Notification"],
+        "detail": {
+          "state": ["terminated"]
+        }
+      }
+      PATTERN
     }
-    PATTERN
-  }
+  ]
 
   bus_name = "${random_pet.this.id}-bus"
 

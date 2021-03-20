@@ -3,9 +3,9 @@ output "this_eventbridge_bus_arn" {
   value       = element(concat(aws_cloudwatch_event_bus.this.*.id, [""]), 0)
 }
 
-output "this_eventbridge_archive_arn" {
-  description = "The EventBridge Archive Arn"
-  value       = element(concat(aws_cloudwatch_event_archive.this.*.id, [""]), 0)
+output "this_eventbridge_archive_arns" {
+  description = "The EventBridge Archive Arns"
+  value       = { for v in aws_cloudwatch_event_archive.this : v.name => v.arn }
 }
 
 output "this_eventbridge_permission_ids" {
