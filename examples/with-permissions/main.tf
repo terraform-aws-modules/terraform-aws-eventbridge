@@ -1,3 +1,12 @@
+terraform {
+  required_version = ">= 0.14.0"
+
+  required_providers {
+    aws    = ">= 3.19"
+    random = ">= 0"
+  }
+}
+
 provider "aws" {
   region = "ap-southeast-1"
 

@@ -1,3 +1,12 @@
+terraform {
+  required_version = ">= 0.14.0"
+
+  required_providers {
+    aws    = ">= 3.19"
+    random = ">= 0"
+  }
+}
+
 provider "aws" {
   region = "ap-southeast-1"
 
@@ -18,7 +27,7 @@ module "eventbridge" {
 
   bus_name = "${random_pet.this.id}-bus"
 
-  create_archive = false
+  create_archives = false
 
   attach_sqs_policy     = true
   attach_kinesis_policy = true
@@ -26,15 +35,17 @@ module "eventbridge" {
   sqs_target_arns     = [aws_sqs_queue.queue.arn]
   kinesis_target_arns = [aws_kinesis_stream.this.arn]
 
-  archive_config = {
-    description    = "some archive"
-    retention_days = 1
-    event_pattern  = <<PATTERN
+  archive_configs = [
     {
-      "source": ["co.pmlo.netsuite"]
+      description    = "some archive"
+      retention_days = 1
+      event_pattern  = <<PATTERN
+      {
+        "source": ["co.pmlo.netsuite"]
+      }
+      PATTERN
     }
-    PATTERN
-  }
+  ]
 
   rules = {
     orders = {
