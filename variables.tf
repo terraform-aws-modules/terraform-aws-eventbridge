@@ -65,18 +65,35 @@ variable "create_archive" {
   default     = false
 }
 
-variable "attach_sqs_policy" {
-  description = ""
-  type        = bool
-  default     = true
-}
-
 variable "attach_kinesis_policy" {
   description = ""
   type        = bool
   default     = true
 }
 
+variable "attach_kinesis_firehose_policy" {
+  description = ""
+  type        = bool
+  default     = true
+}
+
+variable "attach_sqs_policy" {
+  description = ""
+  type        = bool
+  default     = true
+}
+
+variable "attach_ecs_policy" {
+  description = ""
+  type        = bool
+  default     = true
+}
+
+variable "attach_sfn_policy" {
+  description = ""
+  type        = bool
+  default     = true
+}
 ######
 # IAM
 ######
@@ -122,7 +139,22 @@ variable "kinesis_target_arns" {
   default = []
 }
 
+variable "kinesis_firehose_target_arns" {
+  type    = list(string)
+  default = []
+}
+
 variable "sqs_target_arns" {
+  type    = list(string)
+  default = []
+}
+
+variable "ecs_target_arns" {
+  type    = list(string)
+  default = []
+}
+
+variable "sfn_target_arns" {
   type    = list(string)
   default = []
 }

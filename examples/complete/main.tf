@@ -82,25 +82,6 @@ resource "aws_sqs_queue" "dlq" {
   name = "${random_pet.this.id}-dlq"
 }
 
-resource "aws_dynamodb_table" "this" {
-  name             = random_pet.this.id
-  billing_mode     = "PAY_PER_REQUEST"
-  hash_key         = "UserId"
-  range_key        = "GameTitle"
-  stream_view_type = "NEW_AND_OLD_IMAGES"
-  stream_enabled   = true
-
-  attribute {
-    name = "UserId"
-    type = "S"
-  }
-
-  attribute {
-    name = "GameTitle"
-    type = "S"
-  }
-}
-
 resource "aws_kinesis_stream" "this" {
   name        = random_pet.this.id
   shard_count = 1

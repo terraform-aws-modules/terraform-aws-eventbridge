@@ -37,25 +37,21 @@ resource "aws_cloudwatch_event_rule" "this" {
 }
 
 resource "aws_cloudwatch_event_target" "this" {
-  for_each = var.create_targets ? {
-    for target in local.eventbridge_targets : target.name => target
-  } : {}
+  for_each = { for target in local.eventbridge_targets : target.name => target }
 
   event_bus_name = aws_cloudwatch_event_bus.this.name
 
-  target_id = each.value.name
-  rule      = each.value.rule
-  arn       = each.value.arn
+  target_id = lookup(each.value, "target_id", null)
+  rule      = lookup(each.value, "rule", null)
+  arn       = lookup(each.value, "arn", null)
+  input     = lookup(each.value, "input", null)
   role_arn  = aws_iam_role.eventbridge[0].arn
 
-  dead_letter_config {
-    arn = each.value.dlq_arn
-  }
-
-  dynamic "sqs_target" {
-    for_each = lookup(each.value, "sqs_target", null) != null ? [true] : []
+  dynamic "run_command_targets" {
+    for_each = lookup(each.value, "run_command_targets", null) != null ? [true] : []
     content {
-      message_group_id = each.value.name
+      key    = run_command_targets.value.key
+      values = run_command_targets.value.values
     }
   }
 
@@ -67,6 +63,23 @@ resource "aws_cloudwatch_event_target" "this" {
     content {
       input_paths    = input_transformer.value.input_paths
       input_template = input_transformer.value.input_template
+    }
+  }
+
+  dynamic "ecs_target" {
+    for_each = lookup(each.value, "ecs_target", null) != null ? [true] : []
+
+    content {
+      task_count          = ecs_target.value.task_count
+      task_definition_arn = ecs_target.value.task_definition_arn
+    }
+  }
+
+  dynamic "sqs_target" {
+    for_each = lookup(each.value, "sqs_target", null) != null ? [true] : []
+
+    content {
+      message_group_id = each.value.name
     }
   }
 }

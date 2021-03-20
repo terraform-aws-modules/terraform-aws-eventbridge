@@ -50,8 +50,9 @@ No requirements.
 | create\_archive | n/a | `bool` | `false` | no |
 | create\_bus | n/a | `bool` | `true` | no |
 | create\_permissions | n/a | `bool` | `true` | no |
+| create\_targets | n/a | `bool` | `true` | no |
 | environment | n/a | `string` | `""` | no |
-| kinesis\_target\_arn | n/a | `string` | `""` | no |
+| kinesis\_target\_arns | n/a | `list(string)` | `[]` | no |
 | permissions | A list of objects with the permission definitions. | `list(any)` | `[]` | no |
 | role\_description | Description of IAM role to use for Lambda Function | `string` | `null` | no |
 | role\_force\_detach\_policies | Specifies to force detaching any policies the IAM role has before destroying it. | `bool` | `true` | no |
@@ -60,7 +61,7 @@ No requirements.
 | role\_permissions\_boundary | The ARN of the policy that is used to set the permissions boundary for the IAM role used by Lambda Function | `string` | `null` | no |
 | role\_tags | A map of tags to assign to IAM role | `map(string)` | `{}` | no |
 | rules | A map of objects with the rules definitions. | `map(any)` | `{}` | no |
-| sqs\_target\_arn | n/a | `string` | `""` | no |
+| sqs\_target\_arns | n/a | `list(string)` | `[]` | no |
 | stage | n/a | `string` | `""` | no |
 | tags | A map of tags to assign to resources. | `map(string)` | `{}` | no |
 | targets | A Map of objects with the target definitions. | `any` | `{}` | no |
