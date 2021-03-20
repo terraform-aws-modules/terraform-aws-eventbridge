@@ -46,13 +46,14 @@ resource "aws_cloudwatch_event_target" "this" {
   rule = each.value.rule
   arn  = each.value.arn
 
+  role_arn   = lookup(each.value, "role_arn", aws_iam_role.eventbridge[0].arn)
   target_id  = lookup(each.value, "target_id", null)
   input      = lookup(each.value, "input", null)
   input_path = lookup(each.value, "input_path", null)
-  role_arn   = aws_iam_role.eventbridge[0].arn
 
   dynamic "run_command_targets" {
     for_each = lookup(each.value, "run_command_targets", null) != null ? [true] : []
+
     content {
       key    = run_command_targets.value.key
       values = run_command_targets.value.values
@@ -63,24 +64,23 @@ resource "aws_cloudwatch_event_target" "this" {
     for_each = lookup(each.value, "ecs_target", null) != null ? [true] : []
 
     content {
-      group       = lookup(ecs_target.value, "group", null)
-      launch_type = lookup(ecs_target.value, "launch_type", null)
-      # network_configuration = lookup(ecs_target.value, "network_configuration", null)
+      group               = lookup(ecs_target.value, "group", null)
+      launch_type         = lookup(ecs_target.value, "launch_type", null)
       platform_version    = lookup(ecs_target.value, "platform_version", null)
       task_count          = lookup(ecs_target.value, "task_count", null)
       task_definition_arn = ecs_target.value.task_definition_arn
+
+      dynamic "network_configuration" {
+        for_each = lookup(ecs_target.value, "network_configuration", null) != null ? [true] : []
+
+        content {
+          subnets          = network_configuration.value.subnets
+          security_groups  = lookup(network_configuration.value, "security_groups", null)
+          assign_public_ip = lookup(network_configuration.value, "assign_public_ip", null)
+        }
+      }
     }
   }
-
-  # dynamic "network_configuration" {
-  # for_each = lookup(each.value, "network_configuration", null) != null ? [true] : []
-
-  # content {
-  # subnets          = network_configuration.value.subnets
-  # security_groups  = lookup(network_configuration.value, "security_groups", null)
-  # assign_public_ip = lookup(network_configuration.value, "assign_public_ip", null)
-  # }
-  # }
 
   dynamic "batch_target" {
     for_each = lookup(each.value, "batch_target", null) != null ? [true] : []
