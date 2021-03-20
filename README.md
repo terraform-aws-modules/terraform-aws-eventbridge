@@ -172,12 +172,12 @@ No Modules.
 |------|-------------|
 | eventbridge\_role\_arn | The ARN of the IAM role created for EventBridge |
 | eventbridge\_role\_name | The name of the IAM role created for EventBridge |
-| this\_eventbridge\_archive\_arns | The EventBridge Archive Arns |
+| this\_eventbridge\_archive\_arns | The EventBridge Archive Arns created |
 | this\_eventbridge\_bus\_arn | The EventBridge Bus Arn |
 | this\_eventbridge\_bus\_name | The EventBridge Bus Name |
-| this\_eventbridge\_permission\_ids | The Permission Arns |
-| this\_eventbridge\_rule\_arns | ARNs |
-| this\_eventbridge\_rule\_ids | IDs |
+| this\_eventbridge\_permission\_ids | The EventBridge Permission Arns created |
+| this\_eventbridge\_rule\_arns | The EventBridge Rule ARNs created |
+| this\_eventbridge\_rule\_ids | The EventBridge Rule IDs created |
 <!-- END OF PRE-COMMIT-TERRAFORM DOCS HOOK -->
 
 ## Authors
