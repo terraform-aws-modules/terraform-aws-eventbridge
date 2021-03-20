@@ -126,10 +126,10 @@ resource "aws_cloudwatch_event_archive" "this" {
   count = var.create_archive ? 1 : 0
 
   name             = "${aws_cloudwatch_event_bus.this[0].name}-archive"
-  description      = lookup(var.archive_config, "description", "")
-  retention_days   = lookup(var.archive_config, "retention_days", 0)
-  event_pattern    = lookup(var.archive_config, "event_pattern", "")
   event_source_arn = aws_cloudwatch_event_bus.this[0].arn
+  description      = lookup(var.archive_config, "description", null)
+  event_pattern    = lookup(var.archive_config, "event_pattern", null)
+  retention_days   = lookup(var.archive_config, "retention_days", null)
 }
 
 resource "aws_cloudwatch_event_permission" "this" {
