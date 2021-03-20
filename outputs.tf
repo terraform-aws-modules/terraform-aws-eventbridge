@@ -1,3 +1,8 @@
+output "this_eventbridge_bus_arn" {
+  description = "The EventBridge Bus Arn"
+  value = aws_cloudwatch_event_bus.this[0].arn
+}
+
 output "this_eventbridge_rule_ids" {
   description = "IDs"
   value = {

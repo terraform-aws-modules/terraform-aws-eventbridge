@@ -16,6 +16,15 @@ resource "random_pet" "this" {
 module "eventbridge" {
   source = "../../"
 
+  create_permissions = true
+
+  permissions = [
+    {
+      account_id   = "099720109477",
+      statement_id = "canonical"
+    }
+  ]
+
   bus_name = "${random_pet.this.id}-bus"
 
   tags = {

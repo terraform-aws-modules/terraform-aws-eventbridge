@@ -70,3 +70,5 @@ artifacts/
 yarn.lock
 
 .terraform
+*.tfstate
+*.tfstate.backup

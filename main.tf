@@ -63,23 +63,23 @@ resource "aws_cloudwatch_event_target" "this" {
     for_each = lookup(each.value, "ecs_target", null) != null ? [true] : []
 
     content {
-      group                 = lookup(ecs_target.value, "group", null)
-      launch_type           = lookup(ecs_target.value, "launch_type", null)
+      group       = lookup(ecs_target.value, "group", null)
+      launch_type = lookup(ecs_target.value, "launch_type", null)
       # network_configuration = lookup(ecs_target.value, "network_configuration", null)
-      platform_version      = lookup(ecs_target.value, "platform_version", null)
-      task_count            = lookup(ecs_target.value, "task_count", null)
-      task_definition_arn   = ecs_target.value.task_definition_arn
+      platform_version    = lookup(ecs_target.value, "platform_version", null)
+      task_count          = lookup(ecs_target.value, "task_count", null)
+      task_definition_arn = ecs_target.value.task_definition_arn
     }
   }
 
   # dynamic "network_configuration" {
-    # for_each = lookup(each.value, "network_configuration", null) != null ? [true] : []
+  # for_each = lookup(each.value, "network_configuration", null) != null ? [true] : []
 
-    # content {
-      # subnets          = network_configuration.value.subnets
-      # security_groups  = lookup(network_configuration.value, "security_groups", null)
-      # assign_public_ip = lookup(network_configuration.value, "assign_public_ip", null)
-    # }
+  # content {
+  # subnets          = network_configuration.value.subnets
+  # security_groups  = lookup(network_configuration.value, "security_groups", null)
+  # assign_public_ip = lookup(network_configuration.value, "assign_public_ip", null)
+  # }
   # }
 
   dynamic "batch_target" {
@@ -134,10 +134,10 @@ resource "aws_cloudwatch_event_archive" "this" {
 
 resource "aws_cloudwatch_event_permission" "this" {
   for_each = var.create_permissions ? {
-    for permission in var.permissions : permission.name => permission
+    for permission in var.permissions : permission.statement_id => permission
   } : {}
 
   principal      = each.value.account_id
-  statement_id   = each.value.name
+  statement_id   = each.value.statement_id
   event_bus_name = aws_cloudwatch_event_bus.this[0].name
 }
