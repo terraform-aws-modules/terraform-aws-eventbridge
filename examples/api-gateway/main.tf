@@ -45,6 +45,7 @@ module "eventbridge" {
         name                   = "send-orders-to-sqs"
         arn                    = aws_sqs_queue.queue.arn
         dead_letter_arn        = aws_sqs_queue.dlq.arn
+        target_id              = "send-orders-to-sqs"
       }
     ]
   }
@@ -134,4 +135,6 @@ data "aws_iam_policy_document" "apigateway_put_events_to_eventbridge_policy" {
     actions   = ["events:PutEvents"]
     resources = [module.eventbridge.this_eventbridge_bus_arn]
   }
+
+  depends_on = [module.eventbridge]
 }

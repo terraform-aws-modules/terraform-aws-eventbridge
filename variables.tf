@@ -125,8 +125,20 @@ variable "attach_ecs_policy" {
   default     = false
 }
 
+variable "attach_lambda_policy" {
+  description = "Controls whether the Lambda Function policy should be added to IAM role for EventBridge Target"
+  type        = bool
+  default     = false
+}
+
 variable "attach_sfn_policy" {
   description = "Controls whether the StepFunction policy should be added to IAM role for EventBridge Target"
+  type        = bool
+  default     = false
+}
+
+variable "attach_cloudwatch_policy" {
+  description = "Controls whether the Cloudwatch policy should be added to IAM role for EventBridge Target"
   type        = bool
   default     = false
 }
@@ -157,7 +169,17 @@ variable "ecs_target_arns" {
   default = []
 }
 
+variable "lambda_target_arns" {
+  type    = list(string)
+  default = []
+}
+
 variable "sfn_target_arns" {
+  type    = list(string)
+  default = []
+}
+
+variable "cloudwatch_target_arns" {
   type    = list(string)
   default = []
 }

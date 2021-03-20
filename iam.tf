@@ -166,6 +166,13 @@ data "aws_iam_policy_document" "ecs" {
     actions   = ["ecs:RunTask"]
     resources = var.ecs_target_arns
   }
+
+  statement {
+    sid       = "PassRole"
+    effect    = "Allow"
+    actions   = ["iam:PassRole"]
+    resources = [aws_iam_role.eventbridge[0].arn]
+  }
 }
 
 resource "aws_iam_policy" "ecs" {
@@ -181,6 +188,36 @@ resource "aws_iam_policy_attachment" "ecs" {
   name       = "${local.role_name}-ecs"
   roles      = [aws_iam_role.eventbridge[0].name]
   policy_arn = aws_iam_policy.ecs[0].arn
+}
+
+#########################
+# Lambda Function Config
+#########################
+
+data "aws_iam_policy_document" "lambda" {
+  count = local.create_role && var.attach_lambda_policy ? 1 : 0
+
+  statement {
+    sid       = "LambdaAccess"
+    effect    = "Allow"
+    actions   = ["lambda:InvokeFunction"]
+    resources = var.lambda_target_arns
+  }
+}
+
+resource "aws_iam_policy" "lambda" {
+  count = local.create_role && var.attach_lambda_policy ? 1 : 0
+
+  name   = "${local.role_name}-lambda"
+  policy = data.aws_iam_policy_document.lambda[0].json
+}
+
+resource "aws_iam_policy_attachment" "lambda" {
+  count = local.create_role && var.attach_lambda_policy ? 1 : 0
+
+  name       = "${local.role_name}-lambda"
+  roles      = [aws_iam_role.eventbridge[0].name]
+  policy_arn = aws_iam_policy.lambda[0].arn
 }
 
 ######################
@@ -211,4 +248,37 @@ resource "aws_iam_policy_attachment" "sfn" {
   name       = "${local.role_name}-sfn"
   roles      = [aws_iam_role.eventbridge[0].name]
   policy_arn = aws_iam_policy.sfn[0].arn
+}
+
+####################
+# Cloudwatch Config
+####################
+
+data "aws_iam_policy_document" "cloudwatch" {
+  count = local.create_role && var.attach_cloudwatch_policy ? 1 : 0
+
+  statement {
+    sid       = "CloudwatchAccess"
+    effect    = "Allow"
+    actions   = [
+      "logs:CreateLogStream",
+      "logs:PutLogEvents"
+    ]
+    resources = var.cloudwatch_target_arns
+  }
+}
+
+resource "aws_iam_policy" "cloudwatch" {
+  count = local.create_role && var.attach_cloudwatch_policy ? 1 : 0
+
+  name   = "${local.role_name}-cloudwatch"
+  policy = data.aws_iam_policy_document.cloudwatch[0].json
+}
+
+resource "aws_iam_policy_attachment" "cloudwatch" {
+  count = local.create_role && var.attach_cloudwatch_policy ? 1 : 0
+
+  name       = "${local.role_name}-cloudwatch"
+  roles      = [aws_iam_role.eventbridge[0].name]
+  policy_arn = aws_iam_policy.cloudwatch[0].arn
 }
