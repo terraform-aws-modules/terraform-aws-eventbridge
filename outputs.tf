@@ -1,4 +1,9 @@
 # EventBridge Bus
+output "this_eventbridge_bus_name" {
+  description = "The EventBridge Bus Name"
+  value       = var.bus_name
+}
+
 output "this_eventbridge_bus_arn" {
   description = "The EventBridge Bus Arn"
   value       = element(concat(aws_cloudwatch_event_bus.this.*.id, [""]), 0)

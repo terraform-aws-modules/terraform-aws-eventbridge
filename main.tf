@@ -23,7 +23,7 @@ resource "aws_cloudwatch_event_rule" "this" {
     for rule in local.eventbridge_rules : rule.name => rule
   } : {}
 
-  name = "${each.value.name}-rule"
+  name = "${replace(each.value.name, "_", "-")}-rule"
 
   event_bus_name = aws_cloudwatch_event_bus.this[0].name
 
@@ -36,7 +36,7 @@ resource "aws_cloudwatch_event_rule" "this" {
   depends_on = [aws_cloudwatch_event_bus.this[0]]
 
   tags = merge(var.tags, {
-    Name = "${each.value.name}-rule"
+    Name = "${replace(each.value.name, "_", "-")}-rule"
   })
 }
 
@@ -47,7 +47,7 @@ resource "aws_cloudwatch_event_target" "this" {
 
   event_bus_name = aws_cloudwatch_event_bus.this[0].name
 
-  rule = "${each.value.rule}-rule"
+  rule = "${replace(each.value.rule, "_", "-")}-rule"
   arn  = each.value.arn
 
   role_arn   = var.attach_target_role_arn ? aws_iam_role.eventbridge[0].arn : null
