@@ -42,9 +42,9 @@ module "eventbridge" {
   targets = {
     orders_create = [
       {
-        name            = "send-orders-to-sqs"
-        arn             = aws_sqs_queue.queue.arn
-        dead_letter_arn = aws_sqs_queue.dlq.arn
+        name                   = "send-orders-to-sqs"
+        arn                    = aws_sqs_queue.queue.arn
+        dead_letter_arn        = aws_sqs_queue.dlq.arn
       }
     ]
   }
@@ -75,7 +75,7 @@ module "api_gateway" {
   version = "~> 0.0"
 
   name          = "${random_pet.this.id}-http"
-  description   = "My awesome HTTP API Gateway"
+  description   = "My ${random_pet.this.id} HTTP API Gateway"
   protocol_type = "HTTP"
 
   create_api_domain_name = false
@@ -132,6 +132,6 @@ data "aws_iam_policy_document" "apigateway_put_events_to_eventbridge_policy" {
   statement {
     sid       = "AllowPutEvents"
     actions   = ["events:PutEvents"]
-    resources = ["*"]
+    resources = [module.eventbridge.this_eventbridge_bus_arn]
   }
 }
