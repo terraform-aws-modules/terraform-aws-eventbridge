@@ -96,8 +96,8 @@ module "eventbridge" {
   create_bus         = false  # to control creation of the EventBridge Bus and related resources
   create_rule        = false  # to control creation of EventBridge Rules and related resources
   create_targets     = false  # to control creation of EventBridge Targets and related resources
-  create_archives    = false # to control creation of EventBridge Archives
-  create_permissions = false # to control creation of EventBridge Permissions
+  create_archives    = false  # to control creation of EventBridge Archives
+  create_permissions = false  # to control creation of EventBridge Permissions
   create_role        = false  # to control creation of the IAM role and policies required for EventBridge
 
   attach_kinesis_policy          = false
