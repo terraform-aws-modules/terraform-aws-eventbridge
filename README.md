@@ -4,11 +4,11 @@ Terraform module to create EventBridge resources.
 
 This type of resources supported:
 
-* [Cloudwatch_Event_Archive](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/cloudwatch_event_archive)
-* [Cloudwatch_Event_Bus](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/cloudwatch_event_bus)
-* [Cloudwatch_Event_Permission](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/cloudwatch_event_permission)
-* [Cloudwatch_Event_Rule](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/cloudwatch_event_rule)
-* [Cloudwatch_Event_Target](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/cloudwatch_event_target)
+* [Cloudwatch Event Archive](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/cloudwatch_event_archive)
+* [Cloudwatch Event Bus](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/cloudwatch_event_bus)
+* [Cloudwatch Event Permission](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/cloudwatch_event_permission)
+* [Cloudwatch Event Rule](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/cloudwatch_event_rule)
+* [Cloudwatch Event Target](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/cloudwatch_event_target)
 
 ## Terraform versions
 
@@ -80,6 +80,36 @@ module "eventbridge_with_permissions" {
   tags = {
     Name = "my-bus"
   }
+}
+```
+
+## Conditional creation
+
+Sometimes you need to have a way to create resources conditionally but Terraform does not allow usage of `count` inside `module` block, so the solution is to specify `create` arguments.
+
+```hcl
+module "eventbridge" {
+  source = ""
+
+  create = false # to disable all resources
+
+  create_bus         = false  # to control creation of the EventBridge Bus and related resources
+  create_rule        = false  # to control creation of EventBridge Rules and related resources
+  create_targets     = false  # to control creation of EventBridge Targets and related resources
+  create_archives    = false # to control creation of EventBridge Archives
+  create_permissions = false # to control creation of EventBridge Permissions
+  create_role        = false  # to control creation of the IAM role and policies required for EventBridge
+
+  attach_kinesis_policy          = false
+  attach_kinesis_firehose_policy = false
+  attach_sqs_policy              = false
+  attach_ecs_policy              = false
+  attach_lambda_policy           = false
+  attach_sfn_policy              = false
+  attach_cloudwatch_policy       = false
+  attach_tracing_policy          = false
+
+  # ... omitted
 }
 ```
 
@@ -181,6 +211,8 @@ No Modules.
 <!-- END OF PRE-COMMIT-TERRAFORM DOCS HOOK -->
 
 ## Authors
+
+Module managed by [Sven Lito](https://github.com/svenlito). Check out [serverless.tf](https://serverless.tf) to learn more about doing serverless with Terraform.
 
 ## License
 

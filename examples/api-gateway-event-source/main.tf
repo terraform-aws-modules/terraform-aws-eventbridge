@@ -63,14 +63,6 @@ resource "random_pet" "this" {
   length = 2
 }
 
-resource "aws_sqs_queue" "queue" {
-  name = random_pet.this.id
-}
-
-resource "aws_sqs_queue" "dlq" {
-  name = "${random_pet.this.id}-dlq"
-}
-
 module "api_gateway" {
   source  = "terraform-aws-modules/apigateway-v2/aws"
   version = "~> 0.0"
@@ -137,4 +129,12 @@ data "aws_iam_policy_document" "apigateway_put_events_to_eventbridge_policy" {
   }
 
   depends_on = [module.eventbridge]
+}
+
+resource "aws_sqs_queue" "queue" {
+  name = random_pet.this.id
+}
+
+resource "aws_sqs_queue" "dlq" {
+  name = "${random_pet.this.id}-dlq"
 }

@@ -96,12 +96,6 @@ variable "role_tags" {
 # Policies
 ###########
 
-variable "attach_tracing_policy" {
-  description = "Controls whether X-Ray tracing policy should be added to IAM role for EventBridge"
-  type        = bool
-  default     = false
-}
-
 variable "attach_kinesis_policy" {
   description = "Controls whether the Kinesis policy should be added to IAM role for EventBridge Target"
   type        = bool
@@ -140,6 +134,12 @@ variable "attach_sfn_policy" {
 
 variable "attach_cloudwatch_policy" {
   description = "Controls whether the Cloudwatch policy should be added to IAM role for EventBridge Target"
+  type        = bool
+  default     = false
+}
+
+variable "attach_tracing_policy" {
+  description = "Controls whether X-Ray tracing policy should be added to IAM role for EventBridge"
   type        = bool
   default     = false
 }
