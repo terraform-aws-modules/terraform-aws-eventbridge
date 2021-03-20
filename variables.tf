@@ -10,7 +10,7 @@ variable "tags" {
 }
 
 variable "trusted_entities" {
-  description = "Lambda Function additional trusted entities for assuming roles (trust relationship)"
+  description = "EventBridge additional trusted entities for assuming roles (trust relationship)"
   type        = list(string)
   default     = []
 }
