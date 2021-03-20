@@ -47,10 +47,10 @@ resource "aws_cloudwatch_event_target" "this" {
 
   event_bus_name = aws_cloudwatch_event_bus.this[0].name
 
-  rule = each.value.rule
+  rule = "${each.value.rule}-rule"
   arn  = each.value.arn
 
-  role_arn   = lookup(each.value, "role_arn", aws_iam_role.eventbridge[0].arn)
+  role_arn   = var.attach_target_role_arn ? aws_iam_role.eventbridge[0].arn : null
   target_id  = lookup(each.value, "target_id", null)
   input      = lookup(each.value, "input", null)
   input_path = lookup(each.value, "input_path", null)
@@ -106,10 +106,10 @@ resource "aws_cloudwatch_event_target" "this" {
   }
 
   dynamic "sqs_target" {
-    for_each = lookup(each.value, "sqs_target", null) != null ? [true] : []
+    for_each = lookup(each.value, "message_group_id", null) != null ? [true] : []
 
     content {
-      message_group_id = each.value.name
+      message_group_id = each.value.message_group_id
     }
   }
 
@@ -121,6 +121,25 @@ resource "aws_cloudwatch_event_target" "this" {
     content {
       input_paths    = input_transformer.value.input_paths
       input_template = input_transformer.value.input_template
+    }
+  }
+
+  dynamic "dead_letter_config" {
+    for_each = lookup(each.value, "dead_letter_arn", null) != null ? [true] : []
+
+    content {
+      arn = each.value.dead_letter_arn
+    }
+  }
+
+  dynamic "retry_policy" {
+    for_each = lookup(each.value, "retry_policy", null) != null ? [
+      each.value.retry_policy
+    ] : []
+
+    content {
+      maximum_event_age_in_seconds = retry_policy.value.maximum_event_age_in_seconds
+      maximum_retry_attempts       = retry_policy.value.maximum_retry_attempts
     }
   }
 

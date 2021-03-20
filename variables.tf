@@ -131,6 +131,12 @@ variable "attach_sfn_policy" {
   default     = false
 }
 
+variable "attach_target_role_arn" {
+  description = ""
+  type        = bool
+  default     = false
+}
+
 variable "kinesis_target_arns" {
   type    = list(string)
   default = []

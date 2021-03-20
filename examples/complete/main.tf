@@ -49,7 +49,7 @@ module "eventbridge" {
 
   rules = {
     orders = {
-      description   = "Capture all order data",
+      description   = "Capture all order data"
       event_pattern = jsonencode({ "source" : ["co.pmlo.netsuite"] })
       enabled       = false
     }
@@ -58,14 +58,14 @@ module "eventbridge" {
   targets = {
     orders = [
       {
-        name    = "send-orders-to-sqs",
-        arn     = aws_sqs_queue.queue.arn
-        dlq_arn = aws_sqs_queue.dlq.arn
+        name       = "send-orders-to-sqs"
+        arn        = aws_sqs_queue.queue.arn
+        dlq_arn    = aws_sqs_queue.dlq.arn
       },
       {
-        name              = "send-orders-to-kinesis",
+        name              = "send-orders-to-kinesis"
         arn               = aws_kinesis_stream.this.arn
-        dlq_arn           = aws_sqs_queue.dlq.arn,
+        dlq_arn           = aws_sqs_queue.dlq.arn
         input_transformer = local.kinesis_input_transformer
       }
     ]
