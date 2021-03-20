@@ -21,11 +21,12 @@ Terraform 0.12 or newer is supported.
 
 ## Examples
 
-* [Complete_example](/examples/complete)
-* [Simple_example](/examples/simple)
-* [Archive_example](/examples/with-archive)
-* [Permissions_example](/examples/with-permissions)
-* [SQS_Target_example](/examples/sqs-target)
+* [Complete](/examples/complete)
+* [Simple](/examples/simple)
+* [Archive](/examples/with-archive)
+* [Permissions](/examples/with-permissions)
+* [SQS Target](/examples/sqs-target)
+* [API-Gateway](/examples/api-gateway)
 
 ## Change log
 
