@@ -33,7 +33,7 @@ module "eventbridge" {
 ### EventBridge Archive
 
 ```hcl
-module "eventbridge" {
+module "eventbridge_with_archive" {
   source = ""
 
   bus_name = "my-bus"
@@ -63,7 +63,7 @@ module "eventbridge" {
 ### EventBridge Permission 
 
 ```hcl
-module "eventbridge" {
+module "eventbridge_with_permissions" {
   source = ""
 
   bus_name = "my-bus"
