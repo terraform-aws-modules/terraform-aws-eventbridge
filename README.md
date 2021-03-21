@@ -2,7 +2,7 @@
 
 Terraform module to create EventBridge resources.
 
-This type of resources supported:
+The following resources are currently supported:
 
 * [Cloudwatch Event Archive](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/cloudwatch_event_archive)
 * [Cloudwatch Event Bus](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/cloudwatch_event_bus)
