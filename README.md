@@ -194,6 +194,8 @@ module "eventbridge" {
 * [Permissions](/examples/with-permissions)
 * [SQS Target](/examples/sqs-target)
 * [API-Gateway](/examples/api-gateway-event-source)
+* [Input Transformation](/examples/transform-input)
+* [StepFunction Target](/examples/step-function-target)
 
 ## Change log
 
