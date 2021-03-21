@@ -1,7 +1,6 @@
 variable "bus_name" {
   description = "A unique name for your EventBridge Bus"
   type        = string
-  default     = ""
 }
 
 variable "rules" {

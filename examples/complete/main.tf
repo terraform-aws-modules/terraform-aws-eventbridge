@@ -33,11 +33,33 @@ module "eventbridge" {
   create_archives    = true
   create_permissions = true
 
-  attach_sqs_policy     = true
-  attach_kinesis_policy = true
+  attach_tracing_policy          = true
+  attach_kinesis_policy          = true
+  attach_kinesis_firehose_policy = true
+  attach_sqs_policy              = true
+  attach_ecs_policy              = true
+  attach_lambda_policy           = true
+  attach_sfn_policy              = true
+  attach_cloudwatch_policy       = true
 
-  sqs_target_arns     = [aws_sqs_queue.queue.arn]
-  kinesis_target_arns = [aws_kinesis_stream.this.arn]
+  sqs_target_arns              = [aws_sqs_queue.queue.arn]
+  ecs_target_arns              = []
+  kinesis_target_arns          = [aws_kinesis_stream.this.arn]
+  kinesis_firehose_target_arns = []
+  lambda_target_arns           = []
+  sfn_target_arns              = []
+  cloudwatch_target_arns       = []
+
+  permission_config = [
+    {
+      account_id   = "099720109477",
+      statement_id = "canonical"
+    },
+    {
+      account_id   = "099720109466",
+      statement_id = "canonical_two"
+    }
+  ]
 
   archive_config = [
     {
@@ -48,17 +70,6 @@ module "eventbridge" {
         "source": ["co.pmlo.netsuite"]
       }
       PATTERN
-    }
-  ]
-
-  permission_config = [
-    {
-      account_id   = "099720109477",
-      statement_id = "canonical"
-    },
-    {
-      account_id   = "099720109466",
-      statement_id = "canonical_two"
     }
   ]
 

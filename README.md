@@ -170,7 +170,7 @@ No Modules.
 | attach\_sfn\_policy | Controls whether the StepFunction policy should be added to IAM role for EventBridge Target | `bool` | `false` | no |
 | attach\_sqs\_policy | Controls whether the SQS policy should be added to IAM role for EventBridge Target | `bool` | `false` | no |
 | attach\_tracing\_policy | Controls whether X-Ray tracing policy should be added to IAM role for EventBridge | `bool` | `false` | no |
-| bus\_name | A unique name for your EventBridge Bus | `string` | `""` | no |
+| bus\_name | A unique name for your EventBridge Bus | `string` | n/a | yes |
 | cloudwatch\_target\_arns | The Amazon Resource Name (ARN) of the Cloudwatch Log Streams you want to use as EventBridge targets | `list(string)` | `[]` | no |
 | create | Controls whether resources should be created | `bool` | `true` | no |
 | create\_archives | Controls whether EventBridge Archive resources should be created | `bool` | `false` | no |
