@@ -27,10 +27,11 @@ module "eventbridge" {
 
   bus_name = "${random_pet.this.id}-bus"
 
-  create_bus      = true
-  create_rule     = true
-  create_targets  = true
-  create_archives = true
+  create_bus         = true
+  create_rule        = true
+  create_targets     = true
+  create_archives    = true
+  create_permissions = true
 
   attach_sqs_policy     = true
   attach_kinesis_policy = true
@@ -50,6 +51,17 @@ module "eventbridge" {
     }
   ]
 
+  permission_config = [
+    {
+      account_id   = "099720109477",
+      statement_id = "canonical"
+    },
+    {
+      account_id   = "099720109466",
+      statement_id = "canonical_two"
+    }
+  ]
+
   rules = {
     orders = {
       description   = "Capture all order data"
@@ -61,14 +73,14 @@ module "eventbridge" {
   targets = {
     orders = [
       {
-        name    = "send-orders-to-sqs"
-        arn     = aws_sqs_queue.queue.arn
-        dlq_arn = aws_sqs_queue.dlq.arn
+        name            = "send-orders-to-sqs"
+        arn             = aws_sqs_queue.queue.arn
+        dead_letter_arn = aws_sqs_queue.dlq.arn
       },
       {
         name              = "send-orders-to-kinesis"
         arn               = aws_kinesis_stream.this.arn
-        dlq_arn           = aws_sqs_queue.dlq.arn
+        dead_letter_arn   = aws_sqs_queue.dlq.arn
         input_transformer = local.kinesis_input_transformer
       }
     ]

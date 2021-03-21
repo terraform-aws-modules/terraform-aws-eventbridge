@@ -7,7 +7,7 @@ locals {
     for index, rule in var.rules : [
       for target in var.targets[index] :
       merge(target, { "rule" = index })
-    ]
+    ] if length(var.targets) != 0
   ])
 }
 
