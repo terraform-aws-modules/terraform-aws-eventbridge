@@ -51,7 +51,7 @@ resource "aws_cloudwatch_event_target" "this" {
   rule = "${replace(each.value.rule, "_", "-")}-rule"
   arn  = each.value.arn
 
-  role_arn   = lookup(each.value, "role_arn", null)
+  role_arn   = lookup(each.value, "attach_role_arn", null) ? aws_iam_role.eventbridge[0].arn : null
   target_id  = lookup(each.value, "target_id", null)
   input      = lookup(each.value, "input", null)
   input_path = lookup(each.value, "input_path", null)
@@ -144,7 +144,7 @@ resource "aws_cloudwatch_event_target" "this" {
     }
   }
 
-  depends_on = [aws_cloudwatch_event_bus.this[0]]
+  depends_on = [aws_cloudwatch_event_rule.this[0]]
 }
 
 resource "aws_cloudwatch_event_archive" "this" {
