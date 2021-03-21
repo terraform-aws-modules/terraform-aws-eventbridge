@@ -27,7 +27,7 @@ module "eventbridge" {
 
   create_archives = true
 
-  archive_configs = [
+  archive_config = [
     {
       name           = "${random_pet.this.id}-launch-archive",
       description    = "${random_pet.this.id}-launch-archive",

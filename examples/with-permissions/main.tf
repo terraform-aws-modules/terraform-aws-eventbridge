@@ -27,7 +27,7 @@ module "eventbridge" {
 
   create_permissions = true
 
-  permissions = [
+  permission_config = [
     {
       account_id   = "099720109477",
       statement_id = "canonical"

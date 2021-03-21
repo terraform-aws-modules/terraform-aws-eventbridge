@@ -66,7 +66,7 @@ resource "random_pet" "this" {
 
 module "api_gateway" {
   source  = "terraform-aws-modules/apigateway-v2/aws"
-  version = "~> 0.0"
+  version = "0.14.0"
 
   name          = "${random_pet.this.id}-http"
   description   = "My ${random_pet.this.id} HTTP API Gateway"
@@ -95,7 +95,7 @@ module "api_gateway" {
 
 module "apigateway_put_events_to_eventbridge_role" {
   source  = "terraform-aws-modules/iam/aws//modules/iam-assumable-role"
-  version = "~> 3"
+  version = "3.13.0"
 
   create_role = true
 
@@ -113,7 +113,7 @@ module "apigateway_put_events_to_eventbridge_role" {
 
 module "apigateway_put_events_to_eventbridge_policy" {
   source  = "terraform-aws-modules/iam/aws//modules/iam-policy"
-  version = "~> 3"
+  version = "3.13.0"
 
   name        = "apigateway-put-events-to-eventbridge"
   path        = "/"
@@ -147,7 +147,7 @@ resource "aws_sqs_queue_policy" "queue" {
 
 data "aws_iam_policy_document" "queue" {
   statement {
-    sid     = "events-policy"
+    sid     = "AllowSendMessage"
     actions = ["sqs:SendMessage"]
     principals {
       type        = "Service"

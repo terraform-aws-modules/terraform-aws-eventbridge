@@ -38,7 +38,7 @@ module "eventbridge" {
   sqs_target_arns     = [aws_sqs_queue.queue.arn]
   kinesis_target_arns = [aws_kinesis_stream.this.arn]
 
-  archive_configs = [
+  archive_config = [
     {
       description    = "some archive"
       retention_days = 1

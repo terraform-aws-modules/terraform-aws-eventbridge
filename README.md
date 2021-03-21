@@ -161,7 +161,7 @@ No Modules.
 
 | Name | Description | Type | Default | Required |
 |------|-------------|------|---------|:--------:|
-| archive\_configs | A list of objects with the EventBridge Archive definitions. | `list(any)` | `[]` | no |
+| archive\_config | A list of objects with the EventBridge Archive definitions. | `list(any)` | `[]` | no |
 | attach\_cloudwatch\_policy | Controls whether the Cloudwatch policy should be added to IAM role for EventBridge Target | `bool` | `false` | no |
 | attach\_ecs\_policy | Controls whether the ECS policy should be added to IAM role for EventBridge Target | `bool` | `false` | no |
 | attach\_kinesis\_firehose\_policy | Controls whether the Kinesis Firehose policy should be added to IAM role for EventBridge Target | `bool` | `false` | no |
@@ -183,7 +183,7 @@ No Modules.
 | kinesis\_firehose\_target\_arns | The Amazon Resource Name (ARN) of the Kinesis Firehose Delivery Streams you want to use as EventBridge targets | `list(string)` | `[]` | no |
 | kinesis\_target\_arns | The Amazon Resource Name (ARN) of the Kinesis Streams you want to use as EventBridge targets | `list(string)` | `[]` | no |
 | lambda\_target\_arns | The Amazon Resource Name (ARN) of the Lambda Functions you want to use as EventBridge targets | `list(string)` | `[]` | no |
-| permissions | A list of objects with EventBridge Permission definitions. | `list(any)` | `[]` | no |
+| permission\_config | A list of objects with EventBridge Permission definitions. | `list(any)` | `[]` | no |
 | role\_description | Description of IAM role to use for Lambda Function | `string` | `null` | no |
 | role\_force\_detach\_policies | Specifies to force detaching any policies the IAM role has before destroying it. | `bool` | `true` | no |
 | role\_name | Name of IAM role to use for Lambda Function | `string` | `null` | no |

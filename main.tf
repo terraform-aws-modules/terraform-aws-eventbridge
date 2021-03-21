@@ -149,7 +149,7 @@ resource "aws_cloudwatch_event_target" "this" {
 
 resource "aws_cloudwatch_event_archive" "this" {
   for_each = var.create && var.create_archives ? {
-    for k, v in var.archive_configs : k => v
+    for k, v in var.archive_config : k => v
   } : {}
 
   name             = each.value.name
@@ -163,7 +163,7 @@ resource "aws_cloudwatch_event_archive" "this" {
 
 resource "aws_cloudwatch_event_permission" "this" {
   for_each = var.create && var.create_permissions ? {
-    for permission in var.permissions : permission.statement_id => permission
+    for permission in var.permission_config : permission.statement_id => permission
   } : {}
 
   principal      = each.value.account_id

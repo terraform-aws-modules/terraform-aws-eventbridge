@@ -4,6 +4,31 @@ variable "bus_name" {
   default     = ""
 }
 
+variable "rules" {
+  description = "A map of objects with EventBridge Rule definitions."
+  type        = map(any)
+  default     = {}
+}
+
+variable "targets" {
+  description = "A Map of objects with EventBridge Target definitions."
+  type        = any
+  default     = {}
+}
+
+variable "archive_config" {
+  description = "A list of objects with the EventBridge Archive definitions."
+  type        = list(any)
+  default     = []
+}
+
+variable "permission_config" {
+  description = "A list of objects with EventBridge Permission definitions."
+  type        = list(any)
+  default     = []
+}
+
+
 variable "tags" {
   description = "A map of tags to assign to resources."
   type        = map(string)
@@ -186,26 +211,3 @@ variable "cloudwatch_target_arns" {
   default     = []
 }
 
-variable "archive_configs" {
-  description = "A list of objects with the EventBridge Archive definitions."
-  type        = list(any)
-  default     = []
-}
-
-variable "permissions" {
-  description = "A list of objects with EventBridge Permission definitions."
-  type        = list(any)
-  default     = []
-}
-
-variable "rules" {
-  description = "A map of objects with EventBridge Rule definitions."
-  type        = map(any)
-  default     = {}
-}
-
-variable "targets" {
-  description = "A Map of objects with EventBridge Target definitions."
-  type        = any
-  default     = {}
-}
