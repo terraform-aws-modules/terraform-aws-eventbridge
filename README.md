@@ -30,6 +30,61 @@ module "eventbridge" {
 }
 ```
 
+### EventBridge Rule 
+
+```hcl
+module "eventbridge" {
+  source = ""
+
+  bus_name = "my-bus"
+  
+  rules = {
+    logs = {
+      description   = "Capture log data"
+      event_pattern = jsonencode({ "source" : ["my.app.logs"] })
+    }
+  }
+
+  tags = {
+    Name = "my-bus"
+  }
+}
+```
+
+### EventBridge Target
+
+```hcl
+module "eventbridge" {
+  source = ""
+
+  bus_name = "my-bus"
+  
+  rules = {
+    logs = {
+      description   = "Capture log data"
+      event_pattern = jsonencode({ "source" : ["my.app.logs"] })
+    }
+  }
+  
+  targets = {
+    logs = [
+      {
+        name = "send-logs-to-sqs"
+        arn  = aws_sqs_queue.queue.arn
+      },
+      {
+        name = "send-logs-to-cloudwatch"
+        arn  = aws_cloudwatch_log_stream.logs.arn
+      }
+    ]
+  }
+
+  tags = {
+    Name = "my-bus"
+  }
+}
+```
+
 ### EventBridge Archive
 
 ```hcl
