@@ -15,10 +15,8 @@ data "aws_iam_policy_document" "assume_role" {
     actions = ["sts:AssumeRole"]
 
     principals {
-      type = "Service"
-      identifiers = [
-        "events.amazonaws.com"
-      ]
+      type        = "Service"
+      identifiers = distinct(concat(["events.amazonaws.com"], var.trusted_entities))
     }
   }
 }
@@ -286,4 +284,125 @@ resource "aws_iam_policy_attachment" "cloudwatch" {
   name       = "${local.role_name}-cloudwatch"
   roles      = [aws_iam_role.eventbridge[0].name]
   policy_arn = aws_iam_policy.cloudwatch[0].arn
+}
+
+###########################
+# Additional policy (JSON)
+###########################
+
+resource "aws_iam_policy" "additional_json" {
+  count = local.create_role && var.attach_policy_json ? 1 : 0
+
+  name   = local.role_name
+  policy = var.policy_json
+}
+
+resource "aws_iam_policy_attachment" "additional_json" {
+  count = local.create_role && var.attach_policy_json ? 1 : 0
+
+  name       = local.role_name
+  roles      = [aws_iam_role.eventbridge[0].name]
+  policy_arn = aws_iam_policy.additional_json[0].arn
+}
+
+#####################################
+# Additional policies (list of JSON)
+#####################################
+
+resource "aws_iam_policy" "additional_jsons" {
+  count = local.create_role && var.attach_policy_jsons ? var.number_of_policy_jsons : 0
+
+  name   = "${local.role_name}-${count.index}"
+  policy = var.policy_jsons[count.index]
+}
+
+resource "aws_iam_policy_attachment" "additional_jsons" {
+  count = local.create_role && var.attach_policy_jsons ? var.number_of_policy_jsons : 0
+
+  name       = "${local.role_name}-${count.index}"
+  roles      = [aws_iam_role.eventbridge[0].name]
+  policy_arn = aws_iam_policy.additional_jsons[count.index].arn
+}
+
+###########################
+# ARN of additional policy
+###########################
+
+resource "aws_iam_role_policy_attachment" "additional_one" {
+  count = local.create_role && var.attach_policy ? 1 : 0
+
+  role       = aws_iam_role.eventbridge[0].name
+  policy_arn = var.policy
+}
+
+######################################
+# List of ARNs of additional policies
+######################################
+
+resource "aws_iam_role_policy_attachment" "additional_many" {
+  count = local.create_role && var.attach_policies ? var.number_of_policies : 0
+
+  role       = aws_iam_role.eventbridge[0].name
+  policy_arn = var.policies[count.index]
+}
+
+###############################
+# Additional policy statements
+###############################
+
+data "aws_iam_policy_document" "additional_inline" {
+  count = local.create_role && var.attach_policy_statements ? 1 : 0
+
+  dynamic "statement" {
+    for_each = var.policy_statements
+
+    content {
+      sid           = lookup(statement.value, "sid", replace(statement.key, "/[^0-9A-Za-z]*/", ""))
+      effect        = lookup(statement.value, "effect", null)
+      actions       = lookup(statement.value, "actions", null)
+      not_actions   = lookup(statement.value, "not_actions", null)
+      resources     = lookup(statement.value, "resources", null)
+      not_resources = lookup(statement.value, "not_resources", null)
+
+      dynamic "principals" {
+        for_each = lookup(statement.value, "principals", [])
+        content {
+          type        = principals.value.type
+          identifiers = principals.value.identifiers
+        }
+      }
+
+      dynamic "not_principals" {
+        for_each = lookup(statement.value, "not_principals", [])
+        content {
+          type        = not_principals.value.type
+          identifiers = not_principals.value.identifiers
+        }
+      }
+
+      dynamic "condition" {
+        for_each = lookup(statement.value, "condition", [])
+        content {
+          test     = condition.value.test
+          variable = condition.value.variable
+          values   = condition.value.values
+        }
+      }
+    }
+  }
+}
+
+resource "aws_iam_policy" "additional_inline" {
+  count = local.create_role && var.attach_policy_statements ? 1 : 0
+
+  name   = "${local.role_name}-inline"
+  policy = data.aws_iam_policy_document.additional_inline[0].json
+}
+
+resource "aws_iam_policy_attachment" "additional_inline" {
+  count = local.create_role && var.attach_policy_statements ? 1 : 0
+
+  name       = local.role_name
+  roles      = [aws_iam_role.eventbridge[0].name]
+  policy_arn = aws_iam_policy.additional_inline[0].arn
 }

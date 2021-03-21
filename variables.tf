@@ -210,3 +210,84 @@ variable "cloudwatch_target_arns" {
   default     = []
 }
 
+##########################
+# Various custom policies
+##########################
+
+variable "attach_policy_json" {
+  description = "Controls whether policy_json should be added to IAM role"
+  type        = bool
+  default     = false
+}
+
+variable "attach_policy_jsons" {
+  description = "Controls whether policy_jsons should be added to IAM role"
+  type        = bool
+  default     = false
+}
+
+variable "attach_policy" {
+  description = "Controls whether policy should be added to IAM role"
+  type        = bool
+  default     = false
+}
+
+variable "attach_policies" {
+  description = "Controls whether list of policies should be added to IAM role"
+  type        = bool
+  default     = false
+}
+
+variable "number_of_policy_jsons" {
+  description = "Number of policies JSON to attach to IAM role"
+  type        = number
+  default     = 0
+}
+
+variable "number_of_policies" {
+  description = "Number of policies to attach to IAM role"
+  type        = number
+  default     = 0
+}
+
+variable "attach_policy_statements" {
+  description = "Controls whether policy_statements should be added to IAM role"
+  type        = bool
+  default     = false
+}
+
+variable "trusted_entities" {
+  description = "Step Function additional trusted entities for assuming roles (trust relationship)"
+  type        = list(string)
+  default     = []
+}
+
+variable "policy_json" {
+  description = "An additional policy document as JSON to attach to IAM role"
+  type        = string
+  default     = null
+}
+
+variable "policy_jsons" {
+  description = "List of additional policy documents as JSON to attach to IAM role"
+  type        = list(string)
+  default     = []
+}
+
+variable "policy" {
+  description = "An additional policy document ARN to attach to IAM role"
+  type        = string
+  default     = null
+}
+
+variable "policies" {
+  description = "List of policy statements ARN to attach to IAM role"
+  type        = list(string)
+  default     = []
+}
+
+variable "policy_statements" {
+  description = "Map of dynamic policy statements to attach to IAM role"
+  type        = any
+  default     = {}
+}

@@ -144,6 +144,18 @@ module "eventbridge_with_permissions" {
 }
 ```
 
+## Additional IAM policies for Step Function
+
+In addition to all supported AWS service integrations you may want to create and attach additional policies.
+
+There are 5 supported ways to attach additional IAM policies to IAM role used by Step Function:
+
+1. `policy_json` - JSON string or heredoc, when `attach_policy_json = true`.
+1. `policy_jsons` - List of JSON strings or heredoc, when `attach_policy_jsons = true` and `number_of_policy_jsons > 0`.
+1. `policy` - ARN of existing IAM policy, when `attach_policy = true`.
+1. `policies` - List of ARNs of existing IAM policies, when `attach_policies = true` and `number_of_policies > 0`.
+1. `policy_statements` - Map of maps to define IAM statements which will be generated as IAM policy. Requires `attach_policy_statements = true`. See `examples/complete` for more information.
+
 ## Conditional creation
 
 Sometimes you need to have a way to create resources conditionally but Terraform does not allow usage of `count` inside `module` block, so the solution is to specify `create` arguments.
@@ -217,6 +229,7 @@ No Modules.
 | [aws_iam_policy_attachment](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/iam_policy_attachment) |
 | [aws_iam_policy_document](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/iam_policy_document) |
 | [aws_iam_role](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/iam_role) |
+| [aws_iam_role_policy_attachment](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/iam_role_policy_attachment) |
 
 ## Inputs
 
@@ -228,6 +241,11 @@ No Modules.
 | attach\_kinesis\_firehose\_policy | Controls whether the Kinesis Firehose policy should be added to IAM role for EventBridge Target | `bool` | `false` | no |
 | attach\_kinesis\_policy | Controls whether the Kinesis policy should be added to IAM role for EventBridge Target | `bool` | `false` | no |
 | attach\_lambda\_policy | Controls whether the Lambda Function policy should be added to IAM role for EventBridge Target | `bool` | `false` | no |
+| attach\_policies | Controls whether list of policies should be added to IAM role | `bool` | `false` | no |
+| attach\_policy | Controls whether policy should be added to IAM role | `bool` | `false` | no |
+| attach\_policy\_json | Controls whether policy\_json should be added to IAM role | `bool` | `false` | no |
+| attach\_policy\_jsons | Controls whether policy\_jsons should be added to IAM role | `bool` | `false` | no |
+| attach\_policy\_statements | Controls whether policy\_statements should be added to IAM role | `bool` | `false` | no |
 | attach\_sfn\_policy | Controls whether the StepFunction policy should be added to IAM role for EventBridge Target | `bool` | `false` | no |
 | attach\_sqs\_policy | Controls whether the SQS policy should be added to IAM role for EventBridge Target | `bool` | `false` | no |
 | attach\_tracing\_policy | Controls whether X-Ray tracing policy should be added to IAM role for EventBridge | `bool` | `false` | no |
@@ -244,7 +262,14 @@ No Modules.
 | kinesis\_firehose\_target\_arns | The Amazon Resource Name (ARN) of the Kinesis Firehose Delivery Streams you want to use as EventBridge targets | `list(string)` | `[]` | no |
 | kinesis\_target\_arns | The Amazon Resource Name (ARN) of the Kinesis Streams you want to use as EventBridge targets | `list(string)` | `[]` | no |
 | lambda\_target\_arns | The Amazon Resource Name (ARN) of the Lambda Functions you want to use as EventBridge targets | `list(string)` | `[]` | no |
+| number\_of\_policies | Number of policies to attach to IAM role | `number` | `0` | no |
+| number\_of\_policy\_jsons | Number of policies JSON to attach to IAM role | `number` | `0` | no |
 | permission\_config | A list of objects with EventBridge Permission definitions. | `list(any)` | `[]` | no |
+| policies | List of policy statements ARN to attach to IAM role | `list(string)` | `[]` | no |
+| policy | An additional policy document ARN to attach to IAM role | `string` | `null` | no |
+| policy\_json | An additional policy document as JSON to attach to IAM role | `string` | `null` | no |
+| policy\_jsons | List of additional policy documents as JSON to attach to IAM role | `list(string)` | `[]` | no |
+| policy\_statements | Map of dynamic policy statements to attach to IAM role | `any` | `{}` | no |
 | role\_description | Description of IAM role to use for Lambda Function | `string` | `null` | no |
 | role\_force\_detach\_policies | Specifies to force detaching any policies the IAM role has before destroying it. | `bool` | `true` | no |
 | role\_name | Name of IAM role to use for Lambda Function | `string` | `null` | no |
@@ -256,6 +281,7 @@ No Modules.
 | sqs\_target\_arns | The Amazon Resource Name (ARN) of the AWS SQS Queues you want to use as EventBridge targets | `list(string)` | `[]` | no |
 | tags | A map of tags to assign to resources. | `map(string)` | `{}` | no |
 | targets | A Map of objects with EventBridge Target definitions. | `any` | `{}` | no |
+| trusted\_entities | Step Function additional trusted entities for assuming roles (trust relationship) | `list(string)` | `[]` | no |
 
 ## Outputs
 
