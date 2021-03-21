@@ -10,9 +10,13 @@ This type of resources supported:
 * [Cloudwatch Event Rule](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/cloudwatch_event_rule)
 * [Cloudwatch Event Target](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/cloudwatch_event_target)
 
-## Terraform versions
+## Features
 
-Terraform 0.12 or newer is supported.
+- [x] Creates AWS EventBridge Resources
+- [x] Support AWS EventBridge Archives and Replays
+- [x] Conditional creation for many types of resources
+- [x] Support IAM policy attachments and various ways to create and attach additional policies
+- [] Support monitoring usage with Cloudwatch Metrics
 
 ## Usage
 
@@ -37,6 +41,8 @@ module "eventbridge" {
   source = ""
 
   bus_name = "my-bus"
+
+  create_targets = false
   
   rules = {
     logs = {
@@ -95,7 +101,7 @@ module "eventbridge_with_archive" {
   
   create_archives = true
 
-  archive_configs = [
+  archive_config = [
     {
       name           = "my-bus-launch-archive",
       description    = "EC2 AutoScaling Event archive",
@@ -125,7 +131,7 @@ module "eventbridge_with_permissions" {
 
   create_permissions = true
 
-  permissions = [
+  permission_config = [
     {
       account_id   = "YOUR_ACCOUNT_ID",
       statement_id = "development_account"
