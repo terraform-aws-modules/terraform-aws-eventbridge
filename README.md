@@ -16,7 +16,7 @@ This type of resources supported:
 - [x] Support AWS EventBridge Archives and Replays
 - [x] Conditional creation for many types of resources
 - [x] Support IAM policy attachments and various ways to create and attach additional policies
-- [] Support monitoring usage with Cloudwatch Metrics
+- [ ] Support monitoring usage with Cloudwatch Metrics
 
 ## Usage
 
