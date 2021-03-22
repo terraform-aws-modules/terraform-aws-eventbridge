@@ -1,9 +1,9 @@
 output "eventbridge_bus_arn" {
-  description = "ARNs"
+  description = "The EventBridge Bus ARN"
   value       = module.eventbridge.this_eventbridge_bus_arn
 }
 
 output "this_eventbridge_permission_ids" {
-  description = "IDs"
+  description = "The EventBridge Permissions"
   value       = module.eventbridge.this_eventbridge_permission_ids
 }

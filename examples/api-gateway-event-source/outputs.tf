@@ -26,9 +26,3 @@ output "eventbridge_role_name" {
   description = "The name of the IAM role created for EventBridge"
   value       = module.eventbridge.eventbridge_role_name
 }
-
-output "apigateway_put_events_to_eventbridge_role_arn" {
-  description = ""
-  value       = module.apigateway_put_events_to_eventbridge_role.this_iam_role_arn
-}
-

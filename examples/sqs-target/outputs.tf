@@ -1,14 +1,14 @@
 output "eventbridge_bus_arn" {
-  description = ""
+  description = "The EventBridge Bus ARN"
   value       = module.eventbridge.this_eventbridge_bus_arn
 }
 
 output "eventbridge_rule_ids" {
-  description = ""
+  description = "The EventBridge Rule IDs"
   value       = module.eventbridge.this_eventbridge_rule_ids
 }
 
 output "eventbridge_rule_arns" {
-  description = ""
+  description = "The EventBridge Rule ARNs"
   value       = module.eventbridge.this_eventbridge_rule_arns
 }
