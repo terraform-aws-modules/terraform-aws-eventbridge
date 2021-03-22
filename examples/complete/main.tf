@@ -28,7 +28,7 @@ module "eventbridge" {
   bus_name = "${random_pet.this.id}-bus"
 
   create_bus         = true
-  create_rule        = true
+  create_rules       = true
   create_targets     = true
   create_archives    = true
   create_permissions = true
@@ -207,10 +207,7 @@ data "aws_iam_policy_document" "queue" {
       type        = "Service"
       identifiers = ["events.amazonaws.com"]
     }
-    resources = [
-      aws_sqs_queue.queue.arn,
-      aws_sqs_queue.fifo.arn
-    ]
+    resources = [aws_sqs_queue.queue.arn]
   }
 }
 
