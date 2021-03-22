@@ -62,3 +62,35 @@ module "eventbridge" {
   }
 }
 
+module "eventbridge_archive_only" {
+  source = "../../"
+
+  create_bus      = false
+  create_rules    = false
+  create_targets  = false
+  create_archives = true
+
+  archive_config = [
+    {
+      event_source_arn = aws_cloudwatch_event_bus.pre_existing_bus.arn
+      name             = "${random_pet.this.id}-launch-archive",
+      description      = "${random_pet.this.id}-launch-archive",
+      retention_days   = 1
+      event_pattern    = <<PATTERN
+      {
+        "source": ["aws.autoscaling"],
+        "detail-type": ["EC2 Instance Launch Successful"]
+      }
+      PATTERN
+    }
+  ]
+
+  tags = {
+    Name = "${random_pet.this.id}-bus"
+  }
+}
+
+resource "aws_cloudwatch_event_bus" "pre_existing_bus" {
+  name = "${random_pet.this.id}-bus"
+}
+
