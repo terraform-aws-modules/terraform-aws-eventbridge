@@ -18,10 +18,6 @@ provider "aws" {
   skip_requesting_account_id  = true
 }
 
-resource "random_pet" "this" {
-  length = 2
-}
-
 module "eventbridge" {
   source = "../../"
 
@@ -52,6 +48,14 @@ module "eventbridge" {
   }
 }
 
+##################
+# Extra resources
+##################
+
+resource "random_pet" "this" {
+  length = 2
+}
+
 module "step_function" {
   source  = "terraform-aws-modules/step-functions/aws"
   version = "1.2.0"
@@ -72,3 +76,4 @@ module "step_function" {
     Name = "${random_pet.this.id}-step-function"
   }
 }
+

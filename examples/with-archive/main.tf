@@ -90,6 +90,10 @@ module "eventbridge_archive_only" {
   }
 }
 
+##################
+# Extra resources
+##################
+
 resource "aws_cloudwatch_event_bus" "pre_existing_bus" {
   name = "${random_pet.this.id}-bus"
 }

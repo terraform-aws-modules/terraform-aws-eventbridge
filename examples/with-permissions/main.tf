@@ -18,10 +18,6 @@ provider "aws" {
   skip_requesting_account_id  = true
 }
 
-resource "random_pet" "this" {
-  length = 2
-}
-
 module "eventbridge" {
   source = "../../"
 
@@ -45,3 +41,10 @@ module "eventbridge" {
   }
 }
 
+##################
+# Extra resources
+##################
+
+resource "random_pet" "this" {
+  length = 2
+}

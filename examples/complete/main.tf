@@ -177,6 +177,10 @@ locals {
   }
 }
 
+##################
+# Extra resources
+##################
+
 resource "aws_kinesis_stream" "this" {
   name        = random_pet.this.id
   shard_count = 1
