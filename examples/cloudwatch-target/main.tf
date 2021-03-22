@@ -24,6 +24,7 @@ module "eventbridge" {
   bus_name = "${random_pet.this.id}-bus"
 
   attach_cloudwatch_policy = true
+
   cloudwatch_target_arns = [
     aws_cloudwatch_log_group.this.arn
   ]

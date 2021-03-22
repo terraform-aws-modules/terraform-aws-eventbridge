@@ -48,7 +48,7 @@ module "eventbridge" {
   kinesis_firehose_target_arns = []
   lambda_target_arns           = []
   sfn_target_arns              = []
-  cloudwatch_target_arns       = []
+  cloudwatch_target_arns       = [aws_cloudwatch_log_group.this.arn]
 
   permission_config = [
     {
@@ -67,7 +67,7 @@ module "eventbridge" {
       retention_days = 1
       event_pattern  = <<PATTERN
       {
-        "source": ["co.pmlo.netsuite"]
+        "source": ["myapp.orders"]
       }
       PATTERN
     }
@@ -76,7 +76,7 @@ module "eventbridge" {
   rules = {
     orders = {
       description   = "Capture all order data"
-      event_pattern = jsonencode({ "source" : ["co.pmlo.netsuite"] })
+      event_pattern = jsonencode({ "source" : ["myapp.orders"] })
       enabled       = false
     }
   }
@@ -93,6 +93,10 @@ module "eventbridge" {
         arn               = aws_kinesis_stream.this.arn
         dead_letter_arn   = aws_sqs_queue.dlq.arn
         input_transformer = local.kinesis_input_transformer
+      },
+      {
+        name = "log-orders-to-cloudwatch"
+        arn  = aws_cloudwatch_log_group.this.arn
       }
     ]
   }
@@ -203,6 +207,14 @@ data "aws_iam_policy_document" "queue" {
       aws_sqs_queue.queue.arn,
       aws_sqs_queue.fifo.arn
     ]
+  }
+}
+
+resource "aws_cloudwatch_log_group" "this" {
+  name = "/aws/events/${random_pet.this.id}"
+
+  tags = {
+    Name = "${random_pet.this.id}-log-group"
   }
 }
 
