@@ -34,8 +34,6 @@ resource "aws_cloudwatch_event_rule" "this" {
   schedule_expression = lookup(each.value, "schedule_expression", null)
   role_arn            = aws_iam_role.eventbridge[0].arn
 
-  depends_on = [aws_cloudwatch_event_bus.this[0]]
-
   tags = merge(var.tags, {
     Name = "${replace(each.value.name, "_", "-")}-rule"
   })
@@ -143,8 +141,6 @@ resource "aws_cloudwatch_event_target" "this" {
       maximum_retry_attempts       = retry_policy.value.maximum_retry_attempts
     }
   }
-
-  depends_on = [aws_cloudwatch_event_rule.this[0]]
 }
 
 resource "aws_cloudwatch_event_archive" "this" {
