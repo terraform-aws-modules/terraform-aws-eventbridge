@@ -45,7 +45,7 @@ module "eventbridge" {
   sqs_target_arns              = [aws_sqs_queue.queue.arn]
   ecs_target_arns              = []
   kinesis_target_arns          = [aws_kinesis_stream.this.arn]
-  kinesis_firehose_target_arns = []
+  kinesis_firehose_target_arns = [aws_kinesis_firehose_delivery_stream.stream.arn]
   lambda_target_arns           = []
   sfn_target_arns              = []
   cloudwatch_target_arns       = [aws_cloudwatch_log_group.this.arn]
@@ -63,6 +63,7 @@ module "eventbridge" {
 
   archive_config = [
     {
+      name           = "some archive"
       description    = "some archive"
       retention_days = 1
       event_pattern  = <<PATTERN
@@ -93,6 +94,11 @@ module "eventbridge" {
         arn               = aws_kinesis_stream.this.arn
         dead_letter_arn   = aws_sqs_queue.dlq.arn
         input_transformer = local.kinesis_input_transformer
+      },
+      {
+        name            = "send-orders-to-kinesis-firehose"
+        arn             = aws_kinesis_firehose_delivery_stream.stream.arn
+        dead_letter_arn = aws_sqs_queue.dlq.arn
       },
       {
         name = "log-orders-to-cloudwatch"
@@ -218,4 +224,37 @@ resource "aws_cloudwatch_log_group" "this" {
     Name = "${random_pet.this.id}-log-group"
   }
 }
+resource "aws_s3_bucket" "bucket" {
+  bucket = "${random_pet.this.id}-bucket"
+  acl    = "private"
+}
 
+resource "aws_iam_role" "firehose_role" {
+  name = "firehose_test_role"
+
+  assume_role_policy = <<EOF
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Action": "sts:AssumeRole",
+      "Principal": {
+        "Service": "firehose.amazonaws.com"
+      },
+      "Effect": "Allow",
+      "Sid": ""
+    }
+  ]
+}
+EOF
+}
+
+resource "aws_kinesis_firehose_delivery_stream" "stream" {
+  name        = "${random_pet.this.id}-kinesis-firehose-stream"
+  destination = "s3"
+
+  s3_configuration {
+    role_arn   = aws_iam_role.firehose_role.arn
+    bucket_arn = aws_s3_bucket.bucket.arn
+  }
+}

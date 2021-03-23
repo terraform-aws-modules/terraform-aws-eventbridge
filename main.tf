@@ -148,7 +148,7 @@ resource "aws_cloudwatch_event_archive" "this" {
     for k, v in var.archive_config : k => v
   } : {}
 
-  name             = each.value.name
+  name             = lookup(each.value, "name", null)
   event_source_arn = lookup(each.value, "event_source_arn", null) == null ? aws_cloudwatch_event_bus.this[0].arn : null
   description      = lookup(each.value, "description", null)
   event_pattern    = lookup(each.value, "event_pattern", null)
