@@ -160,7 +160,7 @@ resource "aws_cloudwatch_event_permission" "this" {
     for permission in var.permission_config : permission.statement_id => permission
   } : {}
 
-  principal      = each.value.account_id
-  statement_id   = each.value.statement_id
+  principal      = lookup(each.value, "account_id", null)
+  statement_id   = lookup(each.value, "statement_id", null)
   event_bus_name = lookup(each.value, aws_cloudwatch_event_bus.this[0].name, null) == null ? aws_cloudwatch_event_bus.this[0].name : null
 }
