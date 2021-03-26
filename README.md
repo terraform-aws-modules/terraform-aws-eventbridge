@@ -24,7 +24,7 @@ The following resources are currently supported:
 
 ```hcl
 module "eventbridge" {
-  source = ""
+  source = "terraform-aws-modules/eventbridge/aws"
 
   bus_name = "my-bus"
 
@@ -38,7 +38,7 @@ module "eventbridge" {
 
 ```hcl
 module "eventbridge" {
-  source = ""
+  source = "terraform-aws-modules/eventbridge/aws"
 
   bus_name = "my-bus"
 
@@ -61,7 +61,7 @@ module "eventbridge" {
 
 ```hcl
 module "eventbridge" {
-  source = ""
+  source = "terraform-aws-modules/eventbridge/aws"
 
   bus_name = "my-bus"
   
@@ -95,7 +95,7 @@ module "eventbridge" {
 
 ```hcl
 module "eventbridge_with_archive" {
-  source = ""
+  source = "terraform-aws-modules/eventbridge/aws"
 
   bus_name = "my-bus"
   
@@ -125,7 +125,7 @@ module "eventbridge_with_archive" {
 
 ```hcl
 module "eventbridge_with_permissions" {
-  source = ""
+  source = "terraform-aws-modules/eventbridge/aws"
 
   bus_name = "my-bus"
 
@@ -162,7 +162,7 @@ Sometimes you need to have a way to create resources conditionally but Terraform
 
 ```hcl
 module "eventbridge" {
-  source = ""
+  source = "terraform-aws-modules/eventbridge/aws"
 
   create = false # to disable all resources
 
