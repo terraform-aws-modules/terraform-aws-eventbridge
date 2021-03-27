@@ -19,39 +19,39 @@ Note that this example may create resources which cost money. Run `terraform des
 
 | Name | Version |
 |------|---------|
-| terraform | >= 0.14.0 |
-| aws | >= 3.19 |
-| random | >= 0 |
+| <a name="requirement_terraform"></a> [terraform](#requirement\_terraform) | >= 0.14.0 |
+| <a name="requirement_aws"></a> [aws](#requirement\_aws) | >= 3.19 |
+| <a name="requirement_random"></a> [random](#requirement\_random) | >= 0 |
 
 ## Providers
 
 | Name | Version |
 |------|---------|
-| aws | >= 3.19 |
-| random | >= 0 |
+| <a name="provider_aws"></a> [aws](#provider\_aws) | >= 3.19 |
+| <a name="provider_random"></a> [random](#provider\_random) | >= 0 |
 
 ## Modules
 
 | Name | Source | Version |
 |------|--------|---------|
-| eventbridge | ../../ |  |
+| <a name="module_eventbridge"></a> [eventbridge](#module\_eventbridge) | ../../ |  |
 
 ## Resources
 
-| Name |
-|------|
-| [aws_iam_policy_document](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/iam_policy_document) |
-| [aws_sqs_queue](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/sqs_queue) |
-| [aws_sqs_queue_policy](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/sqs_queue_policy) |
-| [random_pet](https://registry.terraform.io/providers/hashicorp/random/latest/docs/resources/pet) |
+| Name | Type |
+|------|------|
+| [aws_sqs_queue.queue](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/sqs_queue) | resource |
+| [aws_sqs_queue_policy.queue](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/sqs_queue_policy) | resource |
+| [random_pet.this](https://registry.terraform.io/providers/hashicorp/random/latest/docs/resources/pet) | resource |
+| [aws_iam_policy_document.queue](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/iam_policy_document) | data source |
 
 ## Inputs
 
-No input.
+No inputs.
 
 ## Outputs
 
 | Name | Description |
 |------|-------------|
-| eventbridge\_bus\_arn | The EventBridge Bus ARN |
+| <a name="output_eventbridge_bus_arn"></a> [eventbridge\_bus\_arn](#output\_eventbridge\_bus\_arn) | The EventBridge Bus ARN |
 <!-- END OF PRE-COMMIT-TERRAFORM DOCS HOOK -->
