@@ -1,5 +1,5 @@
 locals {
-  create_role = var.create && var.create_bus && var.create_role
+  create_role = var.create && var.create_bus || var.create_rules || var.create_targets && var.create_role
   role_name   = local.create_role ? coalesce(var.role_name, var.bus_name, "*") : null
 }
 

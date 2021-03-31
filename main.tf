@@ -25,14 +25,14 @@ resource "aws_cloudwatch_event_rule" "this" {
 
   name = "${replace(each.value.name, "_", "-")}-rule"
 
-  event_bus_name = aws_cloudwatch_event_bus.this[0].name
+  event_bus_name = var.create_bus ? aws_cloudwatch_event_bus.this[0].name : "default"
 
   description         = lookup(each.value, "description", null)
   name_prefix         = lookup(each.value, "name_prefix", null)
   is_enabled          = lookup(each.value, "enabled", true)
   event_pattern       = lookup(each.value, "event_pattern", null)
   schedule_expression = lookup(each.value, "schedule_expression", null)
-  role_arn            = aws_iam_role.eventbridge[0].arn
+  role_arn            = lookup(each.value, "role_arn", false) ? aws_iam_role.eventbridge[0].arn : null
 
   tags = merge(var.tags, {
     Name = "${replace(each.value.name, "_", "-")}-rule"
@@ -44,12 +44,12 @@ resource "aws_cloudwatch_event_target" "this" {
     for target in local.eventbridge_targets : target.name => target
   } : tomap({})
 
-  event_bus_name = aws_cloudwatch_event_bus.this[0].name
+  event_bus_name = var.create_bus ? aws_cloudwatch_event_bus.this[0].name : "default"
 
   rule = "${replace(each.value.rule, "_", "-")}-rule"
   arn  = each.value.arn
 
-  role_arn   = lookup(each.value, "attach_role_arn", null) != null ? aws_iam_role.eventbridge[0].arn : null
+  role_arn   = lookup(each.value, "attach_role_arn", null) != null ? try(aws_iam_role.eventbridge[0].arn, "") : null
   target_id  = lookup(each.value, "target_id", null)
   input      = lookup(each.value, "input", null)
   input_path = lookup(each.value, "input_path", null)
@@ -141,6 +141,8 @@ resource "aws_cloudwatch_event_target" "this" {
       maximum_retry_attempts       = retry_policy.value.maximum_retry_attempts
     }
   }
+
+  depends_on = [aws_cloudwatch_event_rule.this[0]]
 }
 
 resource "aws_cloudwatch_event_archive" "this" {
