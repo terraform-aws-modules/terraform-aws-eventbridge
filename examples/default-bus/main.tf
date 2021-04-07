@@ -1,17 +1,3 @@
-terraform {
-  required_version = ">= 0.14.0"
-  required_providers {
-    aws = {
-      source  = "hashicorp/aws"
-      version = "3.34.0"
-    }
-    random = {
-      source  = "hashicorp/random"
-      version = "3.0.0"
-    }
-  }
-}
-
 provider "aws" {
   region = "ap-southeast-1"
 
@@ -44,6 +30,10 @@ module "eventbridge" {
     ]
   }
 }
+
+##################
+# Extra resources
+##################
 
 resource "random_pet" "this" {
   length = 2

@@ -1,12 +1,18 @@
 locals {
   eventbridge_rules = flatten([
     for index, rule in var.rules :
-    merge(rule, { "name" = index })
+    merge(rule, {
+      "name" = index
+      "Name" = "${replace(index, "_", "-")}-rule"
+    })
   ])
   eventbridge_targets = flatten([
     for index, rule in var.rules : [
       for target in var.targets[index] :
-      merge(target, { "rule" = index })
+      merge(target, {
+        "rule" = index
+        "Name" = "${replace(index, "_", "-")}-rule"
+      })
     ] if length(var.targets) != 0
   ])
 }
@@ -23,19 +29,19 @@ resource "aws_cloudwatch_event_rule" "this" {
     for rule in local.eventbridge_rules : rule.name => rule
   } : {}
 
-  name = "${replace(each.value.name, "_", "-")}-rule"
+  name        = each.value.Name
+  name_prefix = lookup(each.value, "name_prefix", null)
 
   event_bus_name = var.create_bus ? aws_cloudwatch_event_bus.this[0].name : "default"
 
   description         = lookup(each.value, "description", null)
-  name_prefix         = lookup(each.value, "name_prefix", null)
   is_enabled          = lookup(each.value, "enabled", true)
   event_pattern       = lookup(each.value, "event_pattern", null)
   schedule_expression = lookup(each.value, "schedule_expression", null)
   role_arn            = lookup(each.value, "role_arn", false) ? aws_iam_role.eventbridge[0].arn : null
 
   tags = merge(var.tags, {
-    Name = "${replace(each.value.name, "_", "-")}-rule"
+    Name = each.value.Name
   })
 }
 
@@ -46,7 +52,7 @@ resource "aws_cloudwatch_event_target" "this" {
 
   event_bus_name = var.create_bus ? aws_cloudwatch_event_bus.this[0].name : "default"
 
-  rule = "${replace(each.value.rule, "_", "-")}-rule"
+  rule = each.value.Name
   arn  = each.value.arn
 
   role_arn   = lookup(each.value, "attach_role_arn", null) != null ? try(aws_iam_role.eventbridge[0].arn, "") : null
@@ -142,27 +148,26 @@ resource "aws_cloudwatch_event_target" "this" {
     }
   }
 
-  depends_on = [aws_cloudwatch_event_rule.this[0]]
+  depends_on = [aws_cloudwatch_event_rule.this]
 }
 
 resource "aws_cloudwatch_event_archive" "this" {
-  for_each = var.create && var.create_archives ? {
-    for k, v in var.archive_config : k => v
-  } : {}
+  for_each = var.create && var.create_archives ? var.archives : {}
 
-  name             = each.value.name
-  event_source_arn = lookup(each.value, "event_source_arn", null) == null ? aws_cloudwatch_event_bus.this[0].arn : null
-  description      = lookup(each.value, "description", null)
-  event_pattern    = lookup(each.value, "event_pattern", null)
-  retention_days   = lookup(each.value, "retention_days", null)
+  name             = each.key
+  event_source_arn = try(each.value["event_source_arn"], aws_cloudwatch_event_bus.this[0].arn)
+
+  description    = lookup(each.value, "description", null)
+  event_pattern  = lookup(each.value, "event_pattern", null)
+  retention_days = lookup(each.value, "retention_days", null)
 }
 
 resource "aws_cloudwatch_event_permission" "this" {
-  for_each = var.create && var.create_permissions ? {
-    for permission in var.permission_config : permission.statement_id => permission
-  } : {}
+  for_each = var.create && var.create_permissions ? var.permissions : {}
 
-  principal      = each.value.account_id
-  statement_id   = each.value.statement_id
-  event_bus_name = lookup(each.value, aws_cloudwatch_event_bus.this[0].name, null) == null ? aws_cloudwatch_event_bus.this[0].name : null
+  principal    = compact(split(" ", each.key))[0]
+  statement_id = compact(split(" ", each.key))[1]
+
+  action         = lookup(each.value, "action", null)
+  event_bus_name = try(each.value["event_bus_name"], aws_cloudwatch_event_bus.this[0].name, null)
 }

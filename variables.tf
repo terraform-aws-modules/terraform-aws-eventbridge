@@ -1,39 +1,3 @@
-variable "bus_name" {
-  description = "A unique name for your EventBridge Bus"
-  type        = string
-  default     = "default"
-}
-
-variable "rules" {
-  description = "A map of objects with EventBridge Rule definitions."
-  type        = map(any)
-  default     = {}
-}
-
-variable "targets" {
-  description = "A Map of objects with EventBridge Target definitions."
-  type        = any
-  default     = {}
-}
-
-variable "archive_config" {
-  description = "A list of objects with the EventBridge Archive definitions."
-  type        = list(any)
-  default     = []
-}
-
-variable "permission_config" {
-  description = "A list of objects with EventBridge Permission definitions."
-  type        = list(any)
-  default     = []
-}
-
-variable "tags" {
-  description = "A map of tags to assign to resources."
-  type        = map(string)
-  default     = {}
-}
-
 variable "create" {
   description = "Controls whether resources should be created"
   type        = bool
@@ -74,6 +38,44 @@ variable "create_archives" {
   description = "Controls whether EventBridge Archive resources should be created"
   type        = bool
   default     = false
+}
+
+#######################
+
+variable "bus_name" {
+  description = "A unique name for your EventBridge Bus"
+  type        = string
+  default     = "default"
+}
+
+variable "rules" {
+  description = "A map of objects with EventBridge Rule definitions."
+  type        = map(any)
+  default     = {}
+}
+
+variable "targets" {
+  description = "A map of objects with EventBridge Target definitions."
+  type        = any
+  default     = {}
+}
+
+variable "archives" {
+  description = "A map of objects with the EventBridge Archive definitions."
+  type        = map(any)
+  default     = {}
+}
+
+variable "permissions" {
+  description = "A map of objects with EventBridge Permission definitions."
+  type        = map(any)
+  default     = {}
+}
+
+variable "tags" {
+  description = "A map of tags to assign to resources."
+  type        = map(string)
+  default     = {}
 }
 
 ######

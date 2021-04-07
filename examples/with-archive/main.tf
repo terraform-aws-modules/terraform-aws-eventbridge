@@ -1,12 +1,3 @@
-terraform {
-  required_version = ">= 0.14.0"
-
-  required_providers {
-    aws    = ">= 3.19"
-    random = ">= 0"
-  }
-}
-
 provider "aws" {
   region = "ap-southeast-1"
 
@@ -18,83 +9,76 @@ provider "aws" {
   skip_requesting_account_id  = true
 }
 
-resource "random_pet" "this" {
-  length = 2
-}
-
 module "eventbridge" {
   source = "../../"
 
+  create_bus      = true
   create_archives = true
-
-  archive_config = [
-    {
-      name           = "${random_pet.this.id}-launch-archive",
-      description    = "${random_pet.this.id}-launch-archive",
-      retention_days = 1
-      event_pattern  = <<PATTERN
-      {
-        "source": ["aws.autoscaling"],
-        "detail-type": ["EC2 Instance Launch Successful"]
-      }
-      PATTERN
-    },
-    {
-      name           = "${random_pet.this.id}-termination-archive",
-      description    = "${random_pet.this.id}-termination-archive",
-      retention_days = 1
-      event_pattern  = <<PATTERN
-      {
-        "source": ["aws.ec2"],
-        "detail-type": ["EC2 Instance State-change Notification"],
-        "detail": {
-          "state": ["terminated"]
-        }
-      }
-      PATTERN
-    }
-  ]
 
   bus_name = "${random_pet.this.id}-bus"
 
-  tags = {
-    Name = "${random_pet.this.id}-bus"
+  archives = {
+    "launch-archive" = {
+      description    = "${random_pet.this.id}-launch-archive",
+      retention_days = 1
+      event_pattern = jsonencode(
+        {
+          "source" : ["aws.autoscaling"],
+          "detail-type" : ["EC2 Instance Launch Successful"]
+        }
+      )
+    }
+
+    "termination-archive" = {
+      name           = "${random_pet.this.id}-termination-archive",
+      description    = "${random_pet.this.id}-termination-archive",
+      retention_days = 1
+      event_pattern = jsonencode(
+        {
+          "source" : ["aws.ec2"],
+          "detail-type" : ["EC2 Instance State-change Notification"],
+          "detail" : {
+            "state" : ["terminated"]
+          }
+        }
+      )
+    }
   }
+
 }
 
 module "eventbridge_archive_only" {
   source = "../../"
 
   create_bus      = false
-  create_rules    = false
-  create_targets  = false
   create_archives = true
 
-  archive_config = [
-    {
-      event_source_arn = aws_cloudwatch_event_bus.pre_existing_bus.arn
-      name             = "${random_pet.this.id}-launch-archive",
+  archives = {
+    "launch-archive-existing-bus" = {
+      event_source_arn = aws_cloudwatch_event_bus.existing_bus.arn
       description      = "${random_pet.this.id}-launch-archive",
       retention_days   = 1
-      event_pattern    = <<PATTERN
-      {
-        "source": ["aws.autoscaling"],
-        "detail-type": ["EC2 Instance Launch Successful"]
-      }
-      PATTERN
+      event_pattern = jsonencode(
+        {
+          "source" : ["aws.autoscaling"],
+          "detail-type" : ["EC2 Instance Launch Successful"]
+        }
+      )
     }
-  ]
-
-  tags = {
-    Name = "${random_pet.this.id}-bus"
   }
+
+  depends_on = [aws_cloudwatch_event_bus.existing_bus]
 }
 
 ##################
 # Extra resources
 ##################
 
-resource "aws_cloudwatch_event_bus" "pre_existing_bus" {
-  name = "${random_pet.this.id}-bus"
+resource "random_pet" "this" {
+  length = 2
+}
+
+resource "aws_cloudwatch_event_bus" "existing_bus" {
+  name = "${random_pet.this.id}-existing-bus"
 }
 

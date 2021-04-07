@@ -1,4 +1,3 @@
----
 Comment: Default Step Function
 StartAt: Hello
 States:

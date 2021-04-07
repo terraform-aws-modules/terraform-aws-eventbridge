@@ -19,24 +19,24 @@ Note that this example may create resources which cost money. Run `terraform des
 
 | Name | Version |
 |------|---------|
-| <a name="requirement_terraform"></a> [terraform](#requirement\_terraform) | >= 0.14.0 |
+| <a name="requirement_terraform"></a> [terraform](#requirement\_terraform) | >= 0.13.1 |
 | <a name="requirement_aws"></a> [aws](#requirement\_aws) | >= 3.19 |
-| <a name="requirement_random"></a> [random](#requirement\_random) | >= 0 |
+| <a name="requirement_random"></a> [random](#requirement\_random) | >= 3 |
 
 ## Providers
 
 | Name | Version |
 |------|---------|
 | <a name="provider_aws"></a> [aws](#provider\_aws) | >= 3.19 |
-| <a name="provider_random"></a> [random](#provider\_random) | >= 0 |
+| <a name="provider_random"></a> [random](#provider\_random) | >= 3 |
 
 ## Modules
 
 | Name | Source | Version |
 |------|--------|---------|
-| <a name="module_api_gateway"></a> [api\_gateway](#module\_api\_gateway) | terraform-aws-modules/apigateway-v2/aws | 0.14.0 |
-| <a name="module_apigateway_put_events_to_eventbridge_policy"></a> [apigateway\_put\_events\_to\_eventbridge\_policy](#module\_apigateway\_put\_events\_to\_eventbridge\_policy) | terraform-aws-modules/iam/aws//modules/iam-policy | 3.13.0 |
-| <a name="module_apigateway_put_events_to_eventbridge_role"></a> [apigateway\_put\_events\_to\_eventbridge\_role](#module\_apigateway\_put\_events\_to\_eventbridge\_role) | terraform-aws-modules/iam/aws//modules/iam-assumable-role | 3.13.0 |
+| <a name="module_api_gateway"></a> [api\_gateway](#module\_api\_gateway) | terraform-aws-modules/apigateway-v2/aws | ~> 0 |
+| <a name="module_apigateway_put_events_to_eventbridge_policy"></a> [apigateway\_put\_events\_to\_eventbridge\_policy](#module\_apigateway\_put\_events\_to\_eventbridge\_policy) | terraform-aws-modules/iam/aws//modules/iam-policy | ~> 3 |
+| <a name="module_apigateway_put_events_to_eventbridge_role"></a> [apigateway\_put\_events\_to\_eventbridge\_role](#module\_apigateway\_put\_events\_to\_eventbridge\_role) | terraform-aws-modules/iam/aws//modules/iam-assumable-role | ~> 3 |
 | <a name="module_eventbridge"></a> [eventbridge](#module\_eventbridge) | ../../ |  |
 
 ## Resources

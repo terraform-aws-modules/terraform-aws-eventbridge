@@ -1,12 +1,3 @@
-terraform {
-  required_version = ">= 0.14.0"
-
-  required_providers {
-    aws    = ">= 3.19"
-    random = ">= 0"
-  }
-}
-
 provider "aws" {
   region = "ap-southeast-1"
 
@@ -21,20 +12,21 @@ provider "aws" {
 module "eventbridge" {
   source = "../../"
 
+  bus_name = "${random_pet.this.id}-bus"
+
   create_permissions = true
 
-  permission_config = [
-    {
-      account_id   = "099720109477",
-      statement_id = "canonical"
-    },
-    {
-      account_id   = "099720109466",
-      statement_id = "canonical_two"
-    }
-  ]
+  permissions = {
+    "099720109477 DevAccess" = {}
 
-  bus_name = "${random_pet.this.id}-bus"
+    "099720109466 ProdAccess" = {
+      action = "events:PutEvents"
+    }
+
+    "* PublicAccessToExternalBus" = {
+      event_bus_name = aws_cloudwatch_event_bus.external.name
+    }
+  }
 
   tags = {
     Name = "${random_pet.this.id}-bus"
@@ -47,4 +39,8 @@ module "eventbridge" {
 
 resource "random_pet" "this" {
   length = 2
+}
+
+resource "aws_cloudwatch_event_bus" "external" {
+  name = "${random_pet.this.id}-external"
 }
