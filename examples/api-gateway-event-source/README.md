@@ -19,47 +19,49 @@ Note that this example may create resources which cost money. Run `terraform des
 
 | Name | Version |
 |------|---------|
-| terraform | >= 0.13.1 |
-| aws | >= 3.19 |
-| random | >= 3 |
+| <a name="requirement_terraform"></a> [terraform](#requirement\_terraform) | >= 0.13.1 |
+| <a name="requirement_aws"></a> [aws](#requirement\_aws) | >= 3.19 |
+| <a name="requirement_random"></a> [random](#requirement\_random) | >= 3 |
 
 ## Providers
 
 | Name | Version |
 |------|---------|
-| aws | >= 3.19 |
-| random | >= 3 |
+| <a name="provider_aws"></a> [aws](#provider\_aws) | >= 3.19 |
+| <a name="provider_random"></a> [random](#provider\_random) | >= 3 |
 
 ## Modules
 
 | Name | Source | Version |
 |------|--------|---------|
-| api_gateway | terraform-aws-modules/apigateway-v2/aws | ~> 0 |
-| apigateway_put_events_to_eventbridge_policy | terraform-aws-modules/iam/aws//modules/iam-policy | ~> 3 |
-| apigateway_put_events_to_eventbridge_role | terraform-aws-modules/iam/aws//modules/iam-assumable-role | ~> 3 |
-| eventbridge | ../../ |  |
+| <a name="module_api_gateway"></a> [api\_gateway](#module\_api\_gateway) | terraform-aws-modules/apigateway-v2/aws | ~> 0 |
+| <a name="module_apigateway_put_events_to_eventbridge_policy"></a> [apigateway\_put\_events\_to\_eventbridge\_policy](#module\_apigateway\_put\_events\_to\_eventbridge\_policy) | terraform-aws-modules/iam/aws//modules/iam-policy | ~> 3 |
+| <a name="module_apigateway_put_events_to_eventbridge_role"></a> [apigateway\_put\_events\_to\_eventbridge\_role](#module\_apigateway\_put\_events\_to\_eventbridge\_role) | terraform-aws-modules/iam/aws//modules/iam-assumable-role | ~> 3 |
+| <a name="module_eventbridge"></a> [eventbridge](#module\_eventbridge) | ../../ |  |
 
 ## Resources
 
-| Name |
-|------|
-| [aws_iam_policy_document](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/iam_policy_document) |
-| [aws_sqs_queue](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/sqs_queue) |
-| [aws_sqs_queue_policy](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/sqs_queue_policy) |
-| [random_pet](https://registry.terraform.io/providers/hashicorp/random/latest/docs/resources/pet) |
+| Name | Type |
+|------|------|
+| [aws_sqs_queue.dlq](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/sqs_queue) | resource |
+| [aws_sqs_queue.queue](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/sqs_queue) | resource |
+| [aws_sqs_queue_policy.queue](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/sqs_queue_policy) | resource |
+| [random_pet.this](https://registry.terraform.io/providers/hashicorp/random/latest/docs/resources/pet) | resource |
+| [aws_iam_policy_document.apigateway_put_events_to_eventbridge_policy](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/iam_policy_document) | data source |
+| [aws_iam_policy_document.queue](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/iam_policy_document) | data source |
 
 ## Inputs
 
-No input.
+No inputs.
 
 ## Outputs
 
 | Name | Description |
 |------|-------------|
-| eventbridge\_role\_arn | The ARN of the IAM role created for EventBridge |
-| eventbridge\_role\_name | The name of the IAM role created for EventBridge |
-| this\_eventbridge\_bus\_arn | The EventBridge Bus Arn |
-| this\_eventbridge\_bus\_name | The EventBridge Bus Name |
-| this\_eventbridge\_rule\_arns | The EventBridge Rule ARNs created |
-| this\_eventbridge\_rule\_ids | The EventBridge Rule IDs created |
+| <a name="output_eventbridge_role_arn"></a> [eventbridge\_role\_arn](#output\_eventbridge\_role\_arn) | The ARN of the IAM role created for EventBridge |
+| <a name="output_eventbridge_role_name"></a> [eventbridge\_role\_name](#output\_eventbridge\_role\_name) | The name of the IAM role created for EventBridge |
+| <a name="output_this_eventbridge_bus_arn"></a> [this\_eventbridge\_bus\_arn](#output\_this\_eventbridge\_bus\_arn) | The EventBridge Bus Arn |
+| <a name="output_this_eventbridge_bus_name"></a> [this\_eventbridge\_bus\_name](#output\_this\_eventbridge\_bus\_name) | The EventBridge Bus Name |
+| <a name="output_this_eventbridge_rule_arns"></a> [this\_eventbridge\_rule\_arns](#output\_this\_eventbridge\_rule\_arns) | The EventBridge Rule ARNs created |
+| <a name="output_this_eventbridge_rule_ids"></a> [this\_eventbridge\_rule\_ids](#output\_this\_eventbridge\_rule\_ids) | The EventBridge Rule IDs created |
 <!-- END OF PRE-COMMIT-TERRAFORM DOCS HOOK -->

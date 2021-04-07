@@ -19,39 +19,39 @@ Note that this example may create resources which cost money. Run `terraform des
 
 | Name | Version |
 |------|---------|
-| terraform | >= 0.13.1 |
-| aws | >= 3.19 |
-| random | >= 3 |
+| <a name="requirement_terraform"></a> [terraform](#requirement\_terraform) | >= 0.13.1 |
+| <a name="requirement_aws"></a> [aws](#requirement\_aws) | >= 3.19 |
+| <a name="requirement_random"></a> [random](#requirement\_random) | >= 3 |
 
 ## Providers
 
 | Name | Version |
 |------|---------|
-| aws | >= 3.19 |
-| random | >= 3 |
+| <a name="provider_aws"></a> [aws](#provider\_aws) | >= 3.19 |
+| <a name="provider_random"></a> [random](#provider\_random) | >= 3 |
 
 ## Modules
 
 | Name | Source | Version |
 |------|--------|---------|
-| eventbridge | ../../ |  |
-| eventbridge_archive_only | ../../ |  |
+| <a name="module_eventbridge"></a> [eventbridge](#module\_eventbridge) | ../../ |  |
+| <a name="module_eventbridge_archive_only"></a> [eventbridge\_archive\_only](#module\_eventbridge\_archive\_only) | ../../ |  |
 
 ## Resources
 
-| Name |
-|------|
-| [aws_cloudwatch_event_bus](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/cloudwatch_event_bus) |
-| [random_pet](https://registry.terraform.io/providers/hashicorp/random/latest/docs/resources/pet) |
+| Name | Type |
+|------|------|
+| [aws_cloudwatch_event_bus.existing_bus](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/cloudwatch_event_bus) | resource |
+| [random_pet.this](https://registry.terraform.io/providers/hashicorp/random/latest/docs/resources/pet) | resource |
 
 ## Inputs
 
-No input.
+No inputs.
 
 ## Outputs
 
 | Name | Description |
 |------|-------------|
-| eventbridge\_archive\_arns | The EventBridge Archive ARNs |
-| eventbridge\_bus\_arn | The EventBridge Bus ARN |
+| <a name="output_eventbridge_archive_arns"></a> [eventbridge\_archive\_arns](#output\_eventbridge\_archive\_arns) | The EventBridge Archive ARNs |
+| <a name="output_eventbridge_bus_arn"></a> [eventbridge\_bus\_arn](#output\_eventbridge\_bus\_arn) | The EventBridge Bus ARN |
 <!-- END OF PRE-COMMIT-TERRAFORM DOCS HOOK -->
