@@ -84,13 +84,13 @@ module "eventbridge" {
         arn             = module.step_function.this_state_machine_arn
         attach_role_arn = true
       },
-      # @todo: Error: Creating CloudWatch Events Target failed: ValidationException: Rule orders-rule does not have RoleArn assigned to invoke target arn:aws:kinesis:ap-southeast-1:835367859851:stream/prime-killdeer.
-      #      {
-      #        name              = "send-orders-to-kinesis"
-      #        arn               = aws_kinesis_stream.this.arn
-      #        dead_letter_arn   = aws_sqs_queue.dlq.arn
-      #        input_transformer = local.order_input_transformer
-      #      }
+      {
+        name              = "send-emails-to-kinesis"
+        arn               = aws_kinesis_stream.this.arn
+        dead_letter_arn   = aws_sqs_queue.dlq.arn
+        input_transformer = local.email_input_transformer
+        attach_role_arn   = true
+      }
     ]
   }
 
@@ -166,6 +166,16 @@ locals {
     input_template = <<EOF
     {
       "id": <order_id>
+    }
+    EOF
+  }
+  email_input_transformer = {
+    input_paths = {
+      receiver_id = "$.detail.receiver_id"
+    }
+    input_template = <<EOF
+    {
+      "id": <receiver_id>
     }
     EOF
   }
