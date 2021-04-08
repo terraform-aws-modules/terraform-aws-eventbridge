@@ -7,6 +7,12 @@ All notable changes to this project will be documented in this file.
 
 
 
+<a name="v1.0.0"></a>
+## [v1.0.0] - 2021-04-08
+
+- feat: Some refactoring and added ability to handle default bus ([#5](https://github.com/terraform-aws-modules/terraform-aws-eventbridge/issues/5))
+
+
 <a name="v0.1.0"></a>
 ## [v0.1.0] - 2021-03-27
 
@@ -21,5 +27,6 @@ All notable changes to this project will be documented in this file.
 - first commit
 
 
-[Unreleased]: https://github.com/terraform-aws-modules/terraform-aws-eventbridge/compare/v0.1.0...HEAD
+[Unreleased]: https://github.com/terraform-aws-modules/terraform-aws-eventbridge/compare/v1.0.0...HEAD
+[v1.0.0]: https://github.com/terraform-aws-modules/terraform-aws-eventbridge/compare/v0.1.0...v1.0.0
 [v0.1.0]: https://github.com/terraform-aws-modules/terraform-aws-eventbridge/compare/v0.0.1...v0.1.0
