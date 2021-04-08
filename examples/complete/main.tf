@@ -75,13 +75,6 @@ module "eventbridge" {
       {
         name = "log-orders-to-cloudwatch"
         arn  = aws_cloudwatch_log_group.this.arn
-      },
-      {
-        name              = "send-orders-to-kinesis"
-        arn               = aws_kinesis_stream.this.arn
-        dead_letter_arn   = aws_sqs_queue.dlq.arn
-        input_transformer = local.order_input_transformer
-        attach_role_arn   = true
       }
     ]
 
@@ -90,6 +83,13 @@ module "eventbridge" {
         name            = "process-email-with-sfn"
         arn             = module.step_function.this_state_machine_arn
         attach_role_arn = true
+      },
+      {
+        name              = "send-orders-to-kinesis"
+        arn               = aws_kinesis_stream.this.arn
+        dead_letter_arn   = aws_sqs_queue.dlq.arn
+        input_transformer = local.order_input_transformer
+        attach_role_arn   = true
       }
     ]
   }
