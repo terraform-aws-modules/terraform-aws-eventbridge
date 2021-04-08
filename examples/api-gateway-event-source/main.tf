@@ -1,12 +1,3 @@
-terraform {
-  required_version = ">= 0.14.0"
-
-  required_providers {
-    aws    = ">= 3.19"
-    random = ">= 0"
-  }
-}
-
 provider "aws" {
   region = "ap-southeast-1"
 
@@ -66,7 +57,7 @@ resource "random_pet" "this" {
 
 module "api_gateway" {
   source  = "terraform-aws-modules/apigateway-v2/aws"
-  version = "0.14.0"
+  version = "~> 0"
 
   name          = "${random_pet.this.id}-http"
   description   = "My ${random_pet.this.id} HTTP API Gateway"
@@ -95,16 +86,14 @@ module "api_gateway" {
 
 module "apigateway_put_events_to_eventbridge_role" {
   source  = "terraform-aws-modules/iam/aws//modules/iam-assumable-role"
-  version = "3.13.0"
+  version = "~> 3"
 
   create_role = true
 
   role_name         = "apigateway-put-events-to-eventbridge"
   role_requires_mfa = false
 
-  trusted_role_services = [
-    "apigateway.amazonaws.com"
-  ]
+  trusted_role_services = ["apigateway.amazonaws.com"]
 
   custom_role_policy_arns = [
     module.apigateway_put_events_to_eventbridge_policy.arn
@@ -113,10 +102,9 @@ module "apigateway_put_events_to_eventbridge_role" {
 
 module "apigateway_put_events_to_eventbridge_policy" {
   source  = "terraform-aws-modules/iam/aws//modules/iam-policy"
-  version = "3.13.0"
+  version = "~> 3"
 
   name        = "apigateway-put-events-to-eventbridge"
-  path        = "/"
   description = "Allow PutEvents to EventBridge"
 
   policy = data.aws_iam_policy_document.apigateway_put_events_to_eventbridge_policy.json
@@ -149,10 +137,12 @@ data "aws_iam_policy_document" "queue" {
   statement {
     sid     = "AllowSendMessage"
     actions = ["sqs:SendMessage"]
+
     principals {
       type        = "Service"
       identifiers = ["events.amazonaws.com"]
     }
+
     resources = [aws_sqs_queue.queue.arn]
   }
 }

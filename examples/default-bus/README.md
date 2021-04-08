@@ -1,6 +1,6 @@
-# EventBridge Simple Example
+# EventBridge Default Bus Example
 
-Configuration in this directory creates EventBridge resource configuration.
+Configuration in this directory creates EventBridge resource configuration using `default` EventBridge bus.
 
 ## Usage
 
@@ -19,15 +19,16 @@ Note that this example may create resources which cost money. Run `terraform des
 
 | Name | Version |
 |------|---------|
-| <a name="requirement_terraform"></a> [terraform](#requirement\_terraform) | >= 0.14.0 |
+| <a name="requirement_terraform"></a> [terraform](#requirement\_terraform) | >= 0.13.1 |
 | <a name="requirement_aws"></a> [aws](#requirement\_aws) | >= 3.19 |
-| <a name="requirement_random"></a> [random](#requirement\_random) | >= 0 |
+| <a name="requirement_random"></a> [random](#requirement\_random) | >= 3 |
 
 ## Providers
 
 | Name | Version |
 |------|---------|
-| <a name="provider_random"></a> [random](#provider\_random) | >= 0 |
+| <a name="provider_aws"></a> [aws](#provider\_aws) | >= 3.19 |
+| <a name="provider_random"></a> [random](#provider\_random) | >= 3 |
 
 ## Modules
 
@@ -39,6 +40,7 @@ Note that this example may create resources which cost money. Run `terraform des
 
 | Name | Type |
 |------|------|
+| [aws_sqs_queue.products](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/sqs_queue) | resource |
 | [random_pet.this](https://registry.terraform.io/providers/hashicorp/random/latest/docs/resources/pet) | resource |
 
 ## Inputs
@@ -51,3 +53,4 @@ No inputs.
 |------|-------------|
 | <a name="output_eventbridge_bus_arn"></a> [eventbridge\_bus\_arn](#output\_eventbridge\_bus\_arn) | The EventBridge Bus ARN |
 <!-- END OF PRE-COMMIT-TERRAFORM DOCS HOOK -->
+

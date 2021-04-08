@@ -1,6 +1,11 @@
 locals {
   create_role = var.create && var.create_bus && var.create_role
-  role_name   = local.create_role ? coalesce(var.role_name, var.bus_name, "*") : null
+
+  # Defaulting to "*" (an invalid character for an IAM Role name) will cause an error when
+  # attempting to plan if the role_name and bus_name are not set. This is a workaround
+  # that will allow one to import resources without receiving an error from coalesce.
+  # @see https://github.com/terraform-aws-modules/terraform-aws-lambda/issues/83
+  role_name = local.create_role ? coalesce(var.role_name, var.bus_name, "*") : null
 }
 
 ###########

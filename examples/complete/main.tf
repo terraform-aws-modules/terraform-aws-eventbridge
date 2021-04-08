@@ -1,12 +1,3 @@
-terraform {
-  required_version = ">= 0.14.0"
-
-  required_providers {
-    aws    = ">= 3.19"
-    random = ">= 0"
-  }
-}
-
 provider "aws" {
   region = "ap-southeast-1"
 
@@ -18,60 +9,28 @@ provider "aws" {
   skip_requesting_account_id  = true
 }
 
-resource "random_pet" "this" {
-  length = 2
-}
-
 module "eventbridge" {
   source = "../../"
 
   bus_name = "${random_pet.this.id}-bus"
 
-  create_bus         = true
-  create_rules       = true
-  create_targets     = true
-  create_archives    = true
-  create_permissions = true
+  attach_tracing_policy = true
 
-  attach_tracing_policy          = true
-  attach_kinesis_policy          = true
-  attach_kinesis_firehose_policy = true
-  attach_sqs_policy              = true
-  attach_ecs_policy              = true
-  attach_lambda_policy           = true
-  attach_sfn_policy              = true
-  attach_cloudwatch_policy       = true
+  attach_kinesis_policy = true
+  kinesis_target_arns   = [aws_kinesis_stream.this.arn]
 
-  sqs_target_arns              = [aws_sqs_queue.queue.arn]
-  ecs_target_arns              = []
-  kinesis_target_arns          = [aws_kinesis_stream.this.arn]
-  kinesis_firehose_target_arns = []
-  lambda_target_arns           = []
-  sfn_target_arns              = []
-  cloudwatch_target_arns       = [aws_cloudwatch_log_group.this.arn]
+  attach_sfn_policy = true
+  sfn_target_arns   = [module.step_function.this_state_machine_arn]
 
-  permission_config = [
-    {
-      account_id   = "099720109477",
-      statement_id = "canonical"
-    },
-    {
-      account_id   = "099720109466",
-      statement_id = "canonical_two"
-    }
+  attach_sqs_policy = true
+  sqs_target_arns = [
+    aws_sqs_queue.queue.arn,
+    aws_sqs_queue.fifo.arn,
+    aws_sqs_queue.dlq.arn
   ]
 
-  archive_config = [
-    {
-      description    = "some archive"
-      retention_days = 1
-      event_pattern  = <<PATTERN
-      {
-        "source": ["myapp.orders"]
-      }
-      PATTERN
-    }
-  ]
+  attach_cloudwatch_policy = true
+  cloudwatch_target_arns   = [aws_cloudwatch_log_group.this.arn]
 
   rules = {
     orders = {
@@ -79,27 +38,62 @@ module "eventbridge" {
       event_pattern = jsonencode({ "source" : ["myapp.orders"] })
       enabled       = false
     }
+    emails = {
+      description   = "Capture all emails data"
+      event_pattern = jsonencode({ "source" : ["myapp.emails"] })
+      enabled       = true
+    }
   }
 
   targets = {
     orders = [
       {
-        name            = "send-orders-to-sqs"
+        name              = "send-orders-to-sqs"
+        arn               = aws_sqs_queue.queue.arn
+        input_transformer = local.order_input_transformer
+      },
+      {
+        name            = "send-orders-to-sqs-wth-dead-letter"
         arn             = aws_sqs_queue.queue.arn
         dead_letter_arn = aws_sqs_queue.dlq.arn
       },
       {
-        name              = "send-orders-to-kinesis"
-        arn               = aws_kinesis_stream.this.arn
-        dead_letter_arn   = aws_sqs_queue.dlq.arn
-        input_transformer = local.kinesis_input_transformer
+        name            = "send-orders-to-sqs-with-retry-policy"
+        arn             = aws_sqs_queue.queue.arn
+        dead_letter_arn = aws_sqs_queue.dlq.arn
+        retry_policy = {
+          maximum_retry_attempts       = 10
+          maximum_event_age_in_seconds = 300
+        }
+      },
+      {
+        name             = "send-orders-to-fifo-sqs"
+        arn              = aws_sqs_queue.fifo.arn
+        dead_letter_arn  = aws_sqs_queue.dlq.arn
+        message_group_id = "send-orders-to-fifo-sqs"
       },
       {
         name = "log-orders-to-cloudwatch"
         arn  = aws_cloudwatch_log_group.this.arn
       }
     ]
+
+    emails = [
+      {
+        name            = "process-email-with-sfn"
+        arn             = module.step_function.this_state_machine_arn
+        attach_role_arn = true
+      },
+      {
+        name              = "send-orders-to-kinesis"
+        arn               = aws_kinesis_stream.this.arn
+        dead_letter_arn   = aws_sqs_queue.dlq.arn
+        input_transformer = local.order_input_transformer
+        attach_role_arn   = true
+      }
+    ]
   }
+
   ######################
   # Additional policies
   ######################
@@ -165,7 +159,7 @@ EOF
 }
 
 locals {
-  kinesis_input_transformer = {
+  order_input_transformer = {
     input_paths = {
       order_id = "$.detail.order_id"
     }
@@ -181,6 +175,10 @@ locals {
 # Extra resources
 ##################
 
+resource "random_pet" "this" {
+  length = 2
+}
+
 resource "aws_kinesis_stream" "this" {
   name        = random_pet.this.id
   shard_count = 1
@@ -188,6 +186,12 @@ resource "aws_kinesis_stream" "this" {
 
 resource "aws_sqs_queue" "queue" {
   name = "${random_pet.this.id}-queue"
+}
+
+resource "aws_sqs_queue" "fifo" {
+  name                        = "${random_pet.this.id}.fifo"
+  fifo_queue                  = true
+  content_based_deduplication = true
 }
 
 resource "aws_sqs_queue" "dlq" {
@@ -203,11 +207,16 @@ data "aws_iam_policy_document" "queue" {
   statement {
     sid     = "events-policy"
     actions = ["sqs:SendMessage"]
+
     principals {
       type        = "Service"
       identifiers = ["events.amazonaws.com"]
     }
-    resources = [aws_sqs_queue.queue.arn]
+
+    resources = [
+      aws_sqs_queue.queue.arn,
+      aws_sqs_queue.fifo.arn
+    ]
   }
 }
 
@@ -219,3 +228,23 @@ resource "aws_cloudwatch_log_group" "this" {
   }
 }
 
+################
+# Step Function
+################
+
+module "step_function" {
+  source  = "terraform-aws-modules/step-functions/aws"
+  version = "~> 1.0"
+
+  name = random_pet.this.id
+
+  definition = jsonencode(yamldecode(templatefile("sfn.asl.yaml", {})))
+
+  trusted_entities = ["events.amazonaws.com"]
+
+  service_integrations = {
+    stepfunction = {
+      stepfunction = ["*"]
+    }
+  }
+}

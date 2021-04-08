@@ -12,24 +12,22 @@ provider "aws" {
 module "eventbridge" {
   source = "../../"
 
-  bus_name = "${random_pet.this.id}-bus"
+  create_bus = false
 
-  create_permissions = true
-
-  permissions = {
-    "099720109477 DevAccess" = {}
-
-    "099720109466 ProdAccess" = {
-      action = "events:PutEvents"
-    }
-
-    "* PublicAccessToExternalBus" = {
-      event_bus_name = aws_cloudwatch_event_bus.external.name
+  rules = {
+    product_create = {
+      description   = "product create rule",
+      event_pattern = jsonencode({ "source" : ["product.create"] })
     }
   }
 
-  tags = {
-    Name = "${random_pet.this.id}-bus"
+  targets = {
+    product_create = [
+      {
+        arn  = aws_sqs_queue.products.arn
+        name = "send-product-to-sqs"
+      }
+    ]
   }
 }
 
@@ -41,6 +39,7 @@ resource "random_pet" "this" {
   length = 2
 }
 
-resource "aws_cloudwatch_event_bus" "external" {
-  name = "${random_pet.this.id}-external"
+resource "aws_sqs_queue" "products" {
+  name = random_pet.this.id
 }
+

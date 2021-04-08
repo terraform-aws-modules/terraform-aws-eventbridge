@@ -4,21 +4,66 @@ Terraform module to create EventBridge resources.
 
 The following resources are currently supported:
 
-* [Cloudwatch Event Archive](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/cloudwatch_event_archive)
-* [Cloudwatch Event Bus](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/cloudwatch_event_bus)
-* [Cloudwatch Event Permission](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/cloudwatch_event_permission)
-* [Cloudwatch Event Rule](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/cloudwatch_event_rule)
-* [Cloudwatch Event Target](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/cloudwatch_event_target)
+* [EventBridge Archive](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/cloudwatch_event_archive)
+* [EventBridge Bus](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/cloudwatch_event_bus)
+* [EventBridge Permission](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/cloudwatch_event_permission)
+* [EventBridge Rule](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/cloudwatch_event_rule)
+* [EventBridge Target](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/cloudwatch_event_target)
 
 ## Features
 
-- [x] Creates AWS EventBridge Resources
+- [x] Creates AWS EventBridge Resources (bus, rules, targets, permissions)
+- [x] Attach resources to an existing EventBridge bus
 - [x] Support AWS EventBridge Archives and Replays
 - [x] Conditional creation for many types of resources
 - [x] Support IAM policy attachments and various ways to create and attach additional policies
 - [ ] Support monitoring usage with Cloudwatch Metrics
 
 ## Usage
+
+### EventBridge Complete
+
+Most common use-case which creates custom bus, rules and targets.
+
+```hcl
+module "eventbridge" {
+  source = "terraform-aws-modules/eventbridge/aws"
+
+  bus_name = "my-bus"
+
+  rules = {
+    orders = {
+      description   = "Capture all order data"
+      event_pattern = jsonencode({ "source" : ["myapp.orders"] })
+      enabled       = true
+    }
+  }
+
+  targets = {
+    orders = [
+      {
+        name            = "send-orders-to-sqs"
+        arn             = aws_sqs_queue.queue.arn
+        dead_letter_arn = aws_sqs_queue.dlq.arn
+      },
+      {
+        name              = "send-orders-to-kinesis"
+        arn               = aws_kinesis_stream.this.arn
+        dead_letter_arn   = aws_sqs_queue.dlq.arn
+        input_transformer = local.kinesis_input_transformer
+      },
+      {
+        name = "log-orders-to-cloudwatch"
+        arn  = aws_cloudwatch_log_group.this.arn
+      }
+    ]
+  }
+  
+  tags = {
+    Name = "my-bus"
+  }
+}
+```
 
 ### EventBridge Bus
 
@@ -50,10 +95,6 @@ module "eventbridge" {
       event_pattern = jsonencode({ "source" : ["my.app.logs"] })
     }
   }
-
-  tags = {
-    Name = "my-bus"
-  }
 }
 ```
 
@@ -84,10 +125,6 @@ module "eventbridge" {
       }
     ]
   }
-
-  tags = {
-    Name = "my-bus"
-  }
 }
 ```
 
@@ -101,9 +138,8 @@ module "eventbridge_with_archive" {
   
   create_archives = true
 
-  archive_config = [
-    {
-      name           = "my-bus-launch-archive",
+  archives = {
+    "my-bus-launch-archive" = {
       description    = "EC2 AutoScaling Event archive",
       retention_days = 1
       event_pattern  = <<PATTERN
@@ -113,7 +149,7 @@ module "eventbridge_with_archive" {
       }
       PATTERN
     }
-  ]
+  }
 
   tags = {
     Name = "my-bus"
@@ -131,12 +167,11 @@ module "eventbridge_with_permissions" {
 
   create_permissions = true
 
-  permission_config = [
-    {
-      account_id   = "YOUR_ACCOUNT_ID",
-      statement_id = "development_account"
-    }
-  ]
+  permissions = {
+    "099720109477 DevAccess" = {}
+    "099720109466 ProdAccess" = {}
+  }
+
 
   tags = {
     Name = "my-bus"
@@ -173,13 +208,13 @@ module "eventbridge" {
   create_permissions = false  # to control creation of EventBridge Permissions
   create_role        = false  # to control creation of the IAM role and policies required for EventBridge
 
+  attach_cloudwatch_policy       = false
+  attach_ecs_policy              = false
   attach_kinesis_policy          = false
   attach_kinesis_firehose_policy = false
-  attach_sqs_policy              = false
-  attach_ecs_policy              = false
   attach_lambda_policy           = false
   attach_sfn_policy              = false
-  attach_cloudwatch_policy       = false
+  attach_sqs_policy              = false
   attach_tracing_policy          = false
 
   # ... omitted
@@ -188,23 +223,19 @@ module "eventbridge" {
 
 ## Examples
 
-* [Complete](/examples/complete)
-* [Simple](/examples/simple)
-* [Archive](/examples/with-archive)
-* [Permissions](/examples/with-permissions)
-* [SQS Target](/examples/sqs-target)
-* [API-Gateway](/examples/api-gateway-event-source)
-* [Input Transformation](/examples/transform-input)
-* [Step Function Target](/examples/step-function-target)
+* [Complete](https://github.com/terraform-aws-modules/terraform-aws-eventbridge/tree/master/examples/complete) - Creates EventBridge resources (bus, rules and targets) and connect with SQS queues, Kinesis Stream, Step Function, CloudWatch Logs, and more.
+* [HTTP API Gateway](https://github.com/terraform-aws-modules/terraform-aws-eventbridge/tree/master/examples/api-gateway-event-source) - Creates an integration with HTTP API Gateway as event source.
+* [Using Default Bus](https://github.com/terraform-aws-modules/terraform-aws-eventbridge/tree/master/examples/default-bus) - Creates resources in the `default` bus.
+* [Archive](https://github.com/terraform-aws-modules/terraform-aws-eventbridge/tree/master/examples/with-archive) - EventBridge Archives resources in various configurations.
+* [Permissions](https://github.com/terraform-aws-modules/terraform-aws-eventbridge/tree/master/examples/with-permissions) - Controls permissions to EventBridge.
 
-## Change log
 
 <!-- BEGINNING OF PRE-COMMIT-TERRAFORM DOCS HOOK -->
 ## Requirements
 
 | Name | Version |
 |------|---------|
-| <a name="requirement_terraform"></a> [terraform](#requirement\_terraform) | >= 0.12.26 |
+| <a name="requirement_terraform"></a> [terraform](#requirement\_terraform) | >= 0.13.1 |
 | <a name="requirement_aws"></a> [aws](#requirement\_aws) | >= 3.19 |
 
 ## Providers
@@ -266,7 +297,7 @@ No modules.
 
 | Name | Description | Type | Default | Required |
 |------|-------------|------|---------|:--------:|
-| <a name="input_archive_config"></a> [archive\_config](#input\_archive\_config) | A list of objects with the EventBridge Archive definitions. | `list(any)` | `[]` | no |
+| <a name="input_archives"></a> [archives](#input\_archives) | A map of objects with the EventBridge Archive definitions. | `map(any)` | `{}` | no |
 | <a name="input_attach_cloudwatch_policy"></a> [attach\_cloudwatch\_policy](#input\_attach\_cloudwatch\_policy) | Controls whether the Cloudwatch policy should be added to IAM role for EventBridge Target | `bool` | `false` | no |
 | <a name="input_attach_ecs_policy"></a> [attach\_ecs\_policy](#input\_attach\_ecs\_policy) | Controls whether the ECS policy should be added to IAM role for EventBridge Target | `bool` | `false` | no |
 | <a name="input_attach_kinesis_firehose_policy"></a> [attach\_kinesis\_firehose\_policy](#input\_attach\_kinesis\_firehose\_policy) | Controls whether the Kinesis Firehose policy should be added to IAM role for EventBridge Target | `bool` | `false` | no |
@@ -280,7 +311,7 @@ No modules.
 | <a name="input_attach_sfn_policy"></a> [attach\_sfn\_policy](#input\_attach\_sfn\_policy) | Controls whether the StepFunction policy should be added to IAM role for EventBridge Target | `bool` | `false` | no |
 | <a name="input_attach_sqs_policy"></a> [attach\_sqs\_policy](#input\_attach\_sqs\_policy) | Controls whether the SQS policy should be added to IAM role for EventBridge Target | `bool` | `false` | no |
 | <a name="input_attach_tracing_policy"></a> [attach\_tracing\_policy](#input\_attach\_tracing\_policy) | Controls whether X-Ray tracing policy should be added to IAM role for EventBridge | `bool` | `false` | no |
-| <a name="input_bus_name"></a> [bus\_name](#input\_bus\_name) | A unique name for your EventBridge Bus | `string` | `""` | no |
+| <a name="input_bus_name"></a> [bus\_name](#input\_bus\_name) | A unique name for your EventBridge Bus | `string` | `"default"` | no |
 | <a name="input_cloudwatch_target_arns"></a> [cloudwatch\_target\_arns](#input\_cloudwatch\_target\_arns) | The Amazon Resource Name (ARN) of the Cloudwatch Log Streams you want to use as EventBridge targets | `list(string)` | `[]` | no |
 | <a name="input_create"></a> [create](#input\_create) | Controls whether resources should be created | `bool` | `true` | no |
 | <a name="input_create_archives"></a> [create\_archives](#input\_create\_archives) | Controls whether EventBridge Archive resources should be created | `bool` | `false` | no |
@@ -295,7 +326,7 @@ No modules.
 | <a name="input_lambda_target_arns"></a> [lambda\_target\_arns](#input\_lambda\_target\_arns) | The Amazon Resource Name (ARN) of the Lambda Functions you want to use as EventBridge targets | `list(string)` | `[]` | no |
 | <a name="input_number_of_policies"></a> [number\_of\_policies](#input\_number\_of\_policies) | Number of policies to attach to IAM role | `number` | `0` | no |
 | <a name="input_number_of_policy_jsons"></a> [number\_of\_policy\_jsons](#input\_number\_of\_policy\_jsons) | Number of policies JSON to attach to IAM role | `number` | `0` | no |
-| <a name="input_permission_config"></a> [permission\_config](#input\_permission\_config) | A list of objects with EventBridge Permission definitions. | `list(any)` | `[]` | no |
+| <a name="input_permissions"></a> [permissions](#input\_permissions) | A map of objects with EventBridge Permission definitions. | `map(any)` | `{}` | no |
 | <a name="input_policies"></a> [policies](#input\_policies) | List of policy statements ARN to attach to IAM role | `list(string)` | `[]` | no |
 | <a name="input_policy"></a> [policy](#input\_policy) | An additional policy document ARN to attach to IAM role | `string` | `null` | no |
 | <a name="input_policy_json"></a> [policy\_json](#input\_policy\_json) | An additional policy document as JSON to attach to IAM role | `string` | `null` | no |
@@ -311,7 +342,7 @@ No modules.
 | <a name="input_sfn_target_arns"></a> [sfn\_target\_arns](#input\_sfn\_target\_arns) | The Amazon Resource Name (ARN) of the StepFunctions you want to use as EventBridge targets | `list(string)` | `[]` | no |
 | <a name="input_sqs_target_arns"></a> [sqs\_target\_arns](#input\_sqs\_target\_arns) | The Amazon Resource Name (ARN) of the AWS SQS Queues you want to use as EventBridge targets | `list(string)` | `[]` | no |
 | <a name="input_tags"></a> [tags](#input\_tags) | A map of tags to assign to resources. | `map(string)` | `{}` | no |
-| <a name="input_targets"></a> [targets](#input\_targets) | A Map of objects with EventBridge Target definitions. | `any` | `{}` | no |
+| <a name="input_targets"></a> [targets](#input\_targets) | A map of objects with EventBridge Target definitions. | `any` | `{}` | no |
 | <a name="input_trusted_entities"></a> [trusted\_entities](#input\_trusted\_entities) | Step Function additional trusted entities for assuming roles (trust relationship) | `list(string)` | `[]` | no |
 
 ## Outputs
