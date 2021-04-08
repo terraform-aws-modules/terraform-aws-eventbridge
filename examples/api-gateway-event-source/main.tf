@@ -72,7 +72,7 @@ module "api_gateway" {
       credentials_arn     = module.apigateway_put_events_to_eventbridge_role.this_iam_role_arn
 
       request_parameters = jsonencode({
-        EventBusName = module.eventbridge.this_eventbridge_bus_name,
+        EventBusName = module.eventbridge.eventbridge_bus_name,
         Source       = "api.gateway.orders.create",
         DetailType   = "Order Create",
         Detail       = "$request.body",
@@ -114,7 +114,7 @@ data "aws_iam_policy_document" "apigateway_put_events_to_eventbridge_policy" {
   statement {
     sid       = "AllowPutEvents"
     actions   = ["events:PutEvents"]
-    resources = [module.eventbridge.this_eventbridge_bus_arn]
+    resources = [module.eventbridge.eventbridge_bus_arn]
   }
 
   depends_on = [module.eventbridge]
