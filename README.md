@@ -349,14 +349,14 @@ No modules.
 
 | Name | Description |
 |------|-------------|
+| <a name="output_eventbridge_archive_arns"></a> [eventbridge\_archive\_arns](#output\_eventbridge\_archive\_arns) | The EventBridge Archive Arns created |
+| <a name="output_eventbridge_bus_arn"></a> [eventbridge\_bus\_arn](#output\_eventbridge\_bus\_arn) | The EventBridge Bus Arn |
+| <a name="output_eventbridge_bus_name"></a> [eventbridge\_bus\_name](#output\_eventbridge\_bus\_name) | The EventBridge Bus Name |
+| <a name="output_eventbridge_permission_ids"></a> [eventbridge\_permission\_ids](#output\_eventbridge\_permission\_ids) | The EventBridge Permission Arns created |
 | <a name="output_eventbridge_role_arn"></a> [eventbridge\_role\_arn](#output\_eventbridge\_role\_arn) | The ARN of the IAM role created for EventBridge |
 | <a name="output_eventbridge_role_name"></a> [eventbridge\_role\_name](#output\_eventbridge\_role\_name) | The name of the IAM role created for EventBridge |
-| <a name="output_this_eventbridge_archive_arns"></a> [this\_eventbridge\_archive\_arns](#output\_this\_eventbridge\_archive\_arns) | The EventBridge Archive Arns created |
-| <a name="output_this_eventbridge_bus_arn"></a> [this\_eventbridge\_bus\_arn](#output\_this\_eventbridge\_bus\_arn) | The EventBridge Bus Arn |
-| <a name="output_this_eventbridge_bus_name"></a> [this\_eventbridge\_bus\_name](#output\_this\_eventbridge\_bus\_name) | The EventBridge Bus Name |
-| <a name="output_this_eventbridge_permission_ids"></a> [this\_eventbridge\_permission\_ids](#output\_this\_eventbridge\_permission\_ids) | The EventBridge Permission Arns created |
-| <a name="output_this_eventbridge_rule_arns"></a> [this\_eventbridge\_rule\_arns](#output\_this\_eventbridge\_rule\_arns) | The EventBridge Rule ARNs created |
-| <a name="output_this_eventbridge_rule_ids"></a> [this\_eventbridge\_rule\_ids](#output\_this\_eventbridge\_rule\_ids) | The EventBridge Rule IDs created |
+| <a name="output_eventbridge_rule_arns"></a> [eventbridge\_rule\_arns](#output\_eventbridge\_rule\_arns) | The EventBridge Rule ARNs created |
+| <a name="output_eventbridge_rule_ids"></a> [eventbridge\_rule\_ids](#output\_eventbridge\_rule\_ids) | The EventBridge Rule IDs created |
 <!-- END OF PRE-COMMIT-TERRAFORM DOCS HOOK -->
 
 ## Authors

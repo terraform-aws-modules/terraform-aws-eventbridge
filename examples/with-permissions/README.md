@@ -52,5 +52,5 @@ No inputs.
 | Name | Description |
 |------|-------------|
 | <a name="output_eventbridge_bus_arn"></a> [eventbridge\_bus\_arn](#output\_eventbridge\_bus\_arn) | The EventBridge Bus ARN |
-| <a name="output_this_eventbridge_permission_ids"></a> [this\_eventbridge\_permission\_ids](#output\_this\_eventbridge\_permission\_ids) | The EventBridge Permissions |
+| <a name="output_eventbridge_permission_ids"></a> [eventbridge\_permission\_ids](#output\_eventbridge\_permission\_ids) | The EventBridge Permissions |
 <!-- END OF PRE-COMMIT-TERRAFORM DOCS HOOK -->
