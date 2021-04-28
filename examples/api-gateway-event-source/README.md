@@ -35,8 +35,8 @@ Note that this example may create resources which cost money. Run `terraform des
 | Name | Source | Version |
 |------|--------|---------|
 | <a name="module_api_gateway"></a> [api\_gateway](#module\_api\_gateway) | terraform-aws-modules/apigateway-v2/aws | ~> 0 |
-| <a name="module_apigateway_put_events_to_eventbridge_policy"></a> [apigateway\_put\_events\_to\_eventbridge\_policy](#module\_apigateway\_put\_events\_to\_eventbridge\_policy) | terraform-aws-modules/iam/aws//modules/iam-policy | ~> 3 |
-| <a name="module_apigateway_put_events_to_eventbridge_role"></a> [apigateway\_put\_events\_to\_eventbridge\_role](#module\_apigateway\_put\_events\_to\_eventbridge\_role) | terraform-aws-modules/iam/aws//modules/iam-assumable-role | ~> 3 |
+| <a name="module_apigateway_put_events_to_eventbridge_policy"></a> [apigateway\_put\_events\_to\_eventbridge\_policy](#module\_apigateway\_put\_events\_to\_eventbridge\_policy) | terraform-aws-modules/iam/aws//modules/iam-policy | ~> 4.0 |
+| <a name="module_apigateway_put_events_to_eventbridge_role"></a> [apigateway\_put\_events\_to\_eventbridge\_role](#module\_apigateway\_put\_events\_to\_eventbridge\_role) | terraform-aws-modules/iam/aws//modules/iam-assumable-role | ~> 4.0 |
 | <a name="module_eventbridge"></a> [eventbridge](#module\_eventbridge) | ../../ |  |
 
 ## Resources

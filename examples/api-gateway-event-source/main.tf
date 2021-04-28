@@ -69,7 +69,7 @@ module "api_gateway" {
     "POST /orders/create" = {
       integration_type    = "AWS_PROXY"
       integration_subtype = "EventBridge-PutEvents"
-      credentials_arn     = module.apigateway_put_events_to_eventbridge_role.this_iam_role_arn
+      credentials_arn     = module.apigateway_put_events_to_eventbridge_role.iam_role_arn
 
       request_parameters = jsonencode({
         EventBusName = module.eventbridge.eventbridge_bus_name,
@@ -86,7 +86,7 @@ module "api_gateway" {
 
 module "apigateway_put_events_to_eventbridge_role" {
   source  = "terraform-aws-modules/iam/aws//modules/iam-assumable-role"
-  version = "~> 3"
+  version = "~> 4.0"
 
   create_role = true
 
@@ -102,7 +102,7 @@ module "apigateway_put_events_to_eventbridge_role" {
 
 module "apigateway_put_events_to_eventbridge_policy" {
   source  = "terraform-aws-modules/iam/aws//modules/iam-policy"
-  version = "~> 3"
+  version = "~> 4.0"
 
   name        = "apigateway-put-events-to-eventbridge"
   description = "Allow PutEvents to EventBridge"

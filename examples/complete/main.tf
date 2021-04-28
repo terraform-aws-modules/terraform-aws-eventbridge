@@ -20,7 +20,7 @@ module "eventbridge" {
   kinesis_target_arns   = [aws_kinesis_stream.this.arn]
 
   attach_sfn_policy = true
-  sfn_target_arns   = [module.step_function.this_state_machine_arn]
+  sfn_target_arns   = [module.step_function.state_machine_arn]
 
   attach_sqs_policy = true
   sqs_target_arns = [
@@ -81,7 +81,7 @@ module "eventbridge" {
     emails = [
       {
         name            = "process-email-with-sfn"
-        arn             = module.step_function.this_state_machine_arn
+        arn             = module.step_function.state_machine_arn
         attach_role_arn = true
       },
       {
@@ -234,7 +234,7 @@ resource "aws_cloudwatch_log_group" "this" {
 
 module "step_function" {
   source  = "terraform-aws-modules/step-functions/aws"
-  version = "~> 1.0"
+  version = "~> 2.0"
 
   name = random_pet.this.id
 
