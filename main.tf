@@ -77,13 +77,13 @@ resource "aws_cloudwatch_event_target" "this" {
       launch_type         = lookup(ecs_target.value, "launch_type", null)
       platform_version    = lookup(ecs_target.value, "platform_version", null)
       task_count          = lookup(ecs_target.value, "task_count", null)
-      task_definition_arn = ecs_target.value.task_definition_arn
+      task_definition_arn = lookup(ecs_target.value, "task_definition_arn", null)
 
       dynamic "network_configuration" {
         for_each = lookup(ecs_target.value, "network_configuration", null) != null ? [true] : []
 
         content {
-          subnets          = network_configuration.value.subnets
+          subnets          = lookup(network_configuration.value, "subnets", null)
           security_groups  = lookup(network_configuration.value, "security_groups", null)
           assign_public_ip = lookup(network_configuration.value, "assign_public_ip", null)
         }
