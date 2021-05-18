@@ -86,7 +86,8 @@ module "cloudtrail_bucket" {
   source  = "terraform-aws-modules/s3-bucket/aws"
   version = "~> 2.0"
 
-  bucket = "${random_pet.this.id}-cloudtrail"
+  bucket        = "${random_pet.this.id}-cloudtrail"
+  force_destroy = true
 }
 
 resource "aws_s3_bucket_policy" "this" {
@@ -138,7 +139,8 @@ module "source_bucket" {
   source  = "terraform-aws-modules/s3-bucket/aws"
   version = "~> 2.0"
 
-  bucket = "${random_pet.this.id}-source"
+  bucket        = "${random_pet.this.id}-source"
+  force_destroy = true
 }
 
 resource "aws_cloudtrail" "this" {
