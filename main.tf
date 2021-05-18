@@ -70,7 +70,9 @@ resource "aws_cloudwatch_event_target" "this" {
   }
 
   dynamic "ecs_target" {
-    for_each = lookup(each.value, "ecs_target", null) != null ? [true] : []
+    for_each = lookup(each.value, "ecs_target", null) != null ? [
+      each.value.ecs_target
+    ] : []
 
     content {
       group               = lookup(ecs_target.value, "group", null)
@@ -80,7 +82,9 @@ resource "aws_cloudwatch_event_target" "this" {
       task_definition_arn = lookup(ecs_target.value, "task_definition_arn", null)
 
       dynamic "network_configuration" {
-        for_each = lookup(ecs_target.value, "network_configuration", null) != null ? [true] : []
+        for_each = lookup(each.value.ecs_target, "network_configuration", null) != null ? [
+          each.value.ecs_target.network_configuration
+        ] : []
 
         content {
           subnets          = lookup(network_configuration.value, "subnets", null)
