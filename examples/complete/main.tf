@@ -295,13 +295,7 @@ resource "aws_ecs_task_definition" "hello_world" {
     "name": "hello_world-${random_pet.this.id}",
     "image": "hello-world",
     "cpu": 0,
-    "memory": 128,
-    "logConfiguration": {
-      "logDriver": "awslogs",
-      "options": {
-        "awslogs-region": "eu-west-1"
-      }
-    }
+    "memory": 128
   }
 ]
 EOF
