@@ -7,6 +7,12 @@ All notable changes to this project will be documented in this file.
 
 
 
+<a name="v1.3.0"></a>
+## [v1.3.0] - 2021-05-28
+
+- fix: property lookup in ecs_target block ([#8](https://github.com/terraform-aws-modules/terraform-aws-eventbridge/issues/8))
+
+
 <a name="v1.2.0"></a>
 ## [v1.2.0] - 2021-05-25
 
@@ -40,7 +46,8 @@ All notable changes to this project will be documented in this file.
 - first commit
 
 
-[Unreleased]: https://github.com/terraform-aws-modules/terraform-aws-eventbridge/compare/v1.2.0...HEAD
+[Unreleased]: https://github.com/terraform-aws-modules/terraform-aws-eventbridge/compare/v1.3.0...HEAD
+[v1.3.0]: https://github.com/terraform-aws-modules/terraform-aws-eventbridge/compare/v1.2.0...v1.3.0
 [v1.2.0]: https://github.com/terraform-aws-modules/terraform-aws-eventbridge/compare/v1.1.0...v1.2.0
 [v1.1.0]: https://github.com/terraform-aws-modules/terraform-aws-eventbridge/compare/v1.0.0...v1.1.0
 [v1.0.0]: https://github.com/terraform-aws-modules/terraform-aws-eventbridge/compare/v0.1.0...v1.0.0
