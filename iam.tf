@@ -171,7 +171,7 @@ data "aws_iam_policy_document" "ecs" {
     sid       = "ECSAccess"
     effect    = "Allow"
     actions   = ["ecs:RunTask"]
-    resources = [replace(join(", ", var.ecs_target_arns), "/:\\d+$/", ":*")]
+    resources = [for arn in var.ecs_target_arns : replace(arn, "/:\\d+$/", ":*")]
   }
 
   statement {

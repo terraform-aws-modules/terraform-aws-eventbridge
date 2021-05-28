@@ -32,6 +32,9 @@ module "eventbridge" {
   attach_cloudwatch_policy = true
   cloudwatch_target_arns   = [aws_cloudwatch_log_group.this.arn]
 
+  attach_ecs_policy = true
+  ecs_target_arns   = [aws_ecs_task_definition.hello_world.arn]
+
   rules = {
     orders = {
       description   = "Capture all order data"
@@ -90,6 +93,15 @@ module "eventbridge" {
         dead_letter_arn   = aws_sqs_queue.dlq.arn
         input_transformer = local.order_input_transformer
         attach_role_arn   = true
+      },
+      {
+        name            = "process-email-with-ecs-task",
+        arn             = module.ecs.ecs_cluster_arn,
+        attach_role_arn = true
+        ecs_target = {
+          task_count          = 1
+          task_definition_arn = aws_ecs_task_definition.hello_world.arn
+        }
       }
     ]
   }
@@ -247,4 +259,50 @@ module "step_function" {
       stepfunction = ["*"]
     }
   }
+}
+
+######
+# ECS
+######
+
+module "ecs" {
+  source  = "terraform-aws-modules/ecs/aws"
+  version = "~> 3.0"
+
+  name = random_pet.this.id
+
+  capacity_providers = ["FARGATE", "FARGATE_SPOT"]
+}
+
+resource "aws_ecs_service" "hello_world" {
+  name            = "hello_world-${random_pet.this.id}"
+  cluster         = module.ecs.ecs_cluster_id
+  task_definition = aws_ecs_task_definition.hello_world.arn
+  launch_type     = "EC2"
+
+  desired_count = 1
+
+  deployment_maximum_percent         = 100
+  deployment_minimum_healthy_percent = 0
+}
+
+resource "aws_ecs_task_definition" "hello_world" {
+  family = "hello_world-${random_pet.this.id}"
+
+  container_definitions = <<EOF
+[
+  {
+    "name": "hello_world-${random_pet.this.id}",
+    "image": "hello-world",
+    "cpu": 0,
+    "memory": 128,
+    "logConfiguration": {
+      "logDriver": "awslogs",
+      "options": {
+        "awslogs-region": "eu-west-1"
+      }
+    }
+  }
+]
+EOF
 }
