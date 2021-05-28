@@ -171,14 +171,14 @@ data "aws_iam_policy_document" "ecs" {
     sid       = "ECSAccess"
     effect    = "Allow"
     actions   = ["ecs:RunTask"]
-    resources = var.ecs_target_arns
+    resources = [for arn in var.ecs_target_arns : replace(arn, "/:\\d+$/", ":*")]
   }
 
   statement {
     sid       = "PassRole"
     effect    = "Allow"
     actions   = ["iam:PassRole"]
-    resources = [aws_iam_role.eventbridge[0].arn]
+    resources = ["*"]
   }
 }
 
