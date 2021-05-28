@@ -10,14 +10,17 @@ The following resources are currently supported:
 * [EventBridge Rule](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/cloudwatch_event_rule)
 * [EventBridge Target](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/cloudwatch_event_target)
 
-## Features
+## Supported Features
 
-- [x] Creates AWS EventBridge Resources (bus, rules, targets, permissions)
-- [x] Attach resources to an existing EventBridge bus
-- [x] Support AWS EventBridge Archives and Replays
-- [x] Conditional creation for many types of resources
-- [x] Support IAM policy attachments and various ways to create and attach additional policies
-- [ ] Support monitoring usage with Cloudwatch Metrics
+- Creates AWS EventBridge Resources (bus, rules, targets, permissions)
+- Attach resources to an existing EventBridge bus
+- Support AWS EventBridge Archives and Replays
+- Conditional creation for many types of resources
+- Support IAM policy attachments and various ways to create and attach additional policies
+
+## Feature Roadmap
+
+- Support monitoring usage with Cloudwatch Metrics
 
 ## Usage
 
