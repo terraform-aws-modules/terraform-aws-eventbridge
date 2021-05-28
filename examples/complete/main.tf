@@ -278,7 +278,7 @@ resource "aws_ecs_service" "hello_world" {
   name            = "hello_world-${random_pet.this.id}"
   cluster         = module.ecs.ecs_cluster_id
   task_definition = aws_ecs_task_definition.hello_world.arn
-  launch_type     = "EC2"
+  launch_type     = "FARGATE"
 
   desired_count = 1
 
