@@ -122,6 +122,17 @@ resource "aws_cloudwatch_event_target" "this" {
     }
   }
 
+  dynamic "http_target" {
+    for_each = lookup(each.value, "http_target", null) != null ? [
+      each.value.http_target
+    ] : []
+
+    content {
+      query_string_parameters = http_target.value.query_string_parameters
+      header_parameters       = http_target.value.header_parameters
+    }
+  }
+
   dynamic "input_transformer" {
     for_each = lookup(each.value, "input_transformer", null) != null ? [
       each.value.input_transformer
