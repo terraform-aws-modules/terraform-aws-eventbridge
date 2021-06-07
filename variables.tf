@@ -40,6 +40,18 @@ variable "create_archives" {
   default     = false
 }
 
+variable "create_connections" {
+  description = "Controls whether EventBridge Connection resources should be created"
+  type        = bool
+  default     = false
+}
+
+variable "create_api_destinations" {
+  description = "Controls whether EventBridge Destination resources should be created"
+  type        = bool
+  default     = false
+}
+
 #######################
 
 variable "bus_name" {
@@ -68,6 +80,18 @@ variable "archives" {
 
 variable "permissions" {
   description = "A map of objects with EventBridge Permission definitions."
+  type        = map(any)
+  default     = {}
+}
+
+variable "connections" {
+  description = "A map of objects with EventBridge Connection definitions."
+  type        = map(any)
+  default     = {}
+}
+
+variable "api_destinations" {
+  description = "A map of objects with EventBridge Destination definitions."
   type        = map(any)
   default     = {}
 }

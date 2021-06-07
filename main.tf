@@ -15,6 +15,20 @@ locals {
       })
     ] if length(var.targets) != 0
   ])
+  eventbridge_connections = flatten([
+    for index, conn in var.connections :
+    merge(conn, {
+      "name" = index
+      "Name" = "${replace(index, "_", "-")}-connection"
+    })
+  ])
+  eventbridge_api_destinations = flatten([
+    for index, dest in var.api_destinations :
+    merge(dest, {
+      "name" = index
+      "Name" = "${replace(index, "_", "-")}-destination"
+    })
+  ])
 }
 
 resource "aws_cloudwatch_event_bus" "this" {
@@ -174,4 +188,57 @@ resource "aws_cloudwatch_event_permission" "this" {
 
   action         = lookup(each.value, "action", null)
   event_bus_name = try(each.value["event_bus_name"], aws_cloudwatch_event_bus.this[0].name, null)
+}
+
+resource "aws_cloudwatch_event_connection" "this" {
+  for_each = var.create && var.create_connections ? {
+    for conn in local.eventbridge_connections : conn.name => conn
+  } : {}
+
+  name               = each.value.Name
+  description        = lookup(each.value, "description", null)
+  authorization_type = lookup(each.value, "authorization_type", null)
+
+  dynamic "auth_parameters" {
+    for_each = lookup(each.value, "auth_parameters", null) != null ? [
+      each.value.auth_parameters
+    ] : []
+
+    content {
+      dynamic "api_key" {
+        for_each = lookup(each.value.auth_parameters, "api_key", null) != null ? [
+          each.value.auth_parameters.api_key
+        ] : []
+
+        content {
+          key   = lookup(api_key.value, "key", null)
+          value = lookup(api_key.value, "value", null)
+        }
+      }
+
+      dynamic "basic" {
+        for_each = lookup(each.value.auth_parameters, "basic", null) != null ? [
+          each.value.auth_parameters.basic
+        ] : []
+
+        content {
+          username = lookup(basic.value, "username", null)
+          password = lookup(basic.value, "password", null)
+        }
+      }
+    }
+  }
+}
+
+resource "aws_cloudwatch_event_api_destination" "this" {
+  for_each = var.create && var.create_api_destinations ? {
+    for dest in local.eventbridge_api_destinations : dest.name => dest
+  } : {}
+
+  name                             = each.value.Name
+  description                      = lookup(each.value, "description", null)
+  invocation_endpoint              = lookup(each.value, "invocation_endpoint", null)
+  http_method                      = lookup(each.value, "http_method", null)
+  invocation_rate_limit_per_second = lookup(each.value, "invocation_rate_limit_per_second", null)
+  connection_arn                   = aws_cloudwatch_event_connection.this[each.value.name].arn
 }

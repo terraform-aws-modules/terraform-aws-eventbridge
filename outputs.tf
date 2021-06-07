@@ -21,6 +21,23 @@ output "eventbridge_permission_ids" {
   value       = { for k, v in aws_cloudwatch_event_permission.this : k => v.id }
 }
 
+# EventBridge Connection
+output "eventbridge_connection_ids" {
+  description = "The EventBridge Connection IDs created"
+  value       = { for k, v in aws_cloudwatch_event_connection.this : k => v.id }
+}
+
+output "eventbridge_connection_arns" {
+  description = "The EventBridge Connection Arns created"
+  value       = { for k, v in aws_cloudwatch_event_connection.this : k => v.arn }
+}
+
+# EventBridge Destination
+output "eventbridge_api_destination_arns" {
+  description = "The EventBridge API Destination ARNs created"
+  value       = { for k, v in aws_cloudwatch_event_api_destination.this : k => v.id }
+}
+
 # EventBridge Rule
 output "eventbridge_rule_ids" {
   description = "The EventBridge Rule IDs created"
