@@ -128,8 +128,9 @@ resource "aws_cloudwatch_event_target" "this" {
     ] : []
 
     content {
-      query_string_parameters = http_target.value.query_string_parameters
-      header_parameters       = http_target.value.header_parameters
+      path_parameter_values   = lookup(http_target.value, "path_parameter_values", null)
+      query_string_parameters = lookup(http_target.value, "query_string_parameters", null)
+      header_parameters       = lookup(http_target.value, "header_parameters", null)
     }
   }
 
