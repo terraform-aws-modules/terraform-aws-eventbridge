@@ -7,6 +7,13 @@ All notable changes to this project will be documented in this file.
 
 
 
+<a name="v1.4.0"></a>
+## [v1.4.0] - 2021-06-07
+
+- feat: support http_target argument ([#11](https://github.com/terraform-aws-modules/terraform-aws-eventbridge/issues/11))
+- fix: Fix tomap call for terraform 0.15 ([#10](https://github.com/terraform-aws-modules/terraform-aws-eventbridge/issues/10))
+
+
 <a name="v1.3.0"></a>
 ## [v1.3.0] - 2021-05-28
 
@@ -46,7 +53,8 @@ All notable changes to this project will be documented in this file.
 - first commit
 
 
-[Unreleased]: https://github.com/terraform-aws-modules/terraform-aws-eventbridge/compare/v1.3.0...HEAD
+[Unreleased]: https://github.com/terraform-aws-modules/terraform-aws-eventbridge/compare/v1.4.0...HEAD
+[v1.4.0]: https://github.com/terraform-aws-modules/terraform-aws-eventbridge/compare/v1.3.0...v1.4.0
 [v1.3.0]: https://github.com/terraform-aws-modules/terraform-aws-eventbridge/compare/v1.2.0...v1.3.0
 [v1.2.0]: https://github.com/terraform-aws-modules/terraform-aws-eventbridge/compare/v1.1.0...v1.2.0
 [v1.1.0]: https://github.com/terraform-aws-modules/terraform-aws-eventbridge/compare/v1.0.0...v1.1.0
