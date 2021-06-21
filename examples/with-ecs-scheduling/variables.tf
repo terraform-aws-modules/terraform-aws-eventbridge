@@ -1,11 +1,14 @@
 variable "ecs_cluster" {
-  type = string
+  description = "An ECS cluster ARN to launch tasks in."
+  type        = string
 }
 
 variable "public_subnets" {
-  type = list(string)
+  description = "public subnets the task should run in."
+  type        = list(string)
 }
 
 variable "vpc_security_groups" {
-  type = list(string)
+  description = "vpc security groups the task should run in."
+  type        = list(string)
 }

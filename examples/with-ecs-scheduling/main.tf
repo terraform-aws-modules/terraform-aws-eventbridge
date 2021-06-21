@@ -15,8 +15,6 @@ module "eventbridge" {
   # Schedules can only be created on default bus
   create_bus = false
 
-  attach_tracing_policy = true
-
   create_role       = true
   attach_ecs_policy = true
   ecs_target_arns   = [aws_ecs_task_definition.hello_world.arn]
@@ -32,7 +30,7 @@ module "eventbridge" {
   targets = {
     orders = [
       {
-        name            = k
+        name            = "orders"
         arn             = var.ecs_cluster,
         attach_role_arn = true
 
@@ -89,3 +87,12 @@ resource "aws_ecs_task_definition" "hello_world" {
     }
   ])
 }
+
+##################
+# Extra resources
+##################
+
+resource "random_pet" "this" {
+  length = 2
+}
+
