@@ -16,6 +16,7 @@ module "eventbridge" {
   create_bus = false
 
   create_role       = true
+  role_name         = "ecs-eventbridge-${random_pet.this.id}"
   attach_ecs_policy = true
   ecs_target_arns   = [aws_ecs_task_definition.hello_world.arn]
 
