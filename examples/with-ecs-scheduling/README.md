@@ -1,6 +1,8 @@
 # EventBridge ECS & Scheduled Events Example
 
-Configuration in this directory creates EventBridge resource configuration including an SQS queue, Kinesis stream, and DynamoDB table.
+Configuration in this directory creates EventBridge resource configuration including an ECS service.
+
+This requires you to have setup an ECS cluster and VPC and passed them in via variables.
 
 ## Usage
 
