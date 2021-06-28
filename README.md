@@ -245,7 +245,7 @@ module "eventbridge" {
 
 | Name | Version |
 |------|---------|
-| <a name="provider_aws"></a> [aws](#provider\_aws) | 3.46.0 |
+| <a name="provider_aws"></a> [aws](#provider\_aws) | >= 3.40 |
 
 ## Modules
 
