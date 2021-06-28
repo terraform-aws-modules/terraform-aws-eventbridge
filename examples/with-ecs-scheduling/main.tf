@@ -20,6 +20,7 @@ module "eventbridge" {
   attach_ecs_policy = true
   ecs_target_arns   = [aws_ecs_task_definition.hello_world.arn]
 
+  # Fire every five minutes
   rules = {
     orders = {
       description         = "Cron for Orders"
@@ -28,6 +29,7 @@ module "eventbridge" {
     }
   }
 
+  # Send to a fargate ECS cluster
   targets = {
     orders = [
       {
