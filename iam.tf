@@ -137,7 +137,7 @@ data "aws_iam_policy_document" "sqs" {
     sid    = "SQSAccess"
     effect = "Allow"
     actions = [
-      "sqs:sendMessage*",
+      "sqs:SendMessage*",
       "kms:Decrypt",
       "kms:GenerateDataKey"
     ]
