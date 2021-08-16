@@ -7,6 +7,18 @@ All notable changes to this project will be documented in this file.
 
 
 
+<a name="v1.7.0"></a>
+## [v1.7.0] - 2021-08-13
+
+- fix: update sqs access policy ([#16](https://github.com/terraform-aws-modules/terraform-aws-eventbridge/issues/16))
+
+
+<a name="v1.6.0"></a>
+## [v1.6.0] - 2021-08-13
+
+- fix: `create_rules = false` causes error ([#19](https://github.com/terraform-aws-modules/terraform-aws-eventbridge/issues/19))
+
+
 <a name="v1.5.0"></a>
 ## [v1.5.0] - 2021-06-28
 
@@ -59,7 +71,9 @@ All notable changes to this project will be documented in this file.
 - first commit
 
 
-[Unreleased]: https://github.com/terraform-aws-modules/terraform-aws-eventbridge/compare/v1.5.0...HEAD
+[Unreleased]: https://github.com/terraform-aws-modules/terraform-aws-eventbridge/compare/v1.7.0...HEAD
+[v1.7.0]: https://github.com/terraform-aws-modules/terraform-aws-eventbridge/compare/v1.6.0...v1.7.0
+[v1.6.0]: https://github.com/terraform-aws-modules/terraform-aws-eventbridge/compare/v1.5.0...v1.6.0
 [v1.5.0]: https://github.com/terraform-aws-modules/terraform-aws-eventbridge/compare/v1.4.0...v1.5.0
 [v1.4.0]: https://github.com/terraform-aws-modules/terraform-aws-eventbridge/compare/v1.3.0...v1.4.0
 [v1.3.0]: https://github.com/terraform-aws-modules/terraform-aws-eventbridge/compare/v1.2.0...v1.3.0
