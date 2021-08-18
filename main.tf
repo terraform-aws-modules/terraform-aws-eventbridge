@@ -32,7 +32,7 @@ resource "aws_cloudwatch_event_rule" "this" {
   name        = each.value.Name
   name_prefix = lookup(each.value, "name_prefix", null)
 
-  event_bus_name = var.create_bus ? aws_cloudwatch_event_bus.this[0].name : "default"
+  event_bus_name = var.create_bus ? aws_cloudwatch_event_bus.this[0].name : var.bus_name
 
   description         = lookup(each.value, "description", null)
   is_enabled          = lookup(each.value, "enabled", true)
@@ -50,7 +50,7 @@ resource "aws_cloudwatch_event_target" "this" {
     for target in local.eventbridge_targets : target.name => target
   } : {}
 
-  event_bus_name = var.create_bus ? aws_cloudwatch_event_bus.this[0].name : "default"
+  event_bus_name = var.create_bus ? aws_cloudwatch_event_bus.this[0].name : var.bus_name
 
   rule = each.value.Name
   arn  = each.value.arn
@@ -185,5 +185,5 @@ resource "aws_cloudwatch_event_permission" "this" {
   statement_id = compact(split(" ", each.key))[1]
 
   action         = lookup(each.value, "action", null)
-  event_bus_name = try(each.value["event_bus_name"], aws_cloudwatch_event_bus.this[0].name, null)
+  event_bus_name = try(each.value["event_bus_name"], aws_cloudwatch_event_bus.this[0].name, var.bus_name, null)
 }
