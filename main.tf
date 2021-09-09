@@ -48,7 +48,7 @@ resource "aws_cloudwatch_event_rule" "this" {
 resource "aws_cloudwatch_event_target" "this" {
   for_each = var.create && var.create_targets ? {
     for target in local.eventbridge_targets : target.name => target
-  } : {}
+  } : to_map({})
 
   event_bus_name = var.create_bus ? aws_cloudwatch_event_bus.this[0].name : var.bus_name
 
