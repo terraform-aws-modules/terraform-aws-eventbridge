@@ -2,8 +2,6 @@
 
 Configuration in this directory creates EventBridge resource configuration including an ECS service.
 
-This requires you to have setup an ECS cluster and VPC and passed them in via variables.
-
 ## Usage
 
 To run this example you need to execute:
