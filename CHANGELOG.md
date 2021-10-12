@@ -7,6 +7,24 @@ All notable changes to this project will be documented in this file.
 
 
 
+<a name="v1.10.0"></a>
+## [v1.10.0] - 2021-09-21
+
+- fix: Amend ecs_target network_configuration to work when no ecs_target supplied ([#25](https://github.com/terraform-aws-modules/terraform-aws-eventbridge/issues/25))
+
+
+<a name="v1.9.0"></a>
+## [v1.9.0] - 2021-09-09
+
+- fix: Add explicit to_map for empty object for aws_cloudwatch_event_target ([#24](https://github.com/terraform-aws-modules/terraform-aws-eventbridge/issues/24))
+
+
+<a name="v1.8.0"></a>
+## [v1.8.0] - 2021-08-18
+
+- feat: Support for existing event buses ([#22](https://github.com/terraform-aws-modules/terraform-aws-eventbridge/issues/22))
+
+
 <a name="v1.7.0"></a>
 ## [v1.7.0] - 2021-08-13
 
@@ -71,7 +89,10 @@ All notable changes to this project will be documented in this file.
 - first commit
 
 
-[Unreleased]: https://github.com/terraform-aws-modules/terraform-aws-eventbridge/compare/v1.7.0...HEAD
+[Unreleased]: https://github.com/terraform-aws-modules/terraform-aws-eventbridge/compare/v1.10.0...HEAD
+[v1.10.0]: https://github.com/terraform-aws-modules/terraform-aws-eventbridge/compare/v1.9.0...v1.10.0
+[v1.9.0]: https://github.com/terraform-aws-modules/terraform-aws-eventbridge/compare/v1.8.0...v1.9.0
+[v1.8.0]: https://github.com/terraform-aws-modules/terraform-aws-eventbridge/compare/v1.7.0...v1.8.0
 [v1.7.0]: https://github.com/terraform-aws-modules/terraform-aws-eventbridge/compare/v1.6.0...v1.7.0
 [v1.6.0]: https://github.com/terraform-aws-modules/terraform-aws-eventbridge/compare/v1.5.0...v1.6.0
 [v1.5.0]: https://github.com/terraform-aws-modules/terraform-aws-eventbridge/compare/v1.4.0...v1.5.0
