@@ -9,6 +9,25 @@ provider "aws" {
   skip_requesting_account_id  = true
 }
 
+#############################################################
+# Data sources to get VPC and default security group details
+#############################################################
+data "aws_vpc" "default" {
+  default = true
+}
+
+data "aws_security_group" "default" {
+  name   = "default"
+  vpc_id = data.aws_vpc.default.id
+}
+
+data "aws_subnet_ids" "default" {
+  vpc_id = data.aws_vpc.default.id
+}
+
+####################
+# Actual Eventbridge
+####################
 module "eventbridge" {
   source = "../../"
 
@@ -34,7 +53,7 @@ module "eventbridge" {
     orders = [
       {
         name            = "orders"
-        arn             = var.ecs_cluster,
+        arn             = module.ecs.ecs_cluster_arn
         attach_role_arn = true
 
         ecs_target = {
@@ -44,8 +63,8 @@ module "eventbridge" {
 
           network_configuration = {
             assign_public_ip = true
-            subnets          = var.public_subnets
-            security_groups  = var.vpc_security_groups
+            subnets          = data.aws_subnet_ids.default
+            security_groups  = data.aws_security_group.default
           }
         }
       }
