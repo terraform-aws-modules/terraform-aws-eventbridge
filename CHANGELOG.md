@@ -7,6 +7,12 @@ All notable changes to this project will be documented in this file.
 
 
 
+<a name="v1.11.0"></a>
+## [v1.11.0] - 2021-10-12
+
+- feat: Add example for ECS + scheduled events ([#14](https://github.com/terraform-aws-modules/terraform-aws-eventbridge/issues/14))
+
+
 <a name="v1.10.0"></a>
 ## [v1.10.0] - 2021-09-21
 
@@ -89,7 +95,8 @@ All notable changes to this project will be documented in this file.
 - first commit
 
 
-[Unreleased]: https://github.com/terraform-aws-modules/terraform-aws-eventbridge/compare/v1.10.0...HEAD
+[Unreleased]: https://github.com/terraform-aws-modules/terraform-aws-eventbridge/compare/v1.11.0...HEAD
+[v1.11.0]: https://github.com/terraform-aws-modules/terraform-aws-eventbridge/compare/v1.10.0...v1.11.0
 [v1.10.0]: https://github.com/terraform-aws-modules/terraform-aws-eventbridge/compare/v1.9.0...v1.10.0
 [v1.9.0]: https://github.com/terraform-aws-modules/terraform-aws-eventbridge/compare/v1.8.0...v1.9.0
 [v1.8.0]: https://github.com/terraform-aws-modules/terraform-aws-eventbridge/compare/v1.7.0...v1.8.0
