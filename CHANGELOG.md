@@ -7,6 +7,12 @@ All notable changes to this project will be documented in this file.
 
 
 
+<a name="v1.12.0"></a>
+## [v1.12.0] - 2021-10-26
+
+- fix: Fixed function name from to_map to tomap ([#26](https://github.com/terraform-aws-modules/terraform-aws-eventbridge/issues/26))
+
+
 <a name="v1.11.0"></a>
 ## [v1.11.0] - 2021-10-12
 
@@ -95,7 +101,8 @@ All notable changes to this project will be documented in this file.
 - first commit
 
 
-[Unreleased]: https://github.com/terraform-aws-modules/terraform-aws-eventbridge/compare/v1.11.0...HEAD
+[Unreleased]: https://github.com/terraform-aws-modules/terraform-aws-eventbridge/compare/v1.12.0...HEAD
+[v1.12.0]: https://github.com/terraform-aws-modules/terraform-aws-eventbridge/compare/v1.11.0...v1.12.0
 [v1.11.0]: https://github.com/terraform-aws-modules/terraform-aws-eventbridge/compare/v1.10.0...v1.11.0
 [v1.10.0]: https://github.com/terraform-aws-modules/terraform-aws-eventbridge/compare/v1.9.0...v1.10.0
 [v1.9.0]: https://github.com/terraform-aws-modules/terraform-aws-eventbridge/compare/v1.8.0...v1.9.0
