@@ -42,47 +42,17 @@ module "eventbridge" {
   api_destinations = {
     "requestbin" = {
       description                      = "my requestbin endpoint"
-      invocation_endpoint              = "https://api.destination.com/endpoint"
+      invocation_endpoint              = "https://pipedream.com/@svenlito/test-rb-1-p_rvCQGl1"
       http_method                      = "POST"
       invocation_rate_limit_per_second = 20
     }
     "github" = {
       description                      = "my github endpoint"
-      invocation_endpoint              = "https://api.destination.com/endpoint"
+      invocation_endpoint              = "https://pipedream.com/@svenlito/test-rb-2-p_D1Cjq6x"
       http_method                      = "POST"
       invocation_rate_limit_per_second = 20
     }
   }
-}
-
-module "eventbridge_connection_only" {
-  source = "../../"
-
-  create_bus         = false
-  create_connections = true
-
-  connections = {
-    "requestbin" = {
-      authorization_type = "BASIC"
-      auth_parameters = {
-        basic = {
-          username = random_pet.this.id
-          password = random_pet.this.id
-        }
-      }
-    }
-    "github" = {
-      authorization_type = "API_KEY"
-      auth_parameters = {
-        api_key = {
-          key   = "x-signature-id"
-          value = random_pet.this.id
-        }
-      }
-    }
-  }
-
-  depends_on = [aws_cloudwatch_event_bus.existing_bus]
 }
 
 ##################

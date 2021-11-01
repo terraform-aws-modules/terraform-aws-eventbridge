@@ -27,15 +27,14 @@ Note that this example may create resources which cost money. Run `terraform des
 
 | Name | Version |
 |------|---------|
-| <a name="provider_aws"></a> [aws](#provider\_aws) | >= 3.44 |
-| <a name="provider_random"></a> [random](#provider\_random) | >= 3 |
+| <a name="provider_aws"></a> [aws](#provider\_aws) | 3.63.0 |
+| <a name="provider_random"></a> [random](#provider\_random) | 3.1.0 |
 
 ## Modules
 
 | Name | Source | Version |
 |------|--------|---------|
-| <a name="module_eventbridge"></a> [eventbridge](#module\_eventbridge) | ../../ |  |
-| <a name="module_eventbridge_connection_only"></a> [eventbridge\_connection\_only](#module\_eventbridge\_connection\_only) | ../../ |  |
+| <a name="module_eventbridge"></a> [eventbridge](#module\_eventbridge) | ../../ | n/a |
 
 ## Resources
 
