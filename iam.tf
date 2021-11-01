@@ -1,5 +1,5 @@
 locals {
-  create_role = var.create && var.create_bus && var.create_role
+  create_role = var.create && var.create_role
 
   # Defaulting to "*" (an invalid character for an IAM Role name) will cause an error when
   # attempting to plan if the role_name and bus_name are not set. This is a workaround
@@ -137,7 +137,7 @@ data "aws_iam_policy_document" "sqs" {
     sid    = "SQSAccess"
     effect = "Allow"
     actions = [
-      "sqs:sendMessage*",
+      "sqs:SendMessage*",
       "kms:Decrypt",
       "kms:GenerateDataKey"
     ]

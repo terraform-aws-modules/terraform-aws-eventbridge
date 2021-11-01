@@ -231,6 +231,7 @@ module "eventbridge" {
 * [Using Default Bus](https://github.com/terraform-aws-modules/terraform-aws-eventbridge/tree/master/examples/default-bus) - Creates resources in the `default` bus.
 * [Archive](https://github.com/terraform-aws-modules/terraform-aws-eventbridge/tree/master/examples/with-archive) - EventBridge Archives resources in various configurations.
 * [Permissions](https://github.com/terraform-aws-modules/terraform-aws-eventbridge/tree/master/examples/with-permissions) - Controls permissions to EventBridge.
+* [ECS Scheduled Events](https://github.com/terraform-aws-modules/terraform-aws-eventbridge/tree/master/examples/with-ecs-scheduling) - Use default bus to schedule events on ECS.
 
 
 <!-- BEGINNING OF PRE-COMMIT-TERRAFORM DOCS HOOK -->
@@ -239,13 +240,13 @@ module "eventbridge" {
 | Name | Version |
 |------|---------|
 | <a name="requirement_terraform"></a> [terraform](#requirement\_terraform) | >= 0.13.1 |
-| <a name="requirement_aws"></a> [aws](#requirement\_aws) | >= 3.43 |
+| <a name="requirement_aws"></a> [aws](#requirement\_aws) | >= 3.40 |
 
 ## Providers
 
 | Name | Version |
 |------|---------|
-| <a name="provider_aws"></a> [aws](#provider\_aws) | >= 3.43 |
+| <a name="provider_aws"></a> [aws](#provider\_aws) | 3.51.0 |
 
 ## Modules
 
@@ -326,7 +327,7 @@ No modules.
 | <a name="input_create_bus"></a> [create\_bus](#input\_create\_bus) | Controls whether EventBridge Bus resource should be created | `bool` | `true` | no |
 | <a name="input_create_connections"></a> [create\_connections](#input\_create\_connections) | Controls whether EventBridge Connection resources should be created | `bool` | `false` | no |
 | <a name="input_create_permissions"></a> [create\_permissions](#input\_create\_permissions) | Controls whether EventBridge Permission resources should be created | `bool` | `true` | no |
-| <a name="input_create_role"></a> [create\_role](#input\_create\_role) | Controls whether IAM role for Lambda Function should be created | `bool` | `true` | no |
+| <a name="input_create_role"></a> [create\_role](#input\_create\_role) | Controls whether IAM roles should be created | `bool` | `true` | no |
 | <a name="input_create_rules"></a> [create\_rules](#input\_create\_rules) | Controls whether EventBridge Rule resources should be created | `bool` | `true` | no |
 | <a name="input_create_targets"></a> [create\_targets](#input\_create\_targets) | Controls whether EventBridge Target resources should be created | `bool` | `true` | no |
 | <a name="input_ecs_target_arns"></a> [ecs\_target\_arns](#input\_ecs\_target\_arns) | The Amazon Resource Name (ARN) of the AWS ECS Tasks you want to use as EventBridge targets | `list(string)` | `[]` | no |

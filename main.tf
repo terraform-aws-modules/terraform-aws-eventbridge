@@ -46,7 +46,7 @@ resource "aws_cloudwatch_event_rule" "this" {
   name        = each.value.Name
   name_prefix = lookup(each.value, "name_prefix", null)
 
-  event_bus_name = var.create_bus ? aws_cloudwatch_event_bus.this[0].name : "default"
+  event_bus_name = var.create_bus ? aws_cloudwatch_event_bus.this[0].name : var.bus_name
 
   description         = lookup(each.value, "description", null)
   is_enabled          = lookup(each.value, "enabled", true)
@@ -62,9 +62,9 @@ resource "aws_cloudwatch_event_rule" "this" {
 resource "aws_cloudwatch_event_target" "this" {
   for_each = var.create && var.create_targets ? {
     for target in local.eventbridge_targets : target.name => target
-  } : {}
+  } : tomap({})
 
-  event_bus_name = var.create_bus ? aws_cloudwatch_event_bus.this[0].name : "default"
+  event_bus_name = var.create_bus ? aws_cloudwatch_event_bus.this[0].name : var.bus_name
 
   rule = each.value.Name
   arn  = each.value.arn
@@ -96,8 +96,8 @@ resource "aws_cloudwatch_event_target" "this" {
       task_definition_arn = lookup(ecs_target.value, "task_definition_arn", null)
 
       dynamic "network_configuration" {
-        for_each = lookup(each.value.ecs_target, "network_configuration", null) != null ? [
-          each.value.ecs_target.network_configuration
+        for_each = lookup(ecs_target.value, "network_configuration", null) != null ? [
+          ecs_target.value.network_configuration
         ] : []
 
         content {
@@ -133,6 +133,18 @@ resource "aws_cloudwatch_event_target" "this" {
 
     content {
       message_group_id = each.value.message_group_id
+    }
+  }
+
+  dynamic "http_target" {
+    for_each = lookup(each.value, "http_target", null) != null ? [
+      each.value.http_target
+    ] : []
+
+    content {
+      path_parameter_values   = lookup(http_target.value, "path_parameter_values", null)
+      query_string_parameters = lookup(http_target.value, "query_string_parameters", null)
+      header_parameters       = lookup(http_target.value, "header_parameters", null)
     }
   }
 
@@ -187,7 +199,7 @@ resource "aws_cloudwatch_event_permission" "this" {
   statement_id = compact(split(" ", each.key))[1]
 
   action         = lookup(each.value, "action", null)
-  event_bus_name = try(each.value["event_bus_name"], aws_cloudwatch_event_bus.this[0].name, null)
+  event_bus_name = try(each.value["event_bus_name"], aws_cloudwatch_event_bus.this[0].name, var.bus_name, null)
 }
 
 resource "aws_cloudwatch_event_connection" "this" {
