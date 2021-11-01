@@ -1,6 +1,6 @@
 # EventBridge API Destination Example
 
-Configuration in this directory creates resources to control access to EventBridge.
+Configuration in this directory creates resources to control access to EventBridge using API destinations.
 
 ## Usage
 
