@@ -4,15 +4,16 @@ Terraform module to create EventBridge resources.
 
 The following resources are currently supported:
 
+* [EventBridge API Destination](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/cloudwatch_event_api_destination)
 * [EventBridge Archive](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/cloudwatch_event_archive)
 * [EventBridge Bus](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/cloudwatch_event_bus)
+* [EventBridge Connection](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/cloudwatch_event_connection)
 * [EventBridge Permission](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/cloudwatch_event_permission)
 * [EventBridge Rule](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/cloudwatch_event_rule)
 * [EventBridge Target](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/cloudwatch_event_target)
-
 ## Supported Features
 
-- Creates AWS EventBridge Resources (bus, rules, targets, permissions)
+- Creates AWS EventBridge Resources (bus, rules, targets, permissions, connections, destinations)
 - Attach resources to an existing EventBridge bus
 - Support AWS EventBridge Archives and Replays
 - Conditional creation for many types of resources
@@ -21,6 +22,7 @@ The following resources are currently supported:
 ## Feature Roadmap
 
 - Support monitoring usage with Cloudwatch Metrics
+- Support `invocation_http_parameters` for Connections
 
 ## Usage
 
@@ -61,7 +63,7 @@ module "eventbridge" {
       }
     ]
   }
-  
+
   tags = {
     Name = "my-bus"
   }
@@ -82,7 +84,7 @@ module "eventbridge" {
 }
 ```
 
-### EventBridge Rule 
+### EventBridge Rule
 
 ```hcl
 module "eventbridge" {
@@ -91,7 +93,7 @@ module "eventbridge" {
   bus_name = "my-bus"
 
   create_targets = false
-  
+
   rules = {
     logs = {
       description   = "Capture log data"
@@ -108,14 +110,14 @@ module "eventbridge" {
   source = "terraform-aws-modules/eventbridge/aws"
 
   bus_name = "my-bus"
-  
+
   rules = {
     logs = {
       description   = "Capture log data"
       event_pattern = jsonencode({ "source" : ["my.app.logs"] })
     }
   }
-  
+
   targets = {
     logs = [
       {
@@ -138,7 +140,7 @@ module "eventbridge_with_archive" {
   source = "terraform-aws-modules/eventbridge/aws"
 
   bus_name = "my-bus"
-  
+
   create_archives = true
 
   archives = {
@@ -160,7 +162,7 @@ module "eventbridge_with_archive" {
 }
 ```
 
-### EventBridge Permission 
+### EventBridge Permission
 
 ```hcl
 module "eventbridge_with_permissions" {
