@@ -27,20 +27,18 @@ Note that this example may create resources which cost money. Run `terraform des
 
 | Name | Version |
 |------|---------|
-| <a name="provider_aws"></a> [aws](#provider\_aws) | 3.63.0 |
-| <a name="provider_random"></a> [random](#provider\_random) | 3.1.0 |
+| <a name="provider_random"></a> [random](#provider\_random) | >= 3 |
 
 ## Modules
 
 | Name | Source | Version |
 |------|--------|---------|
-| <a name="module_eventbridge"></a> [eventbridge](#module\_eventbridge) | ../../ | n/a |
+| <a name="module_eventbridge"></a> [eventbridge](#module\_eventbridge) | ../../ |  |
 
 ## Resources
 
 | Name | Type |
 |------|------|
-| [aws_cloudwatch_event_bus.existing_bus](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/cloudwatch_event_bus) | resource |
 | [random_pet.this](https://registry.terraform.io/providers/hashicorp/random/latest/docs/resources/pet) | resource |
 
 ## Inputs

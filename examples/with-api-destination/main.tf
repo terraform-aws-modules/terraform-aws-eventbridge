@@ -42,13 +42,13 @@ module "eventbridge" {
   api_destinations = {
     "requestbin" = {
       description                      = "my requestbin endpoint"
-      invocation_endpoint              = "https://pipedream.com/@svenlito/test-rb-1-p_rvCQGl1"
+      invocation_endpoint              = "https://smee.io/hgoubGoIbWEKt331"
       http_method                      = "POST"
       invocation_rate_limit_per_second = 20
     }
     "github" = {
       description                      = "my github endpoint"
-      invocation_endpoint              = "https://pipedream.com/@svenlito/test-rb-2-p_D1Cjq6x"
+      invocation_endpoint              = "https://smee.io/hgoubGoIbWEKt331"
       http_method                      = "POST"
       invocation_rate_limit_per_second = 20
     }
@@ -61,8 +61,4 @@ module "eventbridge" {
 
 resource "random_pet" "this" {
   length = 2
-}
-
-resource "aws_cloudwatch_event_bus" "existing_bus" {
-  name = "${random_pet.this.id}-existing-bus"
 }
