@@ -67,7 +67,7 @@ resource "aws_cloudwatch_event_target" "this" {
   event_bus_name = var.create_bus ? aws_cloudwatch_event_bus.this[0].name : var.bus_name
 
   rule = each.value.Name
-  arn  = each.value.arn
+  arn  = lookup(each.value, "destination", null) != null ? aws_cloudwatch_event_api_destination.this[each.value.destination].arn : each.value.arn
 
   role_arn   = lookup(each.value, "attach_role_arn", null) != null ? try(aws_iam_role.eventbridge[0].arn, "") : null
   target_id  = lookup(each.value, "target_id", null)

@@ -18,6 +18,31 @@ module "eventbridge" {
 
   bus_name = "${random_pet.this.id}-bus"
 
+  attach_api_destination_policy = true
+
+  rules = {
+    orders = {
+      description   = "Capture all order data"
+      event_pattern = jsonencode({ "source" : ["myapp.orders"] })
+      enabled       = true
+    }
+  }
+
+  targets = {
+    orders = [
+      {
+        name            = "send-orders-to-requestbin"
+        destination     = "requestbin"
+        attach_role_arn = true
+      },
+      {
+        name            = "send-orders-to-github"
+        destination     = "github"
+        attach_role_arn = true
+      }
+    ]
+  }
+
   connections = {
     "requestbin" = {
       authorization_type = "BASIC"

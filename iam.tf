@@ -257,6 +257,36 @@ resource "aws_iam_policy_attachment" "sfn" {
   policy_arn = aws_iam_policy.sfn[0].arn
 }
 
+#########################
+# API Destination Config
+#########################
+
+data "aws_iam_policy_document" "api_destination" {
+  count = local.create_role && var.attach_api_destination_policy ? 1 : 0
+
+  statement {
+    sid       = "APIDestinationAccess"
+    effect    = "Allow"
+    actions   = ["events:InvokeApiDestination"]
+    resources = [for k, v in aws_cloudwatch_event_api_destination.this : v.arn]
+  }
+}
+
+resource "aws_iam_policy" "api_destination" {
+  count = local.create_role && var.attach_api_destination_policy ? 1 : 0
+
+  name   = "${local.role_name}-api-destination"
+  policy = data.aws_iam_policy_document.api_destination[0].json
+}
+
+resource "aws_iam_policy_attachment" "api_destination" {
+  count = local.create_role && var.attach_api_destination_policy ? 1 : 0
+
+  name       = "${local.role_name}-api-destination"
+  roles      = [aws_iam_role.eventbridge[0].name]
+  policy_arn = aws_iam_policy.api_destination[0].arn
+}
+
 ####################
 # Cloudwatch Config
 ####################

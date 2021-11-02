@@ -188,6 +188,12 @@ variable "attach_cloudwatch_policy" {
   default     = false
 }
 
+variable "attach_api_destination_policy" {
+  description = "Controls whether the API Destination policy should be added to IAM role for EventBridge Target"
+  type        = bool
+  default     = false
+}
+
 variable "attach_tracing_policy" {
   description = "Controls whether X-Ray tracing policy should be added to IAM role for EventBridge"
   type        = bool
