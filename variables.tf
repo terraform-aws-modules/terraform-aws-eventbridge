@@ -86,7 +86,7 @@ variable "permissions" {
 
 variable "connections" {
   description = "A map of objects with EventBridge Connection definitions."
-  type        = map(any)
+  type        = any
   default     = {}
 }
 

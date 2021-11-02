@@ -205,7 +205,7 @@ resource "aws_cloudwatch_event_permission" "this" {
 resource "aws_cloudwatch_event_connection" "this" {
   for_each = var.create && var.create_connections ? {
     for conn in local.eventbridge_connections : conn.name => conn
-  } : {}
+  } : tomap({})
 
   name               = each.value.Name
   description        = lookup(each.value, "description", null)
@@ -236,6 +236,116 @@ resource "aws_cloudwatch_event_connection" "this" {
         content {
           username = lookup(basic.value, "username", null)
           password = lookup(basic.value, "password", null)
+        }
+      }
+
+      dynamic "oauth" {
+        for_each = lookup(each.value.auth_parameters, "oauth", null) != null ? [
+          each.value.auth_parameters.oauth
+        ] : []
+
+        content {
+          authorization_endpoint = lookup(oauth.value, "authorization_endpoint", null)
+          http_method            = lookup(oauth.value, "http_method", null)
+
+          dynamic "client_parameters" {
+            for_each = lookup(each.value.auth_parameters.oauth, "client_parameters", null) != null ? [
+              each.value.auth_parameters.oauth.client_parameters
+            ] : []
+
+            content {
+              client_id     = client_parameters.value.client_id
+              client_secret = client_parameters.value.client_secret
+            }
+          }
+
+          dynamic "oauth_http_parameters" {
+            for_each = lookup(each.value.auth_parameters.oauth, "oauth_http_parameters", null) != null ? [
+              each.value.auth_parameters.oauth.oauth_http_parameters
+            ] : []
+
+            content {
+              dynamic "body" {
+                for_each = lookup(each.value.auth_parameters.oauth.oauth_http_parameters, "body", null) != null ? [
+                  each.value.auth_parameters.oauth.oauth_http_parameters.body
+                ] : []
+
+                content {
+                  key             = lookup(body.value, "key", null)
+                  value           = lookup(body.value, "value", null)
+                  is_value_secret = lookup(body.value, "is_secret_value", null)
+                }
+              }
+
+              dynamic "header" {
+                for_each = lookup(each.value.auth_parameters.oauth.oauth_http_parameters, "header", null) != null ? [
+                  each.value.auth_parameters.oauth.oauth_http_parameters.header
+                ] : []
+
+                content {
+                  key             = lookup(header.value, "key", null)
+                  value           = lookup(header.value, "value", null)
+                  is_value_secret = lookup(header.value, "is_secret_value", null)
+                }
+              }
+
+              dynamic "query_string" {
+                for_each = lookup(each.value.auth_parameters.oauth.oauth_http_parameters, "query_string", null) != null ? [
+                  each.value.auth_parameters.oauth.oauth_http_parameters.query_string
+                ] : []
+
+                content {
+                  key             = lookup(query_string.value, "key", null)
+                  value           = lookup(query_string.value, "value", null)
+                  is_value_secret = lookup(query_string.value, "is_secret_value", null)
+                }
+              }
+            }
+          }
+        }
+      }
+
+      dynamic "invocation_http_parameters" {
+        for_each = lookup(each.value.auth_parameters, "invocation_http_parameters", null) != null ? [
+          each.value.auth_parameters.invocation_http_parameters
+        ] : []
+
+        content {
+          dynamic "body" {
+            for_each = lookup(each.value.auth_parameters.invocation_http_parameters, "body", null) != null ? [
+              each.value.auth_parameters.invocation_http_parameters.body
+            ] : []
+
+            content {
+              key             = lookup(body.value, "key", null)
+              value           = lookup(body.value, "value", null)
+              is_value_secret = lookup(body.value, "is_secret_value", null)
+            }
+          }
+
+          dynamic "header" {
+            for_each = lookup(each.value.auth_parameters.invocation_http_parameters, "header", null) != null ? [
+              each.value.auth_parameters.invocation_http_parameters.header
+            ] : []
+
+            content {
+              key             = lookup(header.value, "key", null)
+              value           = lookup(header.value, "value", null)
+              is_value_secret = lookup(header.value, "is_secret_value", null)
+            }
+          }
+
+          dynamic "query_string" {
+            for_each = lookup(each.value.auth_parameters.invocation_http_parameters, "query_string", null) != null ? [
+              each.value.auth_parameters.invocation_http_parameters.query_string
+            ] : []
+
+            content {
+              key             = lookup(query_string.value, "key", null)
+              value           = lookup(query_string.value, "value", null)
+              is_value_secret = lookup(query_string.value, "is_secret_value", null)
+            }
+          }
         }
       }
     }

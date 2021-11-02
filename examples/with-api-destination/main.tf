@@ -47,9 +47,64 @@ module "eventbridge" {
     "requestbin" = {
       authorization_type = "BASIC"
       auth_parameters = {
+
         basic = {
           username = random_pet.this.id
           password = random_pet.this.id
+        }
+
+        invocation_http_parameters = {
+          body = {
+            key             = "body-parameter-key"
+            value           = "body-parameter-value"
+            is_value_secret = "false"
+          }
+
+          header = {
+            key             = "header-parameter-key"
+            value           = "header-parameter-value"
+            is_value_secret = "false"
+          }
+
+          query_string = {
+            key             = "query-string-parameter-key"
+            value           = "query-string-parameter-value"
+            is_value_secret = "false"
+          }
+        }
+      }
+    }
+    "smee" = {
+      authorization_type = "OAUTH_CLIENT_CREDENTIALS"
+      auth_parameters = {
+        oauth = {
+          authorization_endpoint = "https://smee.io/hgoubgoibwekt331"
+          http_method            = "GET"
+
+          client_parameters = {
+            client_id     = "1234567890"
+            client_secret = "Pass1234!"
+          }
+
+          oauth_http_parameters = {
+            body = {
+              key             = "body-parameter-key"
+              value           = "body-parameter-value"
+              is_value_secret = "false"
+            }
+
+            header = {
+              key             = "header-parameter-key"
+              value           = "header-parameter-value"
+              is_value_secret = "false"
+            }
+
+            query_string = {
+              key             = "query-string-parameter-key"
+              value           = "query-string-parameter-value"
+              is_value_secret = "false"
+            }
+          }
         }
       }
     }
@@ -65,6 +120,12 @@ module "eventbridge" {
   }
 
   api_destinations = {
+    "smee" = {
+      description                      = "my smee endpoint"
+      invocation_endpoint              = "https://smee.io/hgoubgoibwekt331"
+      http_method                      = "POST"
+      invocation_rate_limit_per_second = 200
+    }
     "requestbin" = {
       description                      = "my requestbin endpoint"
       invocation_endpoint              = "https://smee.io/hgoubGoIbWEKt331"
