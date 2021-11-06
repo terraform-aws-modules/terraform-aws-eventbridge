@@ -182,6 +182,34 @@ module "eventbridge_with_permissions" {
 }
 ```
 
+### EventBridge Rule Schedule
+
+```hcl
+module "eventbridge" {
+  source = "terraform-aws-modules/eventbridge/aws"
+
+  # Schedules can only be created on default bus
+  create_bus = false
+
+  rules = {
+    orders = {
+      description = "Trigger for a Lambda"
+      schedule_expression = "rate(5 minutes)"
+    }
+  }
+
+  targets = {
+    orders = [
+      {
+        name = "Lambda Serverless Job"
+        arn  = function.lambda.arn
+      }
+    ]
+  }
+}
+```
+
+
 ## Additional IAM policies for Step Function
 
 In addition to all supported AWS service integrations you may want to create and attach additional policies.
