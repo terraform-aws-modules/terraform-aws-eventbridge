@@ -182,13 +182,12 @@ module "eventbridge_with_permissions" {
 }
 ```
 
-### EventBridge Rule Schedule
+### EventBridge with lambda rule schedule
 
 ```hcl
 module "eventbridge" {
   source = "terraform-aws-modules/eventbridge/aws"
 
-  # Schedules can only be created on default bus
   create_bus = false
 
   rules = {
@@ -202,7 +201,8 @@ module "eventbridge" {
     orders = [
       {
         name = "Lambda Serverless Job"
-        arn  = function.lambda.arn
+        arn  = module.lambda.lambda_arn
+        input = jsonencode({"job":"orders"})
       }
     ]
   }
