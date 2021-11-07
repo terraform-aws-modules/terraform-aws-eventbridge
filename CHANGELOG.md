@@ -7,6 +7,12 @@ All notable changes to this project will be documented in this file.
 
 
 
+<a name="v1.13.0"></a>
+## [v1.13.0] - 2021-11-07
+
+- feat: Added support for API destinations ([#27](https://github.com/terraform-aws-modules/terraform-aws-eventbridge/issues/27))
+
+
 <a name="v1.12.0"></a>
 ## [v1.12.0] - 2021-10-26
 
@@ -101,7 +107,8 @@ All notable changes to this project will be documented in this file.
 - first commit
 
 
-[Unreleased]: https://github.com/terraform-aws-modules/terraform-aws-eventbridge/compare/v1.12.0...HEAD
+[Unreleased]: https://github.com/terraform-aws-modules/terraform-aws-eventbridge/compare/v1.13.0...HEAD
+[v1.13.0]: https://github.com/terraform-aws-modules/terraform-aws-eventbridge/compare/v1.12.0...v1.13.0
 [v1.12.0]: https://github.com/terraform-aws-modules/terraform-aws-eventbridge/compare/v1.11.0...v1.12.0
 [v1.11.0]: https://github.com/terraform-aws-modules/terraform-aws-eventbridge/compare/v1.10.0...v1.11.0
 [v1.10.0]: https://github.com/terraform-aws-modules/terraform-aws-eventbridge/compare/v1.9.0...v1.10.0
