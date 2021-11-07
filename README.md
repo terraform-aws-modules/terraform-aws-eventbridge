@@ -2,17 +2,9 @@
 
 Terraform module to create EventBridge resources.
 
-The following resources are currently supported:
-
-* [EventBridge Archive](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/cloudwatch_event_archive)
-* [EventBridge Bus](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/cloudwatch_event_bus)
-* [EventBridge Permission](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/cloudwatch_event_permission)
-* [EventBridge Rule](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/cloudwatch_event_rule)
-* [EventBridge Target](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/cloudwatch_event_target)
-
 ## Supported Features
 
-- Creates AWS EventBridge Resources (bus, rules, targets, permissions)
+- Creates AWS EventBridge Resources (bus, rules, targets, permissions, connections, destinations)
 - Attach resources to an existing EventBridge bus
 - Support AWS EventBridge Archives and Replays
 - Conditional creation for many types of resources
@@ -61,7 +53,7 @@ module "eventbridge" {
       }
     ]
   }
-  
+
   tags = {
     Name = "my-bus"
   }
@@ -82,7 +74,7 @@ module "eventbridge" {
 }
 ```
 
-### EventBridge Rule 
+### EventBridge Rule
 
 ```hcl
 module "eventbridge" {
@@ -91,7 +83,7 @@ module "eventbridge" {
   bus_name = "my-bus"
 
   create_targets = false
-  
+
   rules = {
     logs = {
       description   = "Capture log data"
@@ -108,14 +100,14 @@ module "eventbridge" {
   source = "terraform-aws-modules/eventbridge/aws"
 
   bus_name = "my-bus"
-  
+
   rules = {
     logs = {
       description   = "Capture log data"
       event_pattern = jsonencode({ "source" : ["my.app.logs"] })
     }
   }
-  
+
   targets = {
     logs = [
       {
@@ -138,7 +130,7 @@ module "eventbridge_with_archive" {
   source = "terraform-aws-modules/eventbridge/aws"
 
   bus_name = "my-bus"
-  
+
   create_archives = true
 
   archives = {
@@ -160,7 +152,7 @@ module "eventbridge_with_archive" {
 }
 ```
 
-### EventBridge Permission 
+### EventBridge Permission
 
 ```hcl
 module "eventbridge_with_permissions" {
@@ -175,9 +167,72 @@ module "eventbridge_with_permissions" {
     "099720109466 ProdAccess" = {}
   }
 
-
   tags = {
     Name = "my-bus"
+  }
+}
+```
+
+### EventBridge API Destination
+
+```hcl
+module "eventbridge_with_api_destination" {
+  source = "terraform-aws-modules/eventbridge/aws"
+
+  bus_name = "my-bus"
+
+  create_connections      = true
+  create_api_destinations = true
+
+  attach_api_destination_policy = true
+
+  connections = {
+    smee = {
+      authorization_type = "OAUTH_CLIENT_CREDENTIALS"
+      auth_parameters = {
+        oauth = {
+          authorization_endpoint = "https://oauth.endpoint.com"
+          http_method            = "GET"
+
+          client_parameters = {
+            client_id     = "1234567890"
+            client_secret = "Pass1234!"
+          }
+
+          oauth_http_parameters = {
+            body = [{
+              key             = "body-parameter-key"
+              value           = "body-parameter-value"
+              is_value_secret = false
+            }]
+
+            header = [{
+              key   = "header-parameter-key1"
+              value = "header-parameter-value1"
+            }, {
+              key             = "header-parameter-key2"
+              value           = "header-parameter-value2"
+              is_value_secret = true
+            }]
+
+            query_string = [{
+              key             = "query-string-parameter-key"
+              value           = "query-string-parameter-value"
+              is_value_secret = false
+            }]
+          }
+        }
+      }
+    }
+  }
+
+  api_destinations = {
+    smee = {
+      description                      = "my smee endpoint"
+      invocation_endpoint              = "https://smee.io/hgoubgoibwekt331"
+      http_method                      = "POST"
+      invocation_rate_limit_per_second = 200
+    }
   }
 }
 ```
@@ -204,12 +259,14 @@ module "eventbridge" {
 
   create = false # to disable all resources
 
-  create_bus         = false  # to control creation of the EventBridge Bus and related resources
-  create_rule        = false  # to control creation of EventBridge Rules and related resources
-  create_targets     = false  # to control creation of EventBridge Targets and related resources
-  create_archives    = false  # to control creation of EventBridge Archives
-  create_permissions = false  # to control creation of EventBridge Permissions
-  create_role        = false  # to control creation of the IAM role and policies required for EventBridge
+  create_bus              = false  # to control creation of the EventBridge Bus and related resources
+  create_rule             = false  # to control creation of EventBridge Rules and related resources
+  create_targets          = false  # to control creation of EventBridge Targets and related resources
+  create_archives         = false  # to control creation of EventBridge Archives
+  create_permissions      = false  # to control creation of EventBridge Permissions
+  create_role             = false  # to control creation of the IAM role and policies required for EventBridge
+  create_connections      = false  # to control creation of EventBridge Connection resources
+  create_api_destinations = false  # to control creation of EventBridge Destination resources
 
   attach_cloudwatch_policy       = false
   attach_ecs_policy              = false
@@ -219,6 +276,7 @@ module "eventbridge" {
   attach_sfn_policy              = false
   attach_sqs_policy              = false
   attach_tracing_policy          = false
+  attach_api_destination_policy  = false
 
   # ... omitted
 }
@@ -231,6 +289,7 @@ module "eventbridge" {
 * [Using Default Bus](https://github.com/terraform-aws-modules/terraform-aws-eventbridge/tree/master/examples/default-bus) - Creates resources in the `default` bus.
 * [Archive](https://github.com/terraform-aws-modules/terraform-aws-eventbridge/tree/master/examples/with-archive) - EventBridge Archives resources in various configurations.
 * [Permissions](https://github.com/terraform-aws-modules/terraform-aws-eventbridge/tree/master/examples/with-permissions) - Controls permissions to EventBridge.
+* [API Destination](https://github.com/terraform-aws-modules/terraform-aws-eventbridge/tree/master/examples/with-api-destination) - Control access to EventBridge using API destinations.
 * [ECS Scheduled Events](https://github.com/terraform-aws-modules/terraform-aws-eventbridge/tree/master/examples/with-ecs-scheduling) - Use default bus to schedule events on ECS.
 
 
@@ -240,13 +299,13 @@ module "eventbridge" {
 | Name | Version |
 |------|---------|
 | <a name="requirement_terraform"></a> [terraform](#requirement\_terraform) | >= 0.13.1 |
-| <a name="requirement_aws"></a> [aws](#requirement\_aws) | >= 3.40 |
+| <a name="requirement_aws"></a> [aws](#requirement\_aws) | >= 3.44 |
 
 ## Providers
 
 | Name | Version |
 |------|---------|
-| <a name="provider_aws"></a> [aws](#provider\_aws) | >= 3.40 |
+| <a name="provider_aws"></a> [aws](#provider\_aws) | >= 3.44 |
 
 ## Modules
 
@@ -256,14 +315,17 @@ No modules.
 
 | Name | Type |
 |------|------|
+| [aws_cloudwatch_event_api_destination.this](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/cloudwatch_event_api_destination) | resource |
 | [aws_cloudwatch_event_archive.this](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/cloudwatch_event_archive) | resource |
 | [aws_cloudwatch_event_bus.this](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/cloudwatch_event_bus) | resource |
+| [aws_cloudwatch_event_connection.this](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/cloudwatch_event_connection) | resource |
 | [aws_cloudwatch_event_permission.this](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/cloudwatch_event_permission) | resource |
 | [aws_cloudwatch_event_rule.this](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/cloudwatch_event_rule) | resource |
 | [aws_cloudwatch_event_target.this](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/cloudwatch_event_target) | resource |
 | [aws_iam_policy.additional_inline](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/iam_policy) | resource |
 | [aws_iam_policy.additional_json](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/iam_policy) | resource |
 | [aws_iam_policy.additional_jsons](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/iam_policy) | resource |
+| [aws_iam_policy.api_destination](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/iam_policy) | resource |
 | [aws_iam_policy.cloudwatch](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/iam_policy) | resource |
 | [aws_iam_policy.ecs](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/iam_policy) | resource |
 | [aws_iam_policy.kinesis](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/iam_policy) | resource |
@@ -275,6 +337,7 @@ No modules.
 | [aws_iam_policy_attachment.additional_inline](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/iam_policy_attachment) | resource |
 | [aws_iam_policy_attachment.additional_json](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/iam_policy_attachment) | resource |
 | [aws_iam_policy_attachment.additional_jsons](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/iam_policy_attachment) | resource |
+| [aws_iam_policy_attachment.api_destination](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/iam_policy_attachment) | resource |
 | [aws_iam_policy_attachment.cloudwatch](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/iam_policy_attachment) | resource |
 | [aws_iam_policy_attachment.ecs](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/iam_policy_attachment) | resource |
 | [aws_iam_policy_attachment.kinesis](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/iam_policy_attachment) | resource |
@@ -288,6 +351,7 @@ No modules.
 | [aws_iam_role_policy_attachment.additional_one](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/iam_role_policy_attachment) | resource |
 | [aws_iam_policy.tracing](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/iam_policy) | data source |
 | [aws_iam_policy_document.additional_inline](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/iam_policy_document) | data source |
+| [aws_iam_policy_document.api_destination](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/iam_policy_document) | data source |
 | [aws_iam_policy_document.assume_role](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/iam_policy_document) | data source |
 | [aws_iam_policy_document.cloudwatch](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/iam_policy_document) | data source |
 | [aws_iam_policy_document.ecs](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/iam_policy_document) | data source |
@@ -301,7 +365,9 @@ No modules.
 
 | Name | Description | Type | Default | Required |
 |------|-------------|------|---------|:--------:|
+| <a name="input_api_destinations"></a> [api\_destinations](#input\_api\_destinations) | A map of objects with EventBridge Destination definitions. | `map(any)` | `{}` | no |
 | <a name="input_archives"></a> [archives](#input\_archives) | A map of objects with the EventBridge Archive definitions. | `map(any)` | `{}` | no |
+| <a name="input_attach_api_destination_policy"></a> [attach\_api\_destination\_policy](#input\_attach\_api\_destination\_policy) | Controls whether the API Destination policy should be added to IAM role for EventBridge Target | `bool` | `false` | no |
 | <a name="input_attach_cloudwatch_policy"></a> [attach\_cloudwatch\_policy](#input\_attach\_cloudwatch\_policy) | Controls whether the Cloudwatch policy should be added to IAM role for EventBridge Target | `bool` | `false` | no |
 | <a name="input_attach_ecs_policy"></a> [attach\_ecs\_policy](#input\_attach\_ecs\_policy) | Controls whether the ECS policy should be added to IAM role for EventBridge Target | `bool` | `false` | no |
 | <a name="input_attach_kinesis_firehose_policy"></a> [attach\_kinesis\_firehose\_policy](#input\_attach\_kinesis\_firehose\_policy) | Controls whether the Kinesis Firehose policy should be added to IAM role for EventBridge Target | `bool` | `false` | no |
@@ -317,9 +383,12 @@ No modules.
 | <a name="input_attach_tracing_policy"></a> [attach\_tracing\_policy](#input\_attach\_tracing\_policy) | Controls whether X-Ray tracing policy should be added to IAM role for EventBridge | `bool` | `false` | no |
 | <a name="input_bus_name"></a> [bus\_name](#input\_bus\_name) | A unique name for your EventBridge Bus | `string` | `"default"` | no |
 | <a name="input_cloudwatch_target_arns"></a> [cloudwatch\_target\_arns](#input\_cloudwatch\_target\_arns) | The Amazon Resource Name (ARN) of the Cloudwatch Log Streams you want to use as EventBridge targets | `list(string)` | `[]` | no |
+| <a name="input_connections"></a> [connections](#input\_connections) | A map of objects with EventBridge Connection definitions. | `any` | `{}` | no |
 | <a name="input_create"></a> [create](#input\_create) | Controls whether resources should be created | `bool` | `true` | no |
+| <a name="input_create_api_destinations"></a> [create\_api\_destinations](#input\_create\_api\_destinations) | Controls whether EventBridge Destination resources should be created | `bool` | `false` | no |
 | <a name="input_create_archives"></a> [create\_archives](#input\_create\_archives) | Controls whether EventBridge Archive resources should be created | `bool` | `false` | no |
 | <a name="input_create_bus"></a> [create\_bus](#input\_create\_bus) | Controls whether EventBridge Bus resource should be created | `bool` | `true` | no |
+| <a name="input_create_connections"></a> [create\_connections](#input\_create\_connections) | Controls whether EventBridge Connection resources should be created | `bool` | `false` | no |
 | <a name="input_create_permissions"></a> [create\_permissions](#input\_create\_permissions) | Controls whether EventBridge Permission resources should be created | `bool` | `true` | no |
 | <a name="input_create_role"></a> [create\_role](#input\_create\_role) | Controls whether IAM roles should be created | `bool` | `true` | no |
 | <a name="input_create_rules"></a> [create\_rules](#input\_create\_rules) | Controls whether EventBridge Rule resources should be created | `bool` | `true` | no |
@@ -353,9 +422,12 @@ No modules.
 
 | Name | Description |
 |------|-------------|
+| <a name="output_eventbridge_api_destination_arns"></a> [eventbridge\_api\_destination\_arns](#output\_eventbridge\_api\_destination\_arns) | The EventBridge API Destination ARNs created |
 | <a name="output_eventbridge_archive_arns"></a> [eventbridge\_archive\_arns](#output\_eventbridge\_archive\_arns) | The EventBridge Archive Arns created |
 | <a name="output_eventbridge_bus_arn"></a> [eventbridge\_bus\_arn](#output\_eventbridge\_bus\_arn) | The EventBridge Bus Arn |
 | <a name="output_eventbridge_bus_name"></a> [eventbridge\_bus\_name](#output\_eventbridge\_bus\_name) | The EventBridge Bus Name |
+| <a name="output_eventbridge_connection_arns"></a> [eventbridge\_connection\_arns](#output\_eventbridge\_connection\_arns) | The EventBridge Connection Arns created |
+| <a name="output_eventbridge_connection_ids"></a> [eventbridge\_connection\_ids](#output\_eventbridge\_connection\_ids) | The EventBridge Connection IDs created |
 | <a name="output_eventbridge_permission_ids"></a> [eventbridge\_permission\_ids](#output\_eventbridge\_permission\_ids) | The EventBridge Permission Arns created |
 | <a name="output_eventbridge_role_arn"></a> [eventbridge\_role\_arn](#output\_eventbridge\_role\_arn) | The ARN of the IAM role created for EventBridge |
 | <a name="output_eventbridge_role_name"></a> [eventbridge\_role\_name](#output\_eventbridge\_role\_name) | The name of the IAM role created for EventBridge |
