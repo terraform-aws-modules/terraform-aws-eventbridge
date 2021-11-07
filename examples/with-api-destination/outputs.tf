@@ -3,9 +3,10 @@ output "eventbridge_bus_arn" {
   value       = module.eventbridge.eventbridge_bus_arn
 }
 
-output "eventbridge_archive_arns" {
-  description = "The EventBridge Archive ARNs"
-  value       = module.eventbridge.eventbridge_archive_arns
+# EventBridge Connection
+output "eventbridge_connection_ids" {
+  description = "The EventBridge Connection IDs created"
+  value       = module.eventbridge.eventbridge_connection_ids
 }
 
 output "eventbridge_connection_arns" {

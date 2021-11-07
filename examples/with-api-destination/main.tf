@@ -44,7 +44,7 @@ module "eventbridge" {
   }
 
   connections = {
-    "requestbin" = {
+    requestbin = {
       authorization_type = "BASIC"
       auth_parameters = {
 
@@ -54,27 +54,39 @@ module "eventbridge" {
         }
 
         invocation_http_parameters = {
-          body = {
+          body = [{
             key             = "body-parameter-key"
             value           = "body-parameter-value"
-            is_value_secret = "false"
-          }
+            is_value_secret = false
+            }, {
+            key             = "body-secret-key"
+            value           = "body-secret-value"
+            is_value_secret = true
+            }
+          ]
 
-          header = {
-            key             = "header-parameter-key"
-            value           = "header-parameter-value"
-            is_value_secret = "false"
-          }
+          header = [{
+            key             = "header-parameter-key1"
+            value           = "header-parameter-value1"
+            is_value_secret = false
+            }, {
+            key   = "header-parameter-key2"
+            value = "header-parameter-value2"
+          }]
 
-          query_string = {
-            key             = "query-string-parameter-key"
-            value           = "query-string-parameter-value"
-            is_value_secret = "false"
-          }
+          query_string = [{
+            key             = "query-string-parameter-key1"
+            value           = "query-string-parameter-value1"
+            is_value_secret = false
+            }, {
+            key   = "query-string-parameter-key2"
+            value = "query-string-parameter-value2"
+          }]
         }
       }
     }
-    "smee" = {
+
+    smee = {
       authorization_type = "OAUTH_CLIENT_CREDENTIALS"
       auth_parameters = {
         oauth = {
@@ -87,28 +99,32 @@ module "eventbridge" {
           }
 
           oauth_http_parameters = {
-            body = {
+            body = [{
               key             = "body-parameter-key"
               value           = "body-parameter-value"
-              is_value_secret = "false"
-            }
+              is_value_secret = false
+            }]
 
-            header = {
-              key             = "header-parameter-key"
-              value           = "header-parameter-value"
-              is_value_secret = "false"
-            }
+            header = [{
+              key   = "header-parameter-key1"
+              value = "header-parameter-value1"
+              }, {
+              key             = "header-parameter-key2"
+              value           = "header-parameter-value2"
+              is_value_secret = true
+            }]
 
-            query_string = {
+            query_string = [{
               key             = "query-string-parameter-key"
               value           = "query-string-parameter-value"
-              is_value_secret = "false"
-            }
+              is_value_secret = false
+            }]
           }
         }
       }
     }
-    "github" = {
+
+    github = {
       authorization_type = "API_KEY"
       auth_parameters = {
         api_key = {
@@ -120,19 +136,19 @@ module "eventbridge" {
   }
 
   api_destinations = {
-    "smee" = {
+    smee = {
       description                      = "my smee endpoint"
       invocation_endpoint              = "https://smee.io/hgoubgoibwekt331"
       http_method                      = "POST"
       invocation_rate_limit_per_second = 200
     }
-    "requestbin" = {
+    requestbin = {
       description                      = "my requestbin endpoint"
       invocation_endpoint              = "https://smee.io/hgoubGoIbWEKt331"
       http_method                      = "POST"
       invocation_rate_limit_per_second = 20
     }
-    "github" = {
+    github = {
       description                      = "my github endpoint"
       invocation_endpoint              = "https://smee.io/hgoubGoIbWEKt331"
       http_method                      = "POST"

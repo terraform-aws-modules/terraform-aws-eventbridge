@@ -2,15 +2,6 @@
 
 Terraform module to create EventBridge resources.
 
-The following resources are currently supported:
-
-* [EventBridge API Destination](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/cloudwatch_event_api_destination)
-* [EventBridge Archive](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/cloudwatch_event_archive)
-* [EventBridge Bus](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/cloudwatch_event_bus)
-* [EventBridge Connection](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/cloudwatch_event_connection)
-* [EventBridge Permission](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/cloudwatch_event_permission)
-* [EventBridge Rule](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/cloudwatch_event_rule)
-* [EventBridge Target](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/cloudwatch_event_target)
 ## Supported Features
 
 - Creates AWS EventBridge Resources (bus, rules, targets, permissions, connections, destinations)
@@ -176,9 +167,72 @@ module "eventbridge_with_permissions" {
     "099720109466 ProdAccess" = {}
   }
 
-
   tags = {
     Name = "my-bus"
+  }
+}
+```
+
+### EventBridge API Destination
+
+```hcl
+module "eventbridge_with_api_destination" {
+  source = "terraform-aws-modules/eventbridge/aws"
+
+  bus_name = "my-bus"
+
+  create_connections      = true
+  create_api_destinations = true
+
+  attach_api_destination_policy = true
+
+  connections = {
+    smee = {
+      authorization_type = "OAUTH_CLIENT_CREDENTIALS"
+      auth_parameters = {
+        oauth = {
+          authorization_endpoint = "https://oauth.endpoint.com"
+          http_method            = "GET"
+
+          client_parameters = {
+            client_id     = "1234567890"
+            client_secret = "Pass1234!"
+          }
+
+          oauth_http_parameters = {
+            body = [{
+              key             = "body-parameter-key"
+              value           = "body-parameter-value"
+              is_value_secret = false
+            }]
+
+            header = [{
+              key   = "header-parameter-key1"
+              value = "header-parameter-value1"
+            }, {
+              key             = "header-parameter-key2"
+              value           = "header-parameter-value2"
+              is_value_secret = true
+            }]
+
+            query_string = [{
+              key             = "query-string-parameter-key"
+              value           = "query-string-parameter-value"
+              is_value_secret = false
+            }]
+          }
+        }
+      }
+    }
+  }
+
+  api_destinations = {
+    smee = {
+      description                      = "my smee endpoint"
+      invocation_endpoint              = "https://smee.io/hgoubgoibwekt331"
+      http_method                      = "POST"
+      invocation_rate_limit_per_second = 200
+    }
   }
 }
 ```
@@ -205,12 +259,14 @@ module "eventbridge" {
 
   create = false # to disable all resources
 
-  create_bus         = false  # to control creation of the EventBridge Bus and related resources
-  create_rule        = false  # to control creation of EventBridge Rules and related resources
-  create_targets     = false  # to control creation of EventBridge Targets and related resources
-  create_archives    = false  # to control creation of EventBridge Archives
-  create_permissions = false  # to control creation of EventBridge Permissions
-  create_role        = false  # to control creation of the IAM role and policies required for EventBridge
+  create_bus              = false  # to control creation of the EventBridge Bus and related resources
+  create_rule             = false  # to control creation of EventBridge Rules and related resources
+  create_targets          = false  # to control creation of EventBridge Targets and related resources
+  create_archives         = false  # to control creation of EventBridge Archives
+  create_permissions      = false  # to control creation of EventBridge Permissions
+  create_role             = false  # to control creation of the IAM role and policies required for EventBridge
+  create_connections      = false  # to control creation of EventBridge Connection resources
+  create_api_destinations = false  # to control creation of EventBridge Destination resources
 
   attach_cloudwatch_policy       = false
   attach_ecs_policy              = false
@@ -220,6 +276,7 @@ module "eventbridge" {
   attach_sfn_policy              = false
   attach_sqs_policy              = false
   attach_tracing_policy          = false
+  attach_api_destination_policy  = false
 
   # ... omitted
 }
@@ -232,6 +289,7 @@ module "eventbridge" {
 * [Using Default Bus](https://github.com/terraform-aws-modules/terraform-aws-eventbridge/tree/master/examples/default-bus) - Creates resources in the `default` bus.
 * [Archive](https://github.com/terraform-aws-modules/terraform-aws-eventbridge/tree/master/examples/with-archive) - EventBridge Archives resources in various configurations.
 * [Permissions](https://github.com/terraform-aws-modules/terraform-aws-eventbridge/tree/master/examples/with-permissions) - Controls permissions to EventBridge.
+* [API Destination](https://github.com/terraform-aws-modules/terraform-aws-eventbridge/tree/master/examples/with-api-destination) - Control access to EventBridge using API destinations.
 * [ECS Scheduled Events](https://github.com/terraform-aws-modules/terraform-aws-eventbridge/tree/master/examples/with-ecs-scheduling) - Use default bus to schedule events on ECS.
 
 
@@ -241,13 +299,13 @@ module "eventbridge" {
 | Name | Version |
 |------|---------|
 | <a name="requirement_terraform"></a> [terraform](#requirement\_terraform) | >= 0.13.1 |
-| <a name="requirement_aws"></a> [aws](#requirement\_aws) | >= 3.43 |
+| <a name="requirement_aws"></a> [aws](#requirement\_aws) | >= 3.44 |
 
 ## Providers
 
 | Name | Version |
 |------|---------|
-| <a name="provider_aws"></a> [aws](#provider\_aws) | >= 3.43 |
+| <a name="provider_aws"></a> [aws](#provider\_aws) | >= 3.44 |
 
 ## Modules
 

@@ -209,12 +209,10 @@ resource "aws_cloudwatch_event_connection" "this" {
 
   name               = each.value.Name
   description        = lookup(each.value, "description", null)
-  authorization_type = lookup(each.value, "authorization_type", null)
+  authorization_type = each.value.authorization_type
 
   dynamic "auth_parameters" {
-    for_each = lookup(each.value, "auth_parameters", null) != null ? [
-      each.value.auth_parameters
-    ] : []
+    for_each = [each.value.auth_parameters]
 
     content {
       dynamic "api_key" {
@@ -223,8 +221,8 @@ resource "aws_cloudwatch_event_connection" "this" {
         ] : []
 
         content {
-          key   = lookup(api_key.value, "key", null)
-          value = lookup(api_key.value, "value", null)
+          key   = api_key.value.key
+          value = api_key.value.value
         }
       }
 
@@ -234,8 +232,8 @@ resource "aws_cloudwatch_event_connection" "this" {
         ] : []
 
         content {
-          username = lookup(basic.value, "username", null)
-          password = lookup(basic.value, "password", null)
+          username = basic.value.username
+          password = basic.value.password
         }
       }
 
@@ -245,13 +243,11 @@ resource "aws_cloudwatch_event_connection" "this" {
         ] : []
 
         content {
-          authorization_endpoint = lookup(oauth.value, "authorization_endpoint", null)
-          http_method            = lookup(oauth.value, "http_method", null)
+          authorization_endpoint = oauth.value.authorization_endpoint
+          http_method            = oauth.value.http_method
 
           dynamic "client_parameters" {
-            for_each = lookup(each.value.auth_parameters.oauth, "client_parameters", null) != null ? [
-              each.value.auth_parameters.oauth.client_parameters
-            ] : []
+            for_each = [each.value.auth_parameters.oauth.client_parameters]
 
             content {
               client_id     = client_parameters.value.client_id
@@ -266,38 +262,32 @@ resource "aws_cloudwatch_event_connection" "this" {
 
             content {
               dynamic "body" {
-                for_each = lookup(each.value.auth_parameters.oauth.oauth_http_parameters, "body", null) != null ? [
-                  each.value.auth_parameters.oauth.oauth_http_parameters.body
-                ] : []
+                for_each = lookup(each.value.auth_parameters.oauth.oauth_http_parameters, "body", [])
 
                 content {
-                  key             = lookup(body.value, "key", null)
-                  value           = lookup(body.value, "value", null)
-                  is_value_secret = lookup(body.value, "is_secret_value", null)
+                  key             = body.value.key
+                  value           = body.value.value
+                  is_value_secret = lookup(body.value, "is_value_secret", null)
                 }
               }
 
               dynamic "header" {
-                for_each = lookup(each.value.auth_parameters.oauth.oauth_http_parameters, "header", null) != null ? [
-                  each.value.auth_parameters.oauth.oauth_http_parameters.header
-                ] : []
+                for_each = lookup(each.value.auth_parameters.oauth.oauth_http_parameters, "header", [])
 
                 content {
-                  key             = lookup(header.value, "key", null)
-                  value           = lookup(header.value, "value", null)
-                  is_value_secret = lookup(header.value, "is_secret_value", null)
+                  key             = header.value.key
+                  value           = header.value.value
+                  is_value_secret = lookup(header.value, "is_value_secret", null)
                 }
               }
 
               dynamic "query_string" {
-                for_each = lookup(each.value.auth_parameters.oauth.oauth_http_parameters, "query_string", null) != null ? [
-                  each.value.auth_parameters.oauth.oauth_http_parameters.query_string
-                ] : []
+                for_each = lookup(each.value.auth_parameters.oauth.oauth_http_parameters, "query_string", [])
 
                 content {
-                  key             = lookup(query_string.value, "key", null)
-                  value           = lookup(query_string.value, "value", null)
-                  is_value_secret = lookup(query_string.value, "is_secret_value", null)
+                  key             = query_string.value.key
+                  value           = query_string.value.value
+                  is_value_secret = lookup(query_string.value, "is_value_secret", null)
                 }
               }
             }
@@ -312,38 +302,32 @@ resource "aws_cloudwatch_event_connection" "this" {
 
         content {
           dynamic "body" {
-            for_each = lookup(each.value.auth_parameters.invocation_http_parameters, "body", null) != null ? [
-              each.value.auth_parameters.invocation_http_parameters.body
-            ] : []
+            for_each = lookup(each.value.auth_parameters.invocation_http_parameters, "body", [])
 
             content {
-              key             = lookup(body.value, "key", null)
-              value           = lookup(body.value, "value", null)
-              is_value_secret = lookup(body.value, "is_secret_value", null)
+              key             = body.value.key
+              value           = body.value.value
+              is_value_secret = lookup(body.value, "is_value_secret", null)
             }
           }
 
           dynamic "header" {
-            for_each = lookup(each.value.auth_parameters.invocation_http_parameters, "header", null) != null ? [
-              each.value.auth_parameters.invocation_http_parameters.header
-            ] : []
+            for_each = lookup(each.value.auth_parameters.invocation_http_parameters, "header", [])
 
             content {
-              key             = lookup(header.value, "key", null)
-              value           = lookup(header.value, "value", null)
-              is_value_secret = lookup(header.value, "is_secret_value", null)
+              key             = header.value.key
+              value           = header.value.value
+              is_value_secret = lookup(header.value, "is_value_secret", null)
             }
           }
 
           dynamic "query_string" {
-            for_each = lookup(each.value.auth_parameters.invocation_http_parameters, "query_string", null) != null ? [
-              each.value.auth_parameters.invocation_http_parameters.query_string
-            ] : []
+            for_each = lookup(each.value.auth_parameters.invocation_http_parameters, "query_string", [])
 
             content {
-              key             = lookup(query_string.value, "key", null)
-              value           = lookup(query_string.value, "value", null)
-              is_value_secret = lookup(query_string.value, "is_secret_value", null)
+              key             = query_string.value.key
+              value           = query_string.value.value
+              is_value_secret = lookup(query_string.value, "is_value_secret", null)
             }
           }
         }
@@ -359,8 +343,8 @@ resource "aws_cloudwatch_event_api_destination" "this" {
 
   name                             = each.value.Name
   description                      = lookup(each.value, "description", null)
-  invocation_endpoint              = lookup(each.value, "invocation_endpoint", null)
-  http_method                      = lookup(each.value, "http_method", null)
+  invocation_endpoint              = each.value.invocation_endpoint
+  http_method                      = each.value.http_method
   invocation_rate_limit_per_second = lookup(each.value, "invocation_rate_limit_per_second", null)
   connection_arn                   = aws_cloudwatch_event_connection.this[each.value.name].arn
 }
