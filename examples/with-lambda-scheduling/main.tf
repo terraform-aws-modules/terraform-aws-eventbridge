@@ -33,7 +33,7 @@ module "eventbridge" {
 
 module "lambda" {
   source = "terraform-aws-modules/lambda/aws"
-  version = "2.0.0"
+  version = "~> 2.0"
 
   function_name = "dev-cron-job"
   description = "Lambda Serverless Job"
