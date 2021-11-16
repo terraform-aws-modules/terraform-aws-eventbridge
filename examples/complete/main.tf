@@ -46,6 +46,10 @@ module "eventbridge" {
       event_pattern = jsonencode({ "source" : ["myapp.emails"] })
       enabled       = true
     }
+    crons = {
+      description         = "Trigger for a Lambda"
+      schedule_expression = "rate(5 minutes)"
+    }
   }
 
   targets = {
@@ -102,6 +106,14 @@ module "eventbridge" {
           task_count          = 1
           task_definition_arn = aws_ecs_task_definition.hello_world.arn
         }
+      }
+    ]
+
+    crons = [
+      {
+        name            = module.lambda.lambda_function_name
+        arn             = module.lambda.lambda_function_arn
+        input           = jsonencode({"job":"crons"})
       }
     ]
   }
@@ -299,4 +311,28 @@ resource "aws_ecs_task_definition" "hello_world" {
   }
 ]
 EOF
+}
+
+######
+# Lambda
+######
+module "lambda" {
+  source = "terraform-aws-modules/lambda/aws"
+  version = "~> 2.0"
+
+  function_name = "dev-cron-job"
+  description = "Lambda Serverless Job"
+  handler = "index.handler"
+  runtime = "nodejs14.x"
+  timeout = 900
+
+  source_path = "../with-lambda-shceduling/lambda"
+}
+
+resource "aws_lambda_permission" "crons_invoke" {
+  statement_id = "AllowExecutionFromCloudWatch"
+  action = "lambda:InvokeFunction"
+  function_name = module.lambda.lambda_function_name
+  principal = "events.amazonaws.com"
+  source_arn = module.eventbridge.eventbridge_rule_arns.orders
 }
