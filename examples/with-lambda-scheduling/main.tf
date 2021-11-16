@@ -1,35 +1,6 @@
-####################
-# Actual Eventbridge
-####################
-module "eventbridge" {
-  source = "../../"
 
-  # Schedules can only be created on default bus
-  create_bus = false
-
-  # Fire every five minutes
-  rules = {
-    orders = {
-      description         = "Trigger for a Lambda"
-      schedule_expression = "rate(5 minutes)"
-    }
-  }
-
-  # Send to a lambda with an custom input.
-  targets = {
-    orders = [
-      {
-        name            = "dev-cron-job"
-        arn             = module.lambda.lambda_arn
-        input           = jsonencode({"job":"orders"})
-      }
-    ]
-  }
+provider "aws" {
 }
-
-######
-# Lambda
-######
 
 module "lambda" {
   source = "terraform-aws-modules/lambda/aws"
@@ -41,12 +12,33 @@ module "lambda" {
   runtime = "nodejs14.x"
   timeout = 900
 
-  allowed_triggers = {
-    DevCronJob = {
-      principal  = "events.amazonaws.com"
-      source_arn = module.eventbridge.eventbridge_rule_arns.orders
+  source_path = "./lambda"
+}
+
+module "eventbridge" {
+  source = "../../"
+  create_bus = false
+  rules = {
+    crons = {
+      description         = "Trigger for a Lambda"
+      schedule_expression = "rate(5 minutes)"
     }
   }
+  targets = {
+    crons = [
+      {
+        name            = module.lambda.lambda_function_name
+        arn             = module.lambda.lambda_function_arn
+        input           = jsonencode({"job":"cron-by-rate"})
+      }
+    ]
+  }
+}
 
-  create_current_version_allowed_triggers = false
+resource "aws_lambda_permission" "crons_invoke" {
+  statement_id = "AllowExecutionFromCloudWatch"
+  action = "lambda:InvokeFunction"
+  function_name = module.lambda.lambda_function_name
+  principal = "events.amazonaws.com"
+  source_arn = module.eventbridge.eventbridge_rule_arns.crons
 }
