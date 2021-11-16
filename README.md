@@ -191,18 +191,18 @@ module "eventbridge" {
   create_bus = false
 
   rules = {
-    orders = {
+    crons = {
       description = "Trigger for a Lambda"
       schedule_expression = "rate(5 minutes)"
     }
   }
 
   targets = {
-    orders = [
+    crons = [
       {
         name = "Lambda Serverless Job"
         arn  = module.lambda.lambda_arn
-        input = jsonencode({"job":"orders"})
+        input = jsonencode({"job":"cron-by-rate"})
       }
     ]
   }
