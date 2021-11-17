@@ -192,7 +192,7 @@ module "eventbridge" {
 
   rules = {
     crons = {
-      description = "Trigger for a Lambda"
+      description         = "Trigger for a Lambda"
       schedule_expression = "rate(5 minutes)"
     }
   }
@@ -200,9 +200,9 @@ module "eventbridge" {
   targets = {
     crons = [
       {
-        name = "Lambda Serverless Job"
-        arn  = module.lambda.lambda_arn
-        input = jsonencode({"job":"cron-by-rate"})
+        name  = "lambda-loves-cron"
+        arn   = "arn:aws:lambda:ap-southeast-1:135367859851:function:resolved-penguin-lambda"
+        input = jsonencode({"job": "cron-by-rate"})
       }
     ]
   }
@@ -254,12 +254,13 @@ module "eventbridge" {
 
 ## Examples
 
-* [Complete](https://github.com/terraform-aws-modules/terraform-aws-eventbridge/tree/master/examples/complete) - Creates EventBridge resources (bus, rules and targets) and connect with SQS queues, Kinesis Stream, Step Function, CloudWatch Logs, and more.
+* [Complete](https://github.com/terraform-aws-modules/terraform-aws-eventbridge/tree/master/examples/complete) - Creates EventBridge resources (bus, rules and targets) and connect with SQS queues, Kinesis Stream, Step Function, CloudWatch Logs, Lambda Functions, and more.
 * [HTTP API Gateway](https://github.com/terraform-aws-modules/terraform-aws-eventbridge/tree/master/examples/api-gateway-event-source) - Creates an integration with HTTP API Gateway as event source.
 * [Using Default Bus](https://github.com/terraform-aws-modules/terraform-aws-eventbridge/tree/master/examples/default-bus) - Creates resources in the `default` bus.
 * [Archive](https://github.com/terraform-aws-modules/terraform-aws-eventbridge/tree/master/examples/with-archive) - EventBridge Archives resources in various configurations.
 * [Permissions](https://github.com/terraform-aws-modules/terraform-aws-eventbridge/tree/master/examples/with-permissions) - Controls permissions to EventBridge.
-* [ECS Scheduled Events](https://github.com/terraform-aws-modules/terraform-aws-eventbridge/tree/master/examples/with-ecs-scheduling) - Use default bus to schedule events on ECS.
+* [ECS Scheduling Events](https://github.com/terraform-aws-modules/terraform-aws-eventbridge/tree/master/examples/with-ecs-scheduling) - Use default bus to schedule events on ECS.
+* [Lambda Scheduling Events](https://github.com/terraform-aws-modules/terraform-aws-eventbridge/tree/master/examples/with-lambda-scheduling) - Trigger Lambda functions on schedule.
 
 
 <!-- BEGINNING OF PRE-COMMIT-TERRAFORM DOCS HOOK -->
