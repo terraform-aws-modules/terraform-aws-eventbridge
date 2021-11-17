@@ -12,7 +12,10 @@ provider "aws" {
 module "eventbridge" {
   source = "../../"
 
-  bus_name = "${random_pet.this.id}-bus"
+  create_bus = false
+
+  # Some targets are only working with the default bus, so we don't have to create a new one like this:
+  # bus_name = "${random_pet.this.id}-bus"
 
   attach_tracing_policy = true
 
@@ -45,6 +48,10 @@ module "eventbridge" {
       description   = "Capture all emails data"
       event_pattern = jsonencode({ "source" : ["myapp.emails"] })
       enabled       = true
+    }
+    crons = {
+      description         = "Trigger for a Lambda"
+      schedule_expression = "rate(5 minutes)"
     }
   }
 
@@ -102,6 +109,14 @@ module "eventbridge" {
           task_count          = 1
           task_definition_arn = aws_ecs_task_definition.hello_world.arn
         }
+      }
+    ]
+
+    crons = [
+      {
+        name  = "something-for-cron"
+        arn   = module.lambda.lambda_function_arn
+        input = jsonencode({ "job" : "crons" })
       }
     ]
   }
@@ -278,7 +293,6 @@ resource "aws_ecs_service" "hello_world" {
   name            = "hello_world-${random_pet.this.id}"
   cluster         = module.ecs.ecs_cluster_id
   task_definition = aws_ecs_task_definition.hello_world.arn
-  launch_type     = "FARGATE"
 
   desired_count = 1
 
@@ -300,3 +314,66 @@ resource "aws_ecs_task_definition" "hello_world" {
 ]
 EOF
 }
+
+#############################################
+# Using packaged function from Lambda module
+#############################################
+
+module "lambda" {
+  source  = "terraform-aws-modules/lambda/aws"
+  version = "~> 2.0"
+
+  function_name = "${random_pet.this.id}-lambda"
+  handler       = "index.lambda_handler"
+  runtime       = "python3.8"
+
+  create_package         = false
+  local_existing_package = local.downloaded
+
+  create_current_version_allowed_triggers = false
+  allowed_triggers = {
+    ScanAmiRule = {
+      principal  = "events.amazonaws.com"
+      source_arn = module.eventbridge.eventbridge_rule_arns["crons"]
+    }
+  }
+}
+
+locals {
+  package_url = "https://raw.githubusercontent.com/terraform-aws-modules/terraform-aws-lambda/master/examples/fixtures/python3.8-zip/existing_package.zip"
+  downloaded  = "downloaded_package_${md5(local.package_url)}.zip"
+}
+
+resource "null_resource" "download_package" {
+  triggers = {
+    downloaded = local.downloaded
+  }
+
+  provisioner "local-exec" {
+    command = "curl -L -o ${local.downloaded} ${local.package_url}"
+  }
+}
+
+#######
+## Lambda
+#######
+#module "lambda" {
+#  source  = "terraform-aws-modules/lambda/aws"
+#  version = "~> 2.0"
+#
+#  function_name = "dev-cron-job"
+#  description   = "Lambda Serverless Job"
+#  handler       = "index.handler"
+#  runtime       = "nodejs14.x"
+#  timeout       = 900
+#
+#  source_path = "../with-lambda-shceduling/lambda"
+#}
+#
+#resource "aws_lambda_permission" "crons_invoke" {
+#  statement_id  = "AllowExecutionFromCloudWatch"
+#  action        = "lambda:InvokeFunction"
+#  function_name = module.lambda.lambda_function_name
+#  principal     = "events.amazonaws.com"
+#  source_arn    = module.eventbridge.eventbridge_rule_arns.orders
+#}
