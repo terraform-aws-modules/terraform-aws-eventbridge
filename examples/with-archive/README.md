@@ -20,22 +20,22 @@ Note that this example may create resources which cost money. Run `terraform des
 | Name | Version |
 |------|---------|
 | <a name="requirement_terraform"></a> [terraform](#requirement\_terraform) | >= 0.13.1 |
-| <a name="requirement_aws"></a> [aws](#requirement\_aws) | >= 3.19 |
-| <a name="requirement_random"></a> [random](#requirement\_random) | >= 3 |
+| <a name="requirement_aws"></a> [aws](#requirement\_aws) | >= 3.44 |
+| <a name="requirement_random"></a> [random](#requirement\_random) | >= 3.0 |
 
 ## Providers
 
 | Name | Version |
 |------|---------|
-| <a name="provider_aws"></a> [aws](#provider\_aws) | >= 3.19 |
-| <a name="provider_random"></a> [random](#provider\_random) | >= 3 |
+| <a name="provider_aws"></a> [aws](#provider\_aws) | >= 3.44 |
+| <a name="provider_random"></a> [random](#provider\_random) | >= 3.0 |
 
 ## Modules
 
 | Name | Source | Version |
 |------|--------|---------|
-| <a name="module_eventbridge"></a> [eventbridge](#module\_eventbridge) | ../../ |  |
-| <a name="module_eventbridge_archive_only"></a> [eventbridge\_archive\_only](#module\_eventbridge\_archive\_only) | ../../ |  |
+| <a name="module_eventbridge"></a> [eventbridge](#module\_eventbridge) | ../../ | n/a |
+| <a name="module_eventbridge_archive_only"></a> [eventbridge\_archive\_only](#module\_eventbridge\_archive\_only) | ../../ | n/a |
 
 ## Resources
 
