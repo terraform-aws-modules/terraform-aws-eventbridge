@@ -1,3 +1,14 @@
+# Changelog
+
+All notable changes to this project will be documented in this file.
+
+## [1.13.1](https://github.com/terraform-aws-modules/terraform-aws-eventbridge/compare/v1.13.0...v1.13.1) (2021-11-22)
+
+
+### Bug Fixes
+
+* update CI/CD process to enable auto-release workflow ([#31](https://github.com/terraform-aws-modules/terraform-aws-eventbridge/issues/31)) ([ad31225](https://github.com/terraform-aws-modules/terraform-aws-eventbridge/commit/ad31225cf7b980a26ec55ecedc853f3548d7af00))
+
 <a name="v1.13.0"></a>
 ## [v1.13.0] - 2021-11-07
 
