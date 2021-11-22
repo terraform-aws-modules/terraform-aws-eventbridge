@@ -35,7 +35,7 @@ Note that this example may create resources which cost money. Run `terraform des
 | Name | Source | Version |
 |------|--------|---------|
 | <a name="module_ecs"></a> [ecs](#module\_ecs) | terraform-aws-modules/ecs/aws | ~> 3.0 |
-| <a name="module_eventbridge"></a> [eventbridge](#module\_eventbridge) | ../../ |  |
+| <a name="module_eventbridge"></a> [eventbridge](#module\_eventbridge) | ../../ | n/a |
 
 ## Resources
 

@@ -34,8 +34,8 @@ Note that this example may create resources which cost money. Run `terraform des
 
 | Name | Source | Version |
 |------|--------|---------|
-| <a name="module_eventbridge"></a> [eventbridge](#module\_eventbridge) | ../../ |  |
-| <a name="module_eventbridge_archive_only"></a> [eventbridge\_archive\_only](#module\_eventbridge\_archive\_only) | ../../ |  |
+| <a name="module_eventbridge"></a> [eventbridge](#module\_eventbridge) | ../../ | n/a |
+| <a name="module_eventbridge_archive_only"></a> [eventbridge\_archive\_only](#module\_eventbridge\_archive\_only) | ../../ | n/a |
 
 ## Resources
 
