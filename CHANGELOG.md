@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file.
 
+## [1.13.2](https://github.com/terraform-aws-modules/terraform-aws-eventbridge/compare/v1.13.1...v1.13.2) (2021-12-07)
+
+
+### Bug Fixes
+
+* Fixed outputs when create=false ([#33](https://github.com/terraform-aws-modules/terraform-aws-eventbridge/issues/33)) ([3dcc882](https://github.com/terraform-aws-modules/terraform-aws-eventbridge/commit/3dcc882b5b0960c96b7ceca045e0690af919078e))
+
 ## [1.13.1](https://github.com/terraform-aws-modules/terraform-aws-eventbridge/compare/v1.13.0...v1.13.1) (2021-11-22)
 
 
