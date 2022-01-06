@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file.
 
+## [1.13.3](https://github.com/terraform-aws-modules/terraform-aws-eventbridge/compare/v1.13.2...v1.13.3) (2022-01-06)
+
+
+### Bug Fixes
+
+* Amend batch_target to be correct value ([#35](https://github.com/terraform-aws-modules/terraform-aws-eventbridge/issues/35)) ([babb4d6](https://github.com/terraform-aws-modules/terraform-aws-eventbridge/commit/babb4d6eb00574631935c1b6423dc9a6e562fc3e))
+
 ## [1.13.2](https://github.com/terraform-aws-modules/terraform-aws-eventbridge/compare/v1.13.1...v1.13.2) (2021-12-07)
 
 
