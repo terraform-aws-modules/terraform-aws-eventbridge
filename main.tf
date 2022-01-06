@@ -110,7 +110,9 @@ resource "aws_cloudwatch_event_target" "this" {
   }
 
   dynamic "batch_target" {
-    for_each = lookup(each.value, "batch_target", null) != null ? [true] : []
+    for_each = lookup(each.value, "batch_target", null) != null ? [
+      each.value.batch_target
+    ] : []
 
     content {
       job_definition = batch_target.value.job_definition
