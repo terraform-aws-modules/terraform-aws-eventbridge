@@ -53,4 +53,3 @@ No inputs.
 |------|-------------|
 | <a name="output_eventbridge_bus_arn"></a> [eventbridge\_bus\_arn](#output\_eventbridge\_bus\_arn) | The EventBridge Bus ARN |
 <!-- END OF PRE-COMMIT-TERRAFORM DOCS HOOK -->
-

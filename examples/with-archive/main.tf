@@ -81,4 +81,3 @@ resource "random_pet" "this" {
 resource "aws_cloudwatch_event_bus" "existing_bus" {
   name = "${random_pet.this.id}-existing-bus"
 }
-

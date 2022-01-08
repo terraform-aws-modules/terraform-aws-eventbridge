@@ -7,4 +7,3 @@ output "eventbridge_archive_arns" {
   description = "The EventBridge Archive ARNs"
   value       = module.eventbridge.eventbridge_archive_arns
 }
-
