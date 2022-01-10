@@ -42,4 +42,3 @@ resource "random_pet" "this" {
 resource "aws_sqs_queue" "products" {
   name = random_pet.this.id
 }
-
