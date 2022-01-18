@@ -218,13 +218,15 @@ module "eventbridge" {
   targets = {
     crons = [
       {
-        name  = "your-awesome-state-machine"
-        arn   = "arn:aws:states:us-east-1:123456789012:stateMachine:your-awesome-state-machine"
+        name            = "your-awesome-state-machine"
+        arn             = "arn:aws:states:us-east-1:123456789012:stateMachine:your-awesome-state-machine"
+        attach_role_arn = true
       }
     ]
   }
 
-  sfn_target_arns = ["arn:aws:states:us-east-1:123456789012:stateMachine:your-awesome-state-machine"]
+  sfn_target_arns   = ["arn:aws:states:us-east-1:123456789012:stateMachine:your-awesome-state-machine"]
+  attach_sfn_policy = true
 }
 ```
 
