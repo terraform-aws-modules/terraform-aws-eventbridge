@@ -173,7 +173,7 @@ module "eventbridge_with_permissions" {
 }
 ```
 
-### EventBridge with lambda rule schedule
+### EventBridge with schedule rule and Lambda target
 
 ```hcl
 module "eventbridge" {
@@ -197,6 +197,36 @@ module "eventbridge" {
       }
     ]
   }
+}
+```
+
+### EventBridge with schedule rule and Step Functions target
+
+```hcl
+module "eventbridge" {
+  source = "terraform-aws-modules/eventbridge/aws"
+
+  create_bus = false
+
+  rules = {
+    crons = {
+      description         = "Run state machine everyday 10:00 UTC"
+      schedule_expression = "cron(0 10 * * ? *)"
+    }
+  }
+
+  targets = {
+    crons = [
+      {
+        name            = "your-awesome-state-machine"
+        arn             = "arn:aws:states:us-east-1:123456789012:stateMachine:your-awesome-state-machine"
+        attach_role_arn = true
+      }
+    ]
+  }
+
+  sfn_target_arns   = ["arn:aws:states:us-east-1:123456789012:stateMachine:your-awesome-state-machine"]
+  attach_sfn_policy = true
 }
 ```
 
