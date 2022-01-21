@@ -39,9 +39,7 @@ resource "aws_cloudwatch_event_bus" "this" {
 }
 
 resource "aws_cloudwatch_event_rule" "this" {
-  for_each = var.create && var.create_rules ? {
-    for rule in local.eventbridge_rules : rule.name => rule
-  } : {}
+  for_each = { for k, v in local.eventbridge_rules : v.name => v if var.create && var.create_rules }
 
   name        = each.value.Name
   name_prefix = lookup(each.value, "name_prefix", null)
@@ -60,9 +58,7 @@ resource "aws_cloudwatch_event_rule" "this" {
 }
 
 resource "aws_cloudwatch_event_target" "this" {
-  for_each = var.create && var.create_targets ? {
-    for target in local.eventbridge_targets : target.name => target
-  } : tomap({})
+  for_each = { for k, v in local.eventbridge_targets : v.name => v if var.create && var.create_targets }
 
   event_bus_name = var.create_bus ? aws_cloudwatch_event_bus.this[0].name : var.bus_name
 
@@ -205,9 +201,7 @@ resource "aws_cloudwatch_event_permission" "this" {
 }
 
 resource "aws_cloudwatch_event_connection" "this" {
-  for_each = var.create && var.create_connections ? {
-    for conn in local.eventbridge_connections : conn.name => conn
-  } : tomap({})
+  for_each = { for k, v in local.eventbridge_connections : v.name => v if var.create && var.create_connections }
 
   name               = each.value.Name
   description        = lookup(each.value, "description", null)
@@ -339,9 +333,7 @@ resource "aws_cloudwatch_event_connection" "this" {
 }
 
 resource "aws_cloudwatch_event_api_destination" "this" {
-  for_each = var.create && var.create_api_destinations ? {
-    for dest in local.eventbridge_api_destinations : dest.name => dest
-  } : {}
+  for_each = { for k, v in local.eventbridge_api_destinations : v.name => v if var.create && var.create_api_destinations }
 
   name                             = each.value.Name
   description                      = lookup(each.value, "description", null)
