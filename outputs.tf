@@ -6,7 +6,7 @@ output "eventbridge_bus_name" {
 
 output "eventbridge_bus_arn" {
   description = "The EventBridge Bus Arn"
-  value       = element(concat(aws_cloudwatch_event_bus.this.*.arn, [""]), 0)
+  value       = try(aws_cloudwatch_event_bus.this[0].arn, "")
 }
 
 # EventBridge Archive
@@ -41,21 +41,21 @@ output "eventbridge_api_destination_arns" {
 # EventBridge Rule
 output "eventbridge_rule_ids" {
   description = "The EventBridge Rule IDs created"
-  value       = var.create && var.create_rules ? { for p in sort(keys(var.rules)) : p => aws_cloudwatch_event_rule.this[p].id } : {}
+  value       = { for k in sort(keys(var.rules)) : k => aws_cloudwatch_event_rule.this[k].id if var.create && var.create_rules }
 }
 
 output "eventbridge_rule_arns" {
   description = "The EventBridge Rule ARNs created"
-  value       = var.create && var.create_rules ? { for p in sort(keys(var.rules)) : p => aws_cloudwatch_event_rule.this[p].arn } : {}
+  value       = { for k in sort(keys(var.rules)) : k => aws_cloudwatch_event_rule.this[k].arn if var.create && var.create_rules }
 }
 
 # IAM Role
 output "eventbridge_role_arn" {
   description = "The ARN of the IAM role created for EventBridge"
-  value       = element(concat(aws_iam_role.eventbridge.*.arn, [""]), 0)
+  value       = try(aws_iam_role.eventbridge[0].arn, "")
 }
 
 output "eventbridge_role_name" {
   description = "The name of the IAM role created for EventBridge"
-  value       = element(concat(aws_iam_role.eventbridge.*.name, [""]), 0)
+  value       = try(aws_iam_role.eventbridge[0].name, "")
 }
