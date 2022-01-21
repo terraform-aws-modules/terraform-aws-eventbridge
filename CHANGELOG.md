@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file.
 
+### [1.13.4](https://github.com/terraform-aws-modules/terraform-aws-eventbridge/compare/v1.13.3...v1.13.4) (2022-01-21)
+
+
+### Bug Fixes
+
+* Fixed incorrect tomap() ([#39](https://github.com/terraform-aws-modules/terraform-aws-eventbridge/issues/39)) ([05bceba](https://github.com/terraform-aws-modules/terraform-aws-eventbridge/commit/05bceba343470ab41272a2345ec45da86d1721f0))
+
 ## [1.13.3](https://github.com/terraform-aws-modules/terraform-aws-eventbridge/compare/v1.13.2...v1.13.3) (2022-01-06)
 
 
