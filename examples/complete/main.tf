@@ -177,6 +177,13 @@ EOF
       effect    = "Deny",
       actions   = ["s3:HeadObject", "s3:GetObject"],
       resources = ["arn:aws:s3:::my-bucket/*"]
+      condition = {
+        stringequals_condition = {
+          test     = "StringEquals"
+          variable = "aws:PrincipalOrgID"
+          values   = ["123456789012"]
+        }
+      }
     }
   }
 
