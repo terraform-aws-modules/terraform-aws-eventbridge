@@ -33,7 +33,7 @@ module "eventbridge" {
       {
         name            = "send-orders-to-requestbin"
         destination     = "requestbin"
-        attach_role_arn = true
+        attach_role_arn = aws_iam_role.eventbridge.arn
       },
       {
         name            = "send-orders-to-github"
@@ -163,4 +163,21 @@ module "eventbridge" {
 
 resource "random_pet" "this" {
   length = 2
+}
+
+resource "aws_iam_role" "eventbridge" {
+  name               = "${random_pet.this.id}-role"
+  assume_role_policy = data.aws_iam_policy_document.assume_role.json
+}
+
+data "aws_iam_policy_document" "assume_role" {
+  statement {
+    effect  = "Allow"
+    actions = ["sts:AssumeRole"]
+
+    principals {
+      type        = "Service"
+      identifiers = ["events.amazonaws.com"]
+    }
+  }
 }
