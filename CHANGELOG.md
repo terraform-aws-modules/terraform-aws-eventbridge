@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file.
 
+## [1.14.0](https://github.com/terraform-aws-modules/terraform-aws-eventbridge/compare/v1.13.4...v1.14.0) (2022-02-04)
+
+
+### Features
+
+* Added support for custom role_arn in targets ([#42](https://github.com/terraform-aws-modules/terraform-aws-eventbridge/issues/42)) ([45311f7](https://github.com/terraform-aws-modules/terraform-aws-eventbridge/commit/45311f7e4cbd2d1eda148add97fc0569d235d0b6))
+
 ### [1.13.4](https://github.com/terraform-aws-modules/terraform-aws-eventbridge/compare/v1.13.3...v1.13.4) (2022-01-21)
 
 
