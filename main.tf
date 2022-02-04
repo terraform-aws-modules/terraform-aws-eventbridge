@@ -65,7 +65,8 @@ resource "aws_cloudwatch_event_target" "this" {
   rule = each.value.Name
   arn  = lookup(each.value, "destination", null) != null ? aws_cloudwatch_event_api_destination.this[each.value.destination].arn : each.value.arn
 
-  role_arn   = lookup(each.value, "attach_role_arn", null) != null ? try(aws_iam_role.eventbridge[0].arn, "") : null
+  role_arn = can(length(each.value.attach_role_arn) > 0) ? each.value.attach_role_arn : (try(each.value.attach_role_arn, null) == true ? aws_iam_role.eventbridge[0].arn : null)
+
   target_id  = lookup(each.value, "target_id", null)
   input      = lookup(each.value, "input", null)
   input_path = lookup(each.value, "input_path", null)
