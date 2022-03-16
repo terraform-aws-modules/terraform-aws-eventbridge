@@ -187,6 +187,24 @@ EOF
     }
   }
 
+  policy_event_bus_json = <<EOF
+{
+  "Version": "2012-10-17",
+  "Statement": [{
+    "Sid": "AllowAllOrganizationToPutEvents",
+    "Effect": "Allow",
+    "Principal": "*",
+    "Action": "events:PutEvents",
+    "Resource": "*",
+    "Condition": {
+      "StringEquals": {
+        "aws:PrincipalOrgID": "o-01234567891"
+      }
+    }
+  }]
+}
+EOF
+
   ###########################
   # END: Additional policies
   ###########################

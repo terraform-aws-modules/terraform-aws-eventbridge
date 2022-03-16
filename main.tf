@@ -343,3 +343,10 @@ resource "aws_cloudwatch_event_api_destination" "this" {
   invocation_rate_limit_per_second = lookup(each.value, "invocation_rate_limit_per_second", null)
   connection_arn                   = aws_cloudwatch_event_connection.this[each.value.name].arn
 }
+
+resource "aws_cloudwatch_event_bus_policy" "this" {
+  count = var.policy_event_bus_json != null ? 1 : 0
+
+  event_bus_name = var.create_bus ? aws_cloudwatch_event_bus.this[0].name : var.bus_name
+  policy         = var.policy_event_bus_json
+}

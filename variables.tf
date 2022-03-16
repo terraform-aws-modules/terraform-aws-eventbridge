@@ -323,3 +323,9 @@ variable "policy_statements" {
   type        = any
   default     = {}
 }
+
+variable "policy_event_bus_json" {
+  description = "The text of the policy to attach to Event Bus"
+  type        = string
+  default     = null
+}
