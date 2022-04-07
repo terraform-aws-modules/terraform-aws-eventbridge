@@ -317,7 +317,7 @@ module "eventbridge" {
   create = false # to disable all resources
 
   create_bus              = false  # to control creation of the EventBridge Bus and related resources
-  create_rule             = false  # to control creation of EventBridge Rules and related resources
+  create_rules            = false  # to control creation of EventBridge Rules and related resources
   create_targets          = false  # to control creation of EventBridge Targets and related resources
   create_archives         = false  # to control creation of EventBridge Archives
   create_permissions      = false  # to control creation of EventBridge Permissions
