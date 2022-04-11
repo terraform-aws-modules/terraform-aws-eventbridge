@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file.
 
+### Feature
+
+* Enabled tagging for resource aws_cloudwatch_event_target so as to tag ecs_target ([#44](https://github.com/terraform-aws-modules/terraform-aws-eventbridge/issues/44) 
+([1b59](https://github.com/terraform-aws-modules/terraform-aws-eventbridge/pull/51/commits/1b593cb33d90c07c58ce7d639e10118a835b223a))
+
+
 ## [1.14.0](https://github.com/terraform-aws-modules/terraform-aws-eventbridge/compare/v1.13.4...v1.14.0) (2022-02-04)
 
 
