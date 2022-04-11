@@ -178,6 +178,7 @@ resource "aws_cloudwatch_event_target" "this" {
   }
 
   depends_on = [aws_cloudwatch_event_rule.this]
+  tags = var.tags
 }
 
 resource "aws_cloudwatch_event_archive" "this" {
