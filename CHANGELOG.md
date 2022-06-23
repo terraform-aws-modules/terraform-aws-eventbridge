@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file.
 
+### [1.14.1](https://github.com/terraform-aws-modules/terraform-aws-eventbridge/compare/v1.14.0...v1.14.1) (2022-06-23)
+
+
+### Bug Fixes
+
+* Enable run_command_targets support for target ([#54](https://github.com/terraform-aws-modules/terraform-aws-eventbridge/issues/54)) ([e153898](https://github.com/terraform-aws-modules/terraform-aws-eventbridge/commit/e1538986d9431dcb01795458ced24d7e28cae108))
+
 ## [1.14.0](https://github.com/terraform-aws-modules/terraform-aws-eventbridge/compare/v1.13.4...v1.14.0) (2022-02-04)
 
 
