@@ -72,9 +72,7 @@ resource "aws_cloudwatch_event_target" "this" {
   input_path = lookup(each.value, "input_path", null)
 
   dynamic "run_command_targets" {
-    for_each = lookup(each.value, "run_command_targets", null) != null ? [
-      each.value.run_command_targets
-    ] : []
+    for_each = try([each.value.run_command_targets], [])
 
     content {
       key    = run_command_targets.value.key
