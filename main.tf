@@ -86,11 +86,12 @@ resource "aws_cloudwatch_event_target" "this" {
     ] : []
 
     content {
-      group               = lookup(ecs_target.value, "group", null)
-      launch_type         = lookup(ecs_target.value, "launch_type", null)
-      platform_version    = lookup(ecs_target.value, "platform_version", null)
-      task_count          = lookup(ecs_target.value, "task_count", null)
-      task_definition_arn = lookup(ecs_target.value, "task_definition_arn", null)
+      group                   = lookup(ecs_target.value, "group", null)
+      launch_type             = lookup(ecs_target.value, "launch_type", null)
+      platform_version        = lookup(ecs_target.value, "platform_version", null)
+      task_count              = lookup(ecs_target.value, "task_count", null)
+      task_definition_arn     = lookup(ecs_target.value, "task_definition_arn", null)
+      enable_ecs_managed_tags = lookup(ecs_target.value, "enable_ecs_managed_tags", null)
 
       dynamic "network_configuration" {
         for_each = lookup(ecs_target.value, "network_configuration", null) != null ? [
