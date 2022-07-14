@@ -19,14 +19,14 @@ locals {
     for index, conn in var.connections :
     merge(conn, {
       "name" = index
-      "Name" = var.append_rule_postfix ? "${replace(index, "_", "-")}-rule" : index
+      "Name" = var.append_connection_postfix ? "${replace(index, "_", "-")}-rule" : index
     })
   ])
   eventbridge_api_destinations = flatten([
     for index, dest in var.api_destinations :
     merge(dest, {
       "name" = index
-      "Name" = var.append_rule_postfix ? "${replace(index, "_", "-")}-rule" : index
+      "Name" = var.append_destination_postfix ? "${replace(index, "_", "-")}-rule" : index
     })
   ])
 }

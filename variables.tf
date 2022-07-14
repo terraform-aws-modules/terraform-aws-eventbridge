@@ -16,6 +16,18 @@ variable "append_rule_postfix" {
   default     = true
 }
 
+variable "append_connection_postfix" {
+  description = "Controls whether to append '-rule' to the name of the connection"
+  type        = bool
+  default     = true
+}
+
+variable "append_destination_postfix" {
+  description = "Controls whether to append '-rule' to the name of the destination"
+  type        = bool
+  default     = true
+}
+
 variable "create_bus" {
   description = "Controls whether EventBridge Bus resource should be created"
   type        = bool
