@@ -17,13 +17,13 @@ variable "append_rule_postfix" {
 }
 
 variable "append_connection_postfix" {
-  description = "Controls whether to append '-rule' to the name of the connection"
+  description = "Controls whether to append '-connection' to the name of the connection"
   type        = bool
   default     = true
 }
 
 variable "append_destination_postfix" {
-  description = "Controls whether to append '-rule' to the name of the destination"
+  description = "Controls whether to append '-destination' to the name of the destination"
   type        = bool
   default     = true
 }
