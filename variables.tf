@@ -10,7 +10,7 @@ variable "create_role" {
   default     = true
 }
 
-variable "append_rule_name" {
+variable "append_rule_postfix" {
   description = "Controls whether to append '-rule' to the name of the rule"
   type        = bool
   default     = true
