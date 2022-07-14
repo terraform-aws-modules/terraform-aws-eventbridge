@@ -10,6 +10,12 @@ variable "create_role" {
   default     = true
 }
 
+variable "append_rule_name" {
+  description = "Controls whether to append '-rule' to the name of the rule"
+  type        = bool
+  default     = true
+}
+
 variable "create_bus" {
   description = "Controls whether EventBridge Bus resource should be created"
   type        = bool

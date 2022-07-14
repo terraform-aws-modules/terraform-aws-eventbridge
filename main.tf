@@ -3,7 +3,7 @@ locals {
     for index, rule in var.rules :
     merge(rule, {
       "name" = index
-      "Name" = "${replace(index, "_", "-")}-rule"
+      "Name" = var.append_rule_name ? "${replace(index, "_", "-")}-rule" : index
     })
   ])
   eventbridge_targets = flatten([
@@ -11,7 +11,7 @@ locals {
       for target in var.targets[index] :
       merge(target, {
         "rule" = index
-        "Name" = "${replace(index, "_", "-")}-rule"
+        "Name" = var.append_rule_name ? "${replace(index, "_", "-")}-rule" : index
       })
     ] if length(var.targets) != 0
   ])
@@ -19,14 +19,14 @@ locals {
     for index, conn in var.connections :
     merge(conn, {
       "name" = index
-      "Name" = "${replace(index, "_", "-")}-connection"
+      "Name" = var.append_rule_name ? "${replace(index, "_", "-")}-rule" : index
     })
   ])
   eventbridge_api_destinations = flatten([
     for index, dest in var.api_destinations :
     merge(dest, {
       "name" = index
-      "Name" = "${replace(index, "_", "-")}-destination"
+      "Name" = var.append_rule_name ? "${replace(index, "_", "-")}-rule" : index
     })
   ])
 }
