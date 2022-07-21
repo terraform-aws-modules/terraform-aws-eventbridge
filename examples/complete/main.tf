@@ -34,6 +34,8 @@ module "eventbridge" {
 
   attach_cloudwatch_policy = true
   cloudwatch_target_arns   = [aws_cloudwatch_log_group.this.arn]
+  
+  append_rule_postfix = false
 
   attach_ecs_policy = true
   ecs_target_arns   = [aws_ecs_task_definition.hello_world.arn]
