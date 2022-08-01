@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file.
 
+### [1.14.2](https://github.com/terraform-aws-modules/terraform-aws-eventbridge/compare/v1.14.1...v1.14.2) (2022-07-28)
+
+
+### Bug Fixes
+
+* Make it optional to append postfix to the name, connection, or API destination  ([#58](https://github.com/terraform-aws-modules/terraform-aws-eventbridge/issues/58)) ([980b910](https://github.com/terraform-aws-modules/terraform-aws-eventbridge/commit/980b9108aa34c9354a2e847de03c95b3a012b3d0))
+
 ### [1.14.1](https://github.com/terraform-aws-modules/terraform-aws-eventbridge/compare/v1.14.0...v1.14.1) (2022-06-23)
 
 
