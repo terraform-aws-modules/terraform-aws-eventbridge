@@ -39,7 +39,7 @@ resource "aws_cloudwatch_event_bus" "this" {
 }
 
 resource "aws_schemas_discoverer" "this" {
-  source_arn  = aws_cloudwatch_event_bus.this.arn
+  source_arn  = aws_cloudwatch_event_bus.this[0].arn
   description = var.discover_description
 }
 
