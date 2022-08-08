@@ -38,6 +38,11 @@ resource "aws_cloudwatch_event_bus" "this" {
   tags = var.tags
 }
 
+resource "aws_schemas_discoverer" "this" {
+  source_arn  = aws_cloudwatch_event_bus.this.arn
+  description = var.discover_description
+}
+
 resource "aws_cloudwatch_event_rule" "this" {
   for_each = { for k, v in local.eventbridge_rules : v.name => v if var.create && var.create_rules }
 

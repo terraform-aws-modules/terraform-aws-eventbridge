@@ -78,6 +78,12 @@ variable "bus_name" {
   default     = "default"
 }
 
+variable "discover_description" {
+  description = "Disoverer default schema description"
+  type        = string
+  default     = "Auto discover event schemas"
+}
+
 variable "rules" {
   description = "A map of objects with EventBridge Rule definitions."
   type        = map(any)
