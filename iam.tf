@@ -329,6 +329,7 @@ resource "aws_iam_policy" "additional_json" {
   count = local.create_role && var.attach_policy_json ? 1 : 0
 
   name   = local.role_name
+  path   = var.role_path
   policy = var.policy_json
 }
 
