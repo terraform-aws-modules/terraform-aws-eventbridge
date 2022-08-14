@@ -41,12 +41,12 @@ output "eventbridge_api_destination_arns" {
 # EventBridge Rule
 output "eventbridge_rule_ids" {
   description = "The EventBridge Rule IDs created"
-  value       = { for k in sort(keys(var.rules)) : k => aws_cloudwatch_event_rule.this[k].id if var.create && var.create_rules }
+  value       = { for k in sort(keys(var.rules)) : k => try(aws_cloudwatch_event_rule.this[k].id, null) if var.create && var.create_rules }
 }
 
 output "eventbridge_rule_arns" {
   description = "The EventBridge Rule ARNs created"
-  value       = { for k in sort(keys(var.rules)) : k => aws_cloudwatch_event_rule.this[k].arn if var.create && var.create_rules }
+  value       = { for k in sort(keys(var.rules)) : k => try(aws_cloudwatch_event_rule.this[k].arn, null) if var.create && var.create_rules }
 }
 
 # IAM Role
