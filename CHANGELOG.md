@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file.
 
+### [1.14.3](https://github.com/terraform-aws-modules/terraform-aws-eventbridge/compare/v1.14.2...v1.14.3) (2022-09-08)
+
+
+### Bug Fixes
+
+* Problems found when importing resources previously already created ([#61](https://github.com/terraform-aws-modules/terraform-aws-eventbridge/issues/61)) ([015122e](https://github.com/terraform-aws-modules/terraform-aws-eventbridge/commit/015122e9a7204ef35b7812781e076d861d5945b5))
+
 ### [1.14.2](https://github.com/terraform-aws-modules/terraform-aws-eventbridge/compare/v1.14.1...v1.14.2) (2022-07-28)
 
 
