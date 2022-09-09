@@ -36,7 +36,7 @@ resource "aws_iam_role" "eventbridge" {
   permissions_boundary  = var.role_permissions_boundary
   assume_role_policy    = data.aws_iam_policy_document.assume_role[0].json
 
-  tags = merge(var.tags, var.role_tags)
+  tags = merge(var.tags, var.role_tags, { Name = local.role_name })
 }
 
 #####################
@@ -56,6 +56,8 @@ resource "aws_iam_policy" "tracing" {
 
   name   = "${local.role_name}-tracing"
   policy = data.aws_iam_policy.tracing[0].policy
+
+  tags = merge(var.tags, { Name = "${local.role_name}-tracing" })
 }
 
 resource "aws_iam_policy_attachment" "tracing" {
@@ -86,6 +88,8 @@ resource "aws_iam_policy" "kinesis" {
 
   name   = "${local.role_name}-kinesis"
   policy = data.aws_iam_policy_document.kinesis[0].json
+
+  tags = merge(var.tags, { Name = "${local.role_name}-kinesis" })
 }
 
 resource "aws_iam_policy_attachment" "kinesis" {
@@ -116,6 +120,8 @@ resource "aws_iam_policy" "kinesis_firehose" {
 
   name   = "${local.role_name}-kinesis-firehose"
   policy = data.aws_iam_policy_document.kinesis_firehose[0].json
+
+  tags = merge(var.tags, { Name = "${local.role_name}-kinesis-firehose" })
 }
 
 resource "aws_iam_policy_attachment" "kinesis_firehose" {
@@ -150,6 +156,8 @@ resource "aws_iam_policy" "sqs" {
 
   name   = "${local.role_name}-sqs"
   policy = data.aws_iam_policy_document.sqs[0].json
+
+  tags = merge(var.tags, { Name = "${local.role_name}-sqs" })
 }
 
 resource "aws_iam_policy_attachment" "sqs" {
@@ -187,6 +195,8 @@ resource "aws_iam_policy" "ecs" {
 
   name   = "${local.role_name}-ecs"
   policy = data.aws_iam_policy_document.ecs[0].json
+
+  tags = merge(var.tags, { Name = "${local.role_name}-ecs" })
 }
 
 resource "aws_iam_policy_attachment" "ecs" {
@@ -217,6 +227,8 @@ resource "aws_iam_policy" "lambda" {
 
   name   = "${local.role_name}-lambda"
   policy = data.aws_iam_policy_document.lambda[0].json
+
+  tags = merge(var.tags, { Name = "${local.role_name}-lambda" })
 }
 
 resource "aws_iam_policy_attachment" "lambda" {
@@ -247,6 +259,8 @@ resource "aws_iam_policy" "sfn" {
 
   name   = "${local.role_name}-sfn"
   policy = data.aws_iam_policy_document.sfn[0].json
+
+  tags = merge(var.tags, { Name = "${local.role_name}-sfn" })
 }
 
 resource "aws_iam_policy_attachment" "sfn" {
@@ -277,6 +291,8 @@ resource "aws_iam_policy" "api_destination" {
 
   name   = "${local.role_name}-api-destination"
   policy = data.aws_iam_policy_document.api_destination[0].json
+
+  tags = merge(var.tags, { Name = "${local.role_name}-api-destination" })
 }
 
 resource "aws_iam_policy_attachment" "api_destination" {
@@ -311,6 +327,8 @@ resource "aws_iam_policy" "cloudwatch" {
 
   name   = "${local.role_name}-cloudwatch"
   policy = data.aws_iam_policy_document.cloudwatch[0].json
+
+  tags = merge(var.tags, { Name = "${local.role_name}-cloudwatch" })
 }
 
 resource "aws_iam_policy_attachment" "cloudwatch" {
@@ -331,6 +349,8 @@ resource "aws_iam_policy" "additional_json" {
   name   = local.role_name
   path   = var.role_path
   policy = var.policy_json
+
+  tags = merge(var.tags, { Name = local.role_name })
 }
 
 resource "aws_iam_policy_attachment" "additional_json" {
@@ -350,6 +370,8 @@ resource "aws_iam_policy" "additional_jsons" {
 
   name   = "${local.role_name}-${count.index}"
   policy = var.policy_jsons[count.index]
+
+  tags = merge(var.tags, { Name = "${local.role_name}-${count.index}" })
 }
 
 resource "aws_iam_policy_attachment" "additional_jsons" {
@@ -433,6 +455,8 @@ resource "aws_iam_policy" "additional_inline" {
 
   name   = "${local.role_name}-inline"
   policy = data.aws_iam_policy_document.additional_inline[0].json
+
+  tags = merge(var.tags, { Name = "${local.role_name}-inline" })
 }
 
 resource "aws_iam_policy_attachment" "additional_inline" {
