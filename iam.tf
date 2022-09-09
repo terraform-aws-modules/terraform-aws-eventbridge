@@ -36,7 +36,7 @@ resource "aws_iam_role" "eventbridge" {
   permissions_boundary  = var.role_permissions_boundary
   assume_role_policy    = data.aws_iam_policy_document.assume_role[0].json
 
-  tags = merge(var.tags, var.role_tags, { Name = local.role_name })
+  tags = merge(var.tags, { Name = local.role_name }, var.role_tags)
 }
 
 #####################
