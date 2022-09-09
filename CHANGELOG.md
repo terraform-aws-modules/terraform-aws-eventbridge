@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file.
 
+## [1.15.0](https://github.com/terraform-aws-modules/terraform-aws-eventbridge/compare/v1.14.3...v1.15.0) (2022-09-09)
+
+
+### Features
+
+* Added Name tag for IAM policies and roles ([#62](https://github.com/terraform-aws-modules/terraform-aws-eventbridge/issues/62)) ([8ca8835](https://github.com/terraform-aws-modules/terraform-aws-eventbridge/commit/8ca88350a4de0d5fff5811d1e802f02b48f5b032))
+
 ### [1.14.3](https://github.com/terraform-aws-modules/terraform-aws-eventbridge/compare/v1.14.2...v1.14.3) (2022-09-08)
 
 
