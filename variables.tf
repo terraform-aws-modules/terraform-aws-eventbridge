@@ -79,7 +79,7 @@ variable "bus_name" {
 }
 
 variable "discover_description" {
-  description = "Disoverer default schema description"
+  description = "Discover default schema description"
   type        = string
   default     = "Auto discover event schemas"
 }
