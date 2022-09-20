@@ -63,8 +63,8 @@ module "eventbridge" {
 
           network_configuration = {
             assign_public_ip = true
-            subnets          = data.aws_subnet_ids.default
-            security_groups  = data.aws_security_group.default
+            subnets          = data.aws_subnet_ids.default.ids
+            security_groups  = [ data.aws_security_group.default.arn ]
           }
         }
       }
