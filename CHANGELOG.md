@@ -2,6 +2,27 @@
 
 All notable changes to this project will be documented in this file.
 
+### [1.15.1](https://github.com/terraform-aws-modules/terraform-aws-eventbridge/compare/v1.15.0...v1.15.1) (2022-09-21)
+
+
+### Bug Fixes
+
+* Fixed inappropriate values for subnets and security_groups in example ([#63](https://github.com/terraform-aws-modules/terraform-aws-eventbridge/issues/63)) ([fd7a25b](https://github.com/terraform-aws-modules/terraform-aws-eventbridge/commit/fd7a25b4c995510bff3b69f8a942c50f6fe06a7d))
+
+## [1.15.0](https://github.com/terraform-aws-modules/terraform-aws-eventbridge/compare/v1.14.3...v1.15.0) (2022-09-09)
+
+
+### Features
+
+* Added Name tag for IAM policies and roles ([#62](https://github.com/terraform-aws-modules/terraform-aws-eventbridge/issues/62)) ([8ca8835](https://github.com/terraform-aws-modules/terraform-aws-eventbridge/commit/8ca88350a4de0d5fff5811d1e802f02b48f5b032))
+
+### [1.14.3](https://github.com/terraform-aws-modules/terraform-aws-eventbridge/compare/v1.14.2...v1.14.3) (2022-09-08)
+
+
+### Bug Fixes
+
+* Problems found when importing resources previously already created ([#61](https://github.com/terraform-aws-modules/terraform-aws-eventbridge/issues/61)) ([015122e](https://github.com/terraform-aws-modules/terraform-aws-eventbridge/commit/015122e9a7204ef35b7812781e076d861d5945b5))
+
 ### [1.14.2](https://github.com/terraform-aws-modules/terraform-aws-eventbridge/compare/v1.14.1...v1.14.2) (2022-07-28)
 
 
