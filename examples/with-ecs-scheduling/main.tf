@@ -63,8 +63,8 @@ module "eventbridge" {
 
           network_configuration = {
             assign_public_ip = true
-            subnets          = data.aws_subnet_ids.default
-            security_groups  = data.aws_security_group.default
+            subnets          = data.aws_subnet_ids.default.ids
+            security_groups  = [data.aws_security_group.default.arn]
           }
         }
       }
@@ -89,7 +89,6 @@ resource "aws_ecs_service" "hello_world" {
   name            = "hello_world-${random_pet.this.id}"
   cluster         = module.ecs.ecs_cluster_id
   task_definition = aws_ecs_task_definition.hello_world.arn
-  launch_type     = "FARGATE"
 
   desired_count = 1
 

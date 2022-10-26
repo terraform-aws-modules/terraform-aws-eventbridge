@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file.
 
+### [1.15.1](https://github.com/terraform-aws-modules/terraform-aws-eventbridge/compare/v1.15.0...v1.15.1) (2022-09-21)
+
+
+### Bug Fixes
+
+* Fixed inappropriate values for subnets and security_groups in example ([#63](https://github.com/terraform-aws-modules/terraform-aws-eventbridge/issues/63)) ([fd7a25b](https://github.com/terraform-aws-modules/terraform-aws-eventbridge/commit/fd7a25b4c995510bff3b69f8a942c50f6fe06a7d))
+
 ## [1.15.0](https://github.com/terraform-aws-modules/terraform-aws-eventbridge/compare/v1.14.3...v1.15.0) (2022-09-09)
 
 
