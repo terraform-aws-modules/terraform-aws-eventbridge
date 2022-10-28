@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file.
 
+## [1.16.0](https://github.com/terraform-aws-modules/terraform-aws-eventbridge/compare/v1.15.1...v1.16.0) (2022-10-28)
+
+
+### Features
+
+* Add schema discoverer ([#64](https://github.com/terraform-aws-modules/terraform-aws-eventbridge/issues/64)) ([0099c43](https://github.com/terraform-aws-modules/terraform-aws-eventbridge/commit/0099c43dc03e26d0c21ed606e43d57e56284c7a9))
+
 ### [1.15.1](https://github.com/terraform-aws-modules/terraform-aws-eventbridge/compare/v1.15.0...v1.15.1) (2022-09-21)
 
 
