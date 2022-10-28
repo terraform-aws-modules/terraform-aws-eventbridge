@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file.
 
+## [1.17.0](https://github.com/terraform-aws-modules/terraform-aws-eventbridge/compare/v1.16.0...v1.17.0) (2022-10-28)
+
+
+### Features
+
+* Upgraded AWS provider version to 4.7 ([#66](https://github.com/terraform-aws-modules/terraform-aws-eventbridge/issues/66)) ([7690287](https://github.com/terraform-aws-modules/terraform-aws-eventbridge/commit/76902879b4b18f4de0cacf8ad0e4a0b05239fd23))
+
 ## [1.16.0](https://github.com/terraform-aws-modules/terraform-aws-eventbridge/compare/v1.15.1...v1.16.0) (2022-10-28)
 
 
