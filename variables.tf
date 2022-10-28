@@ -70,12 +70,24 @@ variable "create_api_destinations" {
   default     = false
 }
 
+variable "create_schemas_discoverer" {
+  description = "Controls whether default schemas discoverer should be created"
+  type        = bool
+  default     = false
+}
+
 #######################
 
 variable "bus_name" {
   description = "A unique name for your EventBridge Bus"
   type        = string
   default     = "default"
+}
+
+variable "schemas_discoverer_description" {
+  description = "Default schemas discoverer description"
+  type        = string
+  default     = "Auto schemas discoverer event"
 }
 
 variable "rules" {
