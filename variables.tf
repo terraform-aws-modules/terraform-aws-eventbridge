@@ -71,7 +71,7 @@ variable "create_api_destinations" {
 }
 
 variable "create_schemas_discoverer" {
-  description = "Controls wheather default schemas discoverer should be created"
+  description = "Controls whether default schemas discoverer should be created"
   type        = bool
   default     = false
 }

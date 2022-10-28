@@ -17,6 +17,8 @@ module "eventbridge" {
   # Some targets are only working with the default bus, so we don't have to create a new one like this:
   # bus_name = "${random_pet.this.id}-bus"
 
+  create_schemas_discoverer = true
+
   attach_tracing_policy = true
 
   attach_kinesis_policy = true
@@ -161,8 +163,9 @@ EOF
   ]
   number_of_policy_jsons = 1
 
-  attach_policy = true
-  policy        = "arn:aws:iam::aws:policy/AWSXRayDaemonWriteAccess"
+  #  # Error can be that maximum 10 policies can be attached to IAM role
+  #  attach_policy = true
+  #  policy        = "arn:aws:iam::aws:policy/AWSXRayDaemonWriteAccess"
 
   attach_policies    = true
   policies           = ["arn:aws:iam::aws:policy/AWSXrayReadOnlyAccess"]
@@ -192,6 +195,12 @@ EOF
   ###########################
   # END: Additional policies
   ###########################
+}
+
+module "disabled" {
+  source = "../../"
+
+  create = false
 }
 
 locals {

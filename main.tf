@@ -49,6 +49,8 @@ resource "aws_schemas_discoverer" "this" {
 
   source_arn  = var.create_bus ? aws_cloudwatch_event_bus.this[0].arn : data.aws_cloudwatch_event_bus.this[0].arn
   description = var.schemas_discoverer_description
+
+  tags = var.tags
 }
 
 resource "aws_cloudwatch_event_rule" "this" {
