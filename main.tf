@@ -3,7 +3,7 @@ locals {
     for index, rule in var.rules :
     merge(rule, {
       "name" = index
-      "Name" = "${replace(index, "_", "-")}-rule"
+      "Name" = var.append_rule_postfix ? "${replace(index, "_", "-")}-rule" : index
     })
   ])
   eventbridge_targets = flatten([
@@ -11,7 +11,7 @@ locals {
       for target in var.targets[index] :
       merge(target, {
         "rule" = index
-        "Name" = "${replace(index, "_", "-")}-rule"
+        "Name" = var.append_rule_postfix ? "${replace(index, "_", "-")}-rule" : index
       })
     ] if length(var.targets) != 0
   ])
@@ -19,22 +19,37 @@ locals {
     for index, conn in var.connections :
     merge(conn, {
       "name" = index
-      "Name" = "${replace(index, "_", "-")}-connection"
+      "Name" = var.append_connection_postfix ? "${replace(index, "_", "-")}-connection" : index
     })
   ])
   eventbridge_api_destinations = flatten([
     for index, dest in var.api_destinations :
     merge(dest, {
       "name" = index
-      "Name" = "${replace(index, "_", "-")}-destination"
+      "Name" = var.append_destination_postfix ? "${replace(index, "_", "-")}-destination" : index
     })
   ])
+}
+
+data "aws_cloudwatch_event_bus" "this" {
+  count = (var.create && var.create_bus) || (var.bus_name == "") ? 0 : 1
+
+  name = var.bus_name
 }
 
 resource "aws_cloudwatch_event_bus" "this" {
   count = var.create && var.create_bus ? 1 : 0
 
   name = var.bus_name
+  tags = var.tags
+}
+
+resource "aws_schemas_discoverer" "this" {
+  count = var.create && var.create_schemas_discoverer ? 1 : 0
+
+  source_arn  = var.create_bus ? aws_cloudwatch_event_bus.this[0].arn : data.aws_cloudwatch_event_bus.this[0].arn
+  description = var.schemas_discoverer_description
+
   tags = var.tags
 }
 
@@ -72,7 +87,7 @@ resource "aws_cloudwatch_event_target" "this" {
   input_path = lookup(each.value, "input_path", null)
 
   dynamic "run_command_targets" {
-    for_each = lookup(each.value, "run_command_targets", null) != null ? [true] : []
+    for_each = try([each.value.run_command_targets], [])
 
     content {
       key    = run_command_targets.value.key

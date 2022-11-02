@@ -10,6 +10,24 @@ variable "create_role" {
   default     = true
 }
 
+variable "append_rule_postfix" {
+  description = "Controls whether to append '-rule' to the name of the rule"
+  type        = bool
+  default     = true
+}
+
+variable "append_connection_postfix" {
+  description = "Controls whether to append '-connection' to the name of the connection"
+  type        = bool
+  default     = true
+}
+
+variable "append_destination_postfix" {
+  description = "Controls whether to append '-destination' to the name of the destination"
+  type        = bool
+  default     = true
+}
+
 variable "create_bus" {
   description = "Controls whether EventBridge Bus resource should be created"
   type        = bool
@@ -52,12 +70,24 @@ variable "create_api_destinations" {
   default     = false
 }
 
+variable "create_schemas_discoverer" {
+  description = "Controls whether default schemas discoverer should be created"
+  type        = bool
+  default     = false
+}
+
 #######################
 
 variable "bus_name" {
   description = "A unique name for your EventBridge Bus"
   type        = string
   default     = "default"
+}
+
+variable "schemas_discoverer_description" {
+  description = "Default schemas discoverer description"
+  type        = string
+  default     = "Auto schemas discoverer event"
 }
 
 variable "rules" {
