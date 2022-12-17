@@ -137,19 +137,19 @@ variable "tags" {
 ######
 
 variable "role_name" {
-  description = "Name of IAM role to use for Lambda Function"
+  description = "Name of IAM role to use for EventBridge"
   type        = string
   default     = null
 }
 
 variable "role_description" {
-  description = "Description of IAM role to use for Lambda Function"
+  description = "Description of IAM role to use for EventBridge"
   type        = string
   default     = null
 }
 
 variable "role_path" {
-  description = "Path of IAM role to use for Lambda Function"
+  description = "Path of IAM role to use for EventBridge"
   type        = string
   default     = null
 }
@@ -161,7 +161,7 @@ variable "role_force_detach_policies" {
 }
 
 variable "role_permissions_boundary" {
-  description = "The ARN of the policy that is used to set the permissions boundary for the IAM role used by Lambda Function"
+  description = "The ARN of the policy that is used to set the permissions boundary for the IAM role used by EventBridge"
   type        = string
   default     = null
 }
