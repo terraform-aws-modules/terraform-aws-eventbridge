@@ -347,9 +347,9 @@ data "aws_iam_policy_document" "batch" {
   count = local.create_role && var.attach_batch_policy ? 1 : 0
 
   statement {
-    sid    = "BatchAccess"
-    effect = "Allow"
-    actions = ["batch:SubmitJob"]
+    sid       = "BatchAccess"
+    effect    = "Allow"
+    actions   = ["batch:SubmitJob"]
     resources = var.batch_target_arns
   }
 }
