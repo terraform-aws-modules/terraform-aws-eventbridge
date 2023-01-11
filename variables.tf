@@ -230,6 +230,12 @@ variable "attach_tracing_policy" {
   default     = false
 }
 
+variable "attach_batch_policy" {
+  description = "Controls whether Batch policy should be added to IAM role for EventBridge Target"
+  type        = bool
+  default     = false
+}
+
 variable "kinesis_target_arns" {
   description = "The Amazon Resource Name (ARN) of the Kinesis Streams you want to use as EventBridge targets"
   type        = list(string)
@@ -268,6 +274,12 @@ variable "sfn_target_arns" {
 
 variable "cloudwatch_target_arns" {
   description = "The Amazon Resource Name (ARN) of the Cloudwatch Log Streams you want to use as EventBridge targets"
+  type        = list(string)
+  default     = []
+}
+
+variable "batch_target_arns" {
+  description = "The Amazon Resource Name (ARN) of the Batch you want to use as EventBridge targets"
   type        = list(string)
   default     = []
 }

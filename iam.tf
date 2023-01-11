@@ -339,6 +339,38 @@ resource "aws_iam_policy_attachment" "cloudwatch" {
   policy_arn = aws_iam_policy.cloudwatch[0].arn
 }
 
+####################
+# Batch Config
+####################
+
+data "aws_iam_policy_document" "batch" {
+  count = local.create_role && var.attach_batch_policy ? 1 : 0
+
+  statement {
+    sid    = "BatchAccess"
+    effect = "Allow"
+    actions = ["batch:SubmitJob"]
+    resources = var.batch_target_arns
+  }
+}
+
+resource "aws_iam_policy" "batch" {
+  count = local.create_role && var.attach_batch_policy ? 1 : 0
+
+  name   = "${local.role_name}-batch"
+  policy = data.aws_iam_policy_document.batch[0].json
+
+  tags = merge({ Name = "${local.role_name}-batch" }, var.tags)
+}
+
+resource "aws_iam_policy_attachment" "batch" {
+  count = local.create_role && var.attach_batch_policy ? 1 : 0
+
+  name       = "${local.role_name}-batch"
+  roles      = [aws_iam_role.eventbridge[0].name]
+  policy_arn = aws_iam_policy.batch[0].arn
+}
+
 ###########################
 # Additional policy (JSON)
 ###########################
