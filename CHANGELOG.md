@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file.
 
+### [1.17.2](https://github.com/terraform-aws-modules/terraform-aws-eventbridge/compare/v1.17.1...v1.17.2) (2023-01-18)
+
+
+### Bug Fixes
+
+* Wrong value of api destination output ([#79](https://github.com/terraform-aws-modules/terraform-aws-eventbridge/issues/79)) ([03ef4ff](https://github.com/terraform-aws-modules/terraform-aws-eventbridge/commit/03ef4ff5927259b53c4b10c9d90d39db78e80196))
+
 ### [1.17.1](https://github.com/terraform-aws-modules/terraform-aws-eventbridge/compare/v1.17.0...v1.17.1) (2023-01-06)
 
 
