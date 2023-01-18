@@ -2,6 +2,21 @@
 
 All notable changes to this project will be documented in this file.
 
+### [1.17.2](https://github.com/terraform-aws-modules/terraform-aws-eventbridge/compare/v1.17.1...v1.17.2) (2023-01-18)
+
+
+### Bug Fixes
+
+* Wrong value of api destination output ([#79](https://github.com/terraform-aws-modules/terraform-aws-eventbridge/issues/79)) ([03ef4ff](https://github.com/terraform-aws-modules/terraform-aws-eventbridge/commit/03ef4ff5927259b53c4b10c9d90d39db78e80196))
+
+### [1.17.1](https://github.com/terraform-aws-modules/terraform-aws-eventbridge/compare/v1.17.0...v1.17.1) (2023-01-06)
+
+
+### Bug Fixes
+
+* Fixed misleading descriptions of IAM role (not Lambda) ([#76](https://github.com/terraform-aws-modules/terraform-aws-eventbridge/issues/76)) ([aa92195](https://github.com/terraform-aws-modules/terraform-aws-eventbridge/commit/aa92195cd77bf2152c188ab610c106fe47386b96))
+* Use a version for  to avoid GitHub API rate limiting on CI workflows ([#75](https://github.com/terraform-aws-modules/terraform-aws-eventbridge/issues/75)) ([e9a7813](https://github.com/terraform-aws-modules/terraform-aws-eventbridge/commit/e9a7813f9f693590f73a0c89f7769acce61388b1))
+
 ## [1.17.0](https://github.com/terraform-aws-modules/terraform-aws-eventbridge/compare/v1.16.0...v1.17.0) (2022-10-28)
 
 
