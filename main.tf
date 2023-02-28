@@ -40,8 +40,8 @@ data "aws_cloudwatch_event_bus" "this" {
 resource "aws_cloudwatch_event_bus" "this" {
   count = var.create && var.create_bus ? 1 : 0
 
-  name               = var.bus_name
-  event_source_name  = try(var.event_source_name, null)
+  name              = var.bus_name
+  event_source_name = try(var.event_source_name, null)
 
   tags = var.tags
 }
