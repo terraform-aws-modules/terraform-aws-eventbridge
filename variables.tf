@@ -84,6 +84,12 @@ variable "bus_name" {
   default     = "default"
 }
 
+variable "event_source_name" {
+  description = "The partner event source that the new event bus will be matched with. Must match name."
+  type        = string
+  default     = null
+}
+
 variable "schemas_discoverer_description" {
   description = "Default schemas discoverer description"
   type        = string
