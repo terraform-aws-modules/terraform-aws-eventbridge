@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file.
 
+### [1.17.3](https://github.com/terraform-aws-modules/terraform-aws-eventbridge/compare/v1.17.2...v1.17.3) (2023-03-10)
+
+
+### Bug Fixes
+
+* Enable adding event_source_name to an Event Bus to enable receiving events from an SaaS partner ([#82](https://github.com/terraform-aws-modules/terraform-aws-eventbridge/issues/82)) ([f92a78c](https://github.com/terraform-aws-modules/terraform-aws-eventbridge/commit/f92a78c6ffa87573cd16d32449738a7df24d2a62))
+
 ### [1.17.2](https://github.com/terraform-aws-modules/terraform-aws-eventbridge/compare/v1.17.1...v1.17.2) (2023-01-18)
 
 
