@@ -20,7 +20,8 @@ module "eventbridge" {
       description         = "Trigger for a Lambda"
       schedule_expression = "cron(0 1 * * ? *)"
       timezone            = "Europe/London"
-      target_id           = module.lambda.lambda_function_arn
+      arn                 = module.lambda.lambda_function_arn
+      input               = jsonencode({ "job" : "cron-by-rate" })
     }
   }
 }

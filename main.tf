@@ -384,7 +384,7 @@ resource "aws_scheduler_schedule" "this" {
   schedule_expression_timezone = lookup(each.value, "timezone", null)
 
   target {
-    arn      = lookup(each.value, "target_id", null)
+    arn      = lookup(each.value, "arn", null)
     input    = lookup(each.value, "input", null)
     role_arn = can(length(each.value.role_arn) > 0) ? each.value.role_arn : aws_iam_role.eventbridge[0].arn
 
