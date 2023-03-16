@@ -374,14 +374,23 @@ resource "aws_scheduler_schedule" "this" {
   name        = each.value.Name
   name_prefix = lookup(each.value, "name_prefix", null)
   description = lookup(each.value, "description", null)
+  group_name  = lookup(each.value, "group_name", null)
+
+  start_date = lookup(each.value, "start_date", null)
+  end_date   = lookup(each.value, "end_date", null)
+
+  kms_key_arn = lookup(each.value, "kms_key_arn", null)
+
+  schedule_expression          = lookup(each.value, "schedule_expression", null)
+  schedule_expression_timezone = lookup(each.value, "timezone", null)
+
+  state = lookup(each.value, "enabled", true) ? "ENABLED" : "DISABLED"
+
 
   flexible_time_window {
     maximum_window_in_minutes = lookup(each.value, "maximum_window_in_minutes", null)
     mode                      = lookup(each.value, "use_flexible_time_window", false) ? "FLEXIBLE" : "OFF"
   }
-
-  schedule_expression          = lookup(each.value, "schedule_expression", null)
-  schedule_expression_timezone = lookup(each.value, "timezone", null)
 
   target {
     arn      = lookup(each.value, "arn", null)
