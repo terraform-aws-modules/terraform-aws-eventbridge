@@ -59,3 +59,8 @@ output "eventbridge_role_name" {
   description = "The name of the IAM role created for EventBridge"
   value       = try(aws_iam_role.eventbridge[0].name, "")
 }
+
+output "eventbridge_schedule_arns" {
+  description = "The EventBridge Schedule ARNs created"
+  value       = { for k in sort(keys(var.schedules)) : k => try(aws_scheduler_schedule.this[k].arn, null) if var.create && var.create_schedules }
+}

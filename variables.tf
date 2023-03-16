@@ -28,6 +28,12 @@ variable "append_destination_postfix" {
   default     = true
 }
 
+variable "append_schedule_postfix" {
+  description = "Controls whether to append '-schedule' to the name of the schedule"
+  type        = bool
+  default     = true
+}
+
 variable "create_bus" {
   description = "Controls whether EventBridge Bus resource should be created"
   type        = bool
@@ -74,6 +80,12 @@ variable "create_schemas_discoverer" {
   description = "Controls whether default schemas discoverer should be created"
   type        = bool
   default     = false
+}
+
+variable "create_schedules" {
+  description = "Controls whether EventBridge Schedule resources should be created"
+  type        = bool
+  default     = true
 }
 
 #######################
@@ -128,6 +140,12 @@ variable "connections" {
 
 variable "api_destinations" {
   description = "A map of objects with EventBridge Destination definitions."
+  type        = map(any)
+  default     = {}
+}
+
+variable "schedules" {
+  description = "A map of objects with EventBridge Schedule definitions."
   type        = map(any)
   default     = {}
 }
