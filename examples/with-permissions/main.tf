@@ -9,6 +9,9 @@ provider "aws" {
   skip_requesting_account_id  = true
 }
 
+data "aws_organizations_organization" "example" {}
+
+
 module "eventbridge" {
   source = "../../"
 
@@ -20,7 +23,8 @@ module "eventbridge" {
     "099720109477 DevAccess" = {}
 
     "099720109466 ProdAccess" = {
-      action = "events:PutEvents"
+      action        = "events:PutEvents"
+      condition_org = data.aws_organizations_organization.example.id
     }
 
     "* PublicAccessToExternalBus" = {
