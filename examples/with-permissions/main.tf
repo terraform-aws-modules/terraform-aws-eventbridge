@@ -1,5 +1,5 @@
 provider "aws" {
-  region = "ap-southeast-1"
+  region = "us-east-1"
 
   # Make it faster by skipping something
   skip_get_ec2_platforms      = true
@@ -9,8 +9,7 @@ provider "aws" {
   skip_requesting_account_id  = true
 }
 
-data "aws_organizations_organization" "example" {}
-
+data "aws_organizations_organization" "this" {}
 
 module "eventbridge" {
   source = "../../"
@@ -23,18 +22,22 @@ module "eventbridge" {
     "099720109477 DevAccess" = {}
 
     "099720109466 ProdAccess" = {
-      action        = "events:PutEvents"
-      condition_org = data.aws_organizations_organization.example.id
+      action = "events:PutEvents"
     }
 
-    "* PublicAccessToExternalBus" = {
+    "* OrgAccessToExternalBus" = {
       event_bus_name = aws_cloudwatch_event_bus.external.name
+      condition_org  = data.aws_organizations_organization.this.id
     }
   }
 
   tags = {
     Name = "${random_pet.this.id}-bus"
   }
+
+  depends_on = [
+    random_pet.this
+  ]
 }
 
 ##################
