@@ -34,10 +34,6 @@ module "eventbridge" {
   tags = {
     Name = "${random_pet.this.id}-bus"
   }
-
-  depends_on = [
-    random_pet.this
-  ]
 }
 
 ##################
