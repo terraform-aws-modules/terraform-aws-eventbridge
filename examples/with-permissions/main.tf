@@ -1,5 +1,5 @@
 provider "aws" {
-  region = "us-east-1"
+  region = "ap-southeast-1"
 
   # Make it faster by skipping something
   skip_get_ec2_platforms      = true
