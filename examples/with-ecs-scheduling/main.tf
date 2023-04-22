@@ -57,11 +57,11 @@ module "eventbridge" {
         attach_role_arn = true
 
         ecs_target = {
-          launch_type            = "FARGATE"
-          task_count             = 1
-          task_definition_arn    = aws_ecs_task_definition.hello_world.arn
-          enable_execute_command = true
-          tags                   = { production = true }
+          launch_type             = "FARGATE"
+          task_count              = 1
+          task_definition_arn     = aws_ecs_task_definition.hello_world.arn
+          enable_ecs_managed_tags = true
+          tags                    = { production = true }
 
           network_configuration = {
             assign_public_ip = true
