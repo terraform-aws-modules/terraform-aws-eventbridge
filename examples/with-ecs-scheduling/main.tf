@@ -57,11 +57,12 @@ module "eventbridge" {
         attach_role_arn = true
 
         ecs_target = {
-          launch_type             = "FARGATE"
           task_count              = 1
           task_definition_arn     = aws_ecs_task_definition.hello_world.arn
           enable_ecs_managed_tags = true
-          tags                    = { production = true }
+          tags = {
+            production = true
+          }
 
           network_configuration = {
             assign_public_ip = true
@@ -69,11 +70,19 @@ module "eventbridge" {
             security_groups  = [data.aws_security_group.default.arn]
           }
 
-          capacity_provider_strategy = [{
-            capacity_provider = "test"
-            base              = 1
-            weight            = 100
-          }]
+          # If a capacity_provider_strategy is specified, the launch_type parameter must be omitted.
+          capacity_provider_strategy = [
+            {
+              capacity_provider = "FARGATE"
+              base              = 1
+              weight            = 100
+            },
+            {
+              capacity_provider = "FARGATE_SPOT"
+              base              = 1
+              weight            = 100
+            }
+          ]
 
           placement_constraint = [{
             type = "distinctInstance"

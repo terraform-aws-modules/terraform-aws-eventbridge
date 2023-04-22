@@ -107,7 +107,7 @@ resource "aws_cloudwatch_event_target" "this" {
       launch_type             = lookup(ecs_target.value, "launch_type", null)
       platform_version        = lookup(ecs_target.value, "platform_version", null)
       task_count              = lookup(ecs_target.value, "task_count", null)
-      task_definition_arn     = lookup(ecs_target.value, "task_definition_arn", null)
+      task_definition_arn     = ecs_target.value.task_definition_arn
       enable_ecs_managed_tags = lookup(ecs_target.value, "enable_ecs_managed_tags", null)
       enable_execute_command  = lookup(ecs_target.value, "enable_execute_command", null)
       propagate_tags          = lookup(ecs_target.value, "propagate_tags", null)
