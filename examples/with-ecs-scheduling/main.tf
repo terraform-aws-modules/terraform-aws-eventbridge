@@ -57,15 +57,38 @@ module "eventbridge" {
         attach_role_arn = true
 
         ecs_target = {
-          launch_type         = "FARGATE"
-          task_count          = 1
-          task_definition_arn = aws_ecs_task_definition.hello_world.arn
+          launch_type            = "FARGATE"
+          task_count             = 1
+          task_definition_arn    = aws_ecs_task_definition.hello_world.arn
+          enable_execute_command = true
+          tags                   = { production = true }
 
           network_configuration = {
             assign_public_ip = true
             subnets          = data.aws_subnet_ids.default.ids
             security_groups  = [data.aws_security_group.default.arn]
           }
+
+          capacity_provider_strategy = [{
+            capacity_provider = "test"
+            base              = 1
+            weight            = 100
+          }]
+
+          placement_constraint = [{
+            type = "distinctInstance"
+          }]
+
+          ordered_placement_strategy = [
+            {
+              type  = "spread"
+              field = "attribute:ecs.availability-zone"
+            },
+            {
+              type  = "spread"
+              field = "instanceId"
+            }
+          ]
         }
       }
     ]

@@ -103,11 +103,15 @@ resource "aws_cloudwatch_event_target" "this" {
     ] : []
 
     content {
-      group               = lookup(ecs_target.value, "group", null)
-      launch_type         = lookup(ecs_target.value, "launch_type", null)
-      platform_version    = lookup(ecs_target.value, "platform_version", null)
-      task_count          = lookup(ecs_target.value, "task_count", null)
-      task_definition_arn = lookup(ecs_target.value, "task_definition_arn", null)
+      group                   = lookup(ecs_target.value, "group", null)
+      launch_type             = lookup(ecs_target.value, "launch_type", null)
+      platform_version        = lookup(ecs_target.value, "platform_version", null)
+      task_count              = lookup(ecs_target.value, "task_count", null)
+      task_definition_arn     = lookup(ecs_target.value, "task_definition_arn", null)
+      enable_ecs_managed_tags = lookup(ecs_target.value, "enable_ecs_managed_tags", null)
+      enable_execute_command  = lookup(ecs_target.value, "enable_execute_command", null)
+      propagate_tags          = lookup(ecs_target.value, "propagate_tags", null)
+      tags                    = lookup(ecs_target.value, "tags", null)
 
       dynamic "network_configuration" {
         for_each = lookup(ecs_target.value, "network_configuration", null) != null ? [
@@ -118,6 +122,34 @@ resource "aws_cloudwatch_event_target" "this" {
           subnets          = lookup(network_configuration.value, "subnets", null)
           security_groups  = lookup(network_configuration.value, "security_groups", null)
           assign_public_ip = lookup(network_configuration.value, "assign_public_ip", null)
+        }
+      }
+
+      dynamic "capacity_provider_strategy" {
+        for_each = try(ecs_target.value.capacity_provider_strategy, [])
+
+        content {
+          capacity_provider = try(capacity_provider_strategy.value.capacity_provider, null)
+          weight            = try(capacity_provider_strategy.value.weight, null)
+          base              = try(capacity_provider_strategy.value.base, null)
+        }
+      }
+
+      dynamic "ordered_placement_strategy" {
+        for_each = try(ecs_target.value.ordered_placement_strategy, [])
+
+        content {
+          type  = try(ordered_placement_strategy.value.type, null)
+          field = try(ordered_placement_strategy.value.field, null)
+        }
+      }
+
+      dynamic "placement_constraint" {
+        for_each = try(ecs_target.value.placement_constraint, [])
+
+        content {
+          type       = try(placement_constraint.value.type, null)
+          expression = try(placement_constraint.value.expression, null)
         }
       }
     }
