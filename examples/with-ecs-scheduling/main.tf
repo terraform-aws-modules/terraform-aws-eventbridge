@@ -57,6 +57,8 @@ module "eventbridge" {
         attach_role_arn = true
 
         ecs_target = {
+          # If a capacity_provider_strategy specified, the launch_type parameter must be omitted.
+          # launch_type         = "FARGATE"
           task_count              = 1
           task_definition_arn     = aws_ecs_task_definition.hello_world.arn
           enable_ecs_managed_tags = true
@@ -71,6 +73,7 @@ module "eventbridge" {
           }
 
           # If a capacity_provider_strategy is specified, the launch_type parameter must be omitted.
+          # If no capacity_provider_strategy or launch_type is specified, the default capacity provider strategy for the cluster is used.
           capacity_provider_strategy = [
             {
               capacity_provider = "FARGATE"
@@ -79,7 +82,6 @@ module "eventbridge" {
             },
             {
               capacity_provider = "FARGATE_SPOT"
-              base              = 1
               weight            = 100
             }
           ]
