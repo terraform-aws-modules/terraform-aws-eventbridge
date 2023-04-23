@@ -37,7 +37,7 @@ module "eventbridge" {
   create_role       = true
   role_name         = "ecs-eventbridge-${random_pet.this.id}"
   attach_ecs_policy = true
-  ecs_target_arns   = [aws_ecs_task_definition.hello_world.arn]
+  ecs_target_arns   = [module.ecs_service.task_definition_arn]
 
   # Fire every five minutes
   rules = {
@@ -53,14 +53,14 @@ module "eventbridge" {
     orders = [
       {
         name            = "orders"
-        arn             = module.ecs.ecs_cluster_arn
+        arn             = module.ecs_cluster.arn
         attach_role_arn = true
 
         ecs_target = {
           # If a capacity_provider_strategy specified, the launch_type parameter must be omitted.
           # launch_type         = "FARGATE"
           task_count              = 1
-          task_definition_arn     = aws_ecs_task_definition.hello_world.arn
+          task_definition_arn     = module.ecs_service.task_definition_arn
           enable_ecs_managed_tags = true
           tags = {
             production = true
@@ -69,7 +69,7 @@ module "eventbridge" {
           network_configuration = {
             assign_public_ip = true
             subnets          = data.aws_subnet_ids.default.ids
-            security_groups  = [data.aws_security_group.default.arn]
+            security_groups  = [data.aws_security_group.default.id]
           }
 
           # If a capacity_provider_strategy is specified, the launch_type parameter must be omitted.
@@ -85,21 +85,6 @@ module "eventbridge" {
               weight            = 100
             }
           ]
-
-          placement_constraint = [{
-            type = "distinctInstance"
-          }]
-
-          ordered_placement_strategy = [
-            {
-              type  = "spread"
-              field = "attribute:ecs.availability-zone"
-            },
-            {
-              type  = "spread"
-              field = "instanceId"
-            }
-          ]
         }
       }
     ]
@@ -110,37 +95,45 @@ module "eventbridge" {
 # ECS
 ######
 
-module "ecs" {
-  source  = "terraform-aws-modules/ecs/aws"
-  version = "~> 3.0"
+module "ecs_cluster" {
+  source  = "terraform-aws-modules/ecs/aws//modules/cluster"
+  version = "~> 5.0"
 
-  name = random_pet.this.id
+  cluster_name = random_pet.this.id
 
-  capacity_providers = ["FARGATE", "FARGATE_SPOT"]
+  fargate_capacity_providers = {
+    FARGATE = {
+      default_capacity_provider_strategy = {
+        weight = 100
+      }
+    }
+    FARGATE_SPOT = {
+      default_capacity_provider_strategy = {
+        weight = 100
+      }
+    }
+  }
 }
 
-resource "aws_ecs_service" "hello_world" {
-  name            = "hello_world-${random_pet.this.id}"
-  cluster         = module.ecs.ecs_cluster_id
-  task_definition = aws_ecs_task_definition.hello_world.arn
+module "ecs_service" {
+  source  = "terraform-aws-modules/ecs/aws//modules/service"
+  version = "~> 5.0"
 
-  desired_count = 1
+  name        = random_pet.this.id
+  cluster_arn = module.ecs_cluster.arn
 
+  subnet_ids                         = data.aws_subnet_ids.default.ids
+  desired_count                      = 1
   deployment_maximum_percent         = 100
   deployment_minimum_healthy_percent = 0
-}
 
-resource "aws_ecs_task_definition" "hello_world" {
-  family = "hello_world-${random_pet.this.id}"
-
-  container_definitions = jsonencode([
-    {
-      name   = "hello_world-${random_pet.this.id}",
+  container_definitions = {
+    hello-world = {
       image  = "hello-world",
       cpu    = 0,
       memory = 128
     }
-  ])
+  }
 }
 
 ##################
