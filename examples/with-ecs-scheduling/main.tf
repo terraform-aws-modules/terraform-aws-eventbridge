@@ -21,8 +21,11 @@ data "aws_security_group" "default" {
   vpc_id = data.aws_vpc.default.id
 }
 
-data "aws_subnet_ids" "default" {
-  vpc_id = data.aws_vpc.default.id
+data "aws_subnets" "default" {
+  filter {
+    name   = "vpc-id"
+    values = [data.aws_vpc.default.id]
+  }
 }
 
 ####################
@@ -37,7 +40,7 @@ module "eventbridge" {
   create_role       = true
   role_name         = "ecs-eventbridge-${random_pet.this.id}"
   attach_ecs_policy = true
-  ecs_target_arns   = [module.ecs_service.task_definition_arn]
+  ecs_target_arns   = [module.ecs_cluster.services["hello-world"].task_definition_arn]
 
   # Fire every five minutes
   rules = {
@@ -53,14 +56,14 @@ module "eventbridge" {
     orders = [
       {
         name            = "orders"
-        arn             = module.ecs_cluster.arn
+        arn             = module.ecs_cluster.cluster_arn
         attach_role_arn = true
 
         ecs_target = {
           # If a capacity_provider_strategy specified, the launch_type parameter must be omitted.
           # launch_type         = "FARGATE"
           task_count              = 1
-          task_definition_arn     = module.ecs_service.task_definition_arn
+          task_definition_arn     = module.ecs_cluster.services["hello-world"].task_definition_arn
           enable_ecs_managed_tags = true
           tags = {
             production = true
@@ -68,7 +71,7 @@ module "eventbridge" {
 
           network_configuration = {
             assign_public_ip = true
-            subnets          = data.aws_subnet_ids.default.ids
+            subnets          = data.aws_subnets.default.ids
             security_groups  = [data.aws_security_group.default.id]
           }
 
@@ -96,7 +99,7 @@ module "eventbridge" {
 ######
 
 module "ecs_cluster" {
-  source  = "terraform-aws-modules/ecs/aws//modules/cluster"
+  source  = "terraform-aws-modules/ecs/aws"
   version = "~> 5.0"
 
   cluster_name = random_pet.this.id
@@ -113,25 +116,21 @@ module "ecs_cluster" {
       }
     }
   }
-}
 
-module "ecs_service" {
-  source  = "terraform-aws-modules/ecs/aws//modules/service"
-  version = "~> 5.0"
-
-  name        = random_pet.this.id
-  cluster_arn = module.ecs_cluster.arn
-
-  subnet_ids                         = data.aws_subnet_ids.default.ids
-  desired_count                      = 1
-  deployment_maximum_percent         = 100
-  deployment_minimum_healthy_percent = 0
-
-  container_definitions = {
+  services = {
     hello-world = {
-      image  = "hello-world",
-      cpu    = 0,
-      memory = 128
+      subnet_ids                         = data.aws_subnets.default.ids
+      desired_count                      = 1
+      deployment_maximum_percent         = 100
+      deployment_minimum_healthy_percent = 0
+
+      container_definitions = {
+        hello-world = {
+          image  = "hello-world",
+          cpu    = 0,
+          memory = 128
+        }
+      }
     }
   }
 }
