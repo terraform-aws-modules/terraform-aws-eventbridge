@@ -2,6 +2,17 @@
 
 All notable changes to this project will be documented in this file.
 
+## [2.0.0](https://github.com/terraform-aws-modules/terraform-aws-eventbridge/compare/v1.17.3...v2.0.0) (2023-04-28)
+
+
+### ⚠ BREAKING CHANGES
+
+* Bump Terraform version to 1.0 and updated `ecs_target` arguments (#85)
+
+### Features
+
+* Bump Terraform version to 1.0 and updated `ecs_target` arguments ([#85](https://github.com/terraform-aws-modules/terraform-aws-eventbridge/issues/85)) ([04a3249](https://github.com/terraform-aws-modules/terraform-aws-eventbridge/commit/04a3249041c28c24d8ea01ee11619e348c553958))
+
 ### [1.17.3](https://github.com/terraform-aws-modules/terraform-aws-eventbridge/compare/v1.17.2...v1.17.3) (2023-03-10)
 
 
