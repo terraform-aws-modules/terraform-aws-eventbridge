@@ -21,8 +21,11 @@ data "aws_security_group" "default" {
   vpc_id = data.aws_vpc.default.id
 }
 
-data "aws_subnet_ids" "default" {
-  vpc_id = data.aws_vpc.default.id
+data "aws_subnets" "default" {
+  filter {
+    name   = "vpc-id"
+    values = [data.aws_vpc.default.id]
+  }
 }
 
 ####################
@@ -37,7 +40,7 @@ module "eventbridge" {
   create_role       = true
   role_name         = "ecs-eventbridge-${random_pet.this.id}"
   attach_ecs_policy = true
-  ecs_target_arns   = [aws_ecs_task_definition.hello_world.arn]
+  ecs_target_arns   = [module.ecs_cluster.services["hello-world"].task_definition_arn]
 
   # Fire every five minutes
   rules = {
@@ -53,19 +56,38 @@ module "eventbridge" {
     orders = [
       {
         name            = "orders"
-        arn             = module.ecs.ecs_cluster_arn
+        arn             = module.ecs_cluster.cluster_arn
         attach_role_arn = true
 
         ecs_target = {
-          launch_type         = "FARGATE"
-          task_count          = 1
-          task_definition_arn = aws_ecs_task_definition.hello_world.arn
+          # If a capacity_provider_strategy specified, the launch_type parameter must be omitted.
+          # launch_type         = "FARGATE"
+          task_count              = 1
+          task_definition_arn     = module.ecs_cluster.services["hello-world"].task_definition_arn
+          enable_ecs_managed_tags = true
+          tags = {
+            production = true
+          }
 
           network_configuration = {
             assign_public_ip = true
-            subnets          = data.aws_subnet_ids.default.ids
-            security_groups  = [data.aws_security_group.default.arn]
+            subnets          = data.aws_subnets.default.ids
+            security_groups  = [data.aws_security_group.default.id]
           }
+
+          # If a capacity_provider_strategy is specified, the launch_type parameter must be omitted.
+          # If no capacity_provider_strategy or launch_type is specified, the default capacity provider strategy for the cluster is used.
+          capacity_provider_strategy = [
+            {
+              capacity_provider = "FARGATE"
+              base              = 1
+              weight            = 100
+            },
+            {
+              capacity_provider = "FARGATE_SPOT"
+              weight            = 100
+            }
+          ]
         }
       }
     ]
@@ -76,37 +98,41 @@ module "eventbridge" {
 # ECS
 ######
 
-module "ecs" {
+module "ecs_cluster" {
   source  = "terraform-aws-modules/ecs/aws"
-  version = "~> 3.0"
+  version = "~> 5.0"
 
-  name = random_pet.this.id
+  cluster_name = random_pet.this.id
 
-  capacity_providers = ["FARGATE", "FARGATE_SPOT"]
-}
-
-resource "aws_ecs_service" "hello_world" {
-  name            = "hello_world-${random_pet.this.id}"
-  cluster         = module.ecs.ecs_cluster_id
-  task_definition = aws_ecs_task_definition.hello_world.arn
-
-  desired_count = 1
-
-  deployment_maximum_percent         = 100
-  deployment_minimum_healthy_percent = 0
-}
-
-resource "aws_ecs_task_definition" "hello_world" {
-  family = "hello_world-${random_pet.this.id}"
-
-  container_definitions = jsonencode([
-    {
-      name   = "hello_world-${random_pet.this.id}",
-      image  = "hello-world",
-      cpu    = 0,
-      memory = 128
+  fargate_capacity_providers = {
+    FARGATE = {
+      default_capacity_provider_strategy = {
+        weight = 100
+      }
     }
-  ])
+    FARGATE_SPOT = {
+      default_capacity_provider_strategy = {
+        weight = 100
+      }
+    }
+  }
+
+  services = {
+    hello-world = {
+      subnet_ids                         = data.aws_subnets.default.ids
+      desired_count                      = 1
+      deployment_maximum_percent         = 100
+      deployment_minimum_healthy_percent = 0
+
+      container_definitions = {
+        hello-world = {
+          image  = "hello-world",
+          cpu    = 0,
+          memory = 128
+        }
+      }
+    }
+  }
 }
 
 ##################
