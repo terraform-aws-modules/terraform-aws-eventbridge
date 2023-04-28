@@ -9,6 +9,8 @@ provider "aws" {
   skip_requesting_account_id  = true
 }
 
+data "aws_organizations_organization" "this" {}
+
 module "eventbridge" {
   source = "../../"
 
@@ -23,8 +25,9 @@ module "eventbridge" {
       action = "events:PutEvents"
     }
 
-    "* PublicAccessToExternalBus" = {
+    "* OrgAccessToExternalBus" = {
       event_bus_name = aws_cloudwatch_event_bus.external.name
+      condition_org  = data.aws_organizations_organization.this.id
     }
   }
 

@@ -248,6 +248,16 @@ resource "aws_cloudwatch_event_permission" "this" {
 
   action         = lookup(each.value, "action", null)
   event_bus_name = try(each.value["event_bus_name"], aws_cloudwatch_event_bus.this[0].name, var.bus_name, null)
+
+  dynamic "condition" {
+    for_each = try([each.value.condition_org], [])
+
+    content {
+      key   = "aws:PrincipalOrgID"
+      type  = "StringEquals"
+      value = condition.value
+    }
+  }
 }
 
 resource "aws_cloudwatch_event_connection" "this" {
