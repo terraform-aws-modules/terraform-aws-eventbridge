@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file.
 
+## [2.1.0](https://github.com/terraform-aws-modules/terraform-aws-eventbridge/compare/v2.0.0...v2.1.0) (2023-04-28)
+
+
+### Features
+
+* Add support for setting the condition field in Event Bus permissions ([#84](https://github.com/terraform-aws-modules/terraform-aws-eventbridge/issues/84)) ([49f1dff](https://github.com/terraform-aws-modules/terraform-aws-eventbridge/commit/49f1dffe2a85f7a9e1d87a55c1d6f806bbea7191))
+
 ## [2.0.0](https://github.com/terraform-aws-modules/terraform-aws-eventbridge/compare/v1.17.3...v2.0.0) (2023-04-28)
 
 
