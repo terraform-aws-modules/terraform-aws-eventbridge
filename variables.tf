@@ -343,7 +343,7 @@ variable "attach_policy_statements" {
 }
 
 variable "trusted_entities" {
-  description = "Step Function additional trusted entities for assuming roles (trust relationship)"
+  description = "Additional trusted entities for assuming roles (trust relationship)"
   type        = list(string)
   default     = []
 }

@@ -4,15 +4,11 @@ Terraform module to create EventBridge resources.
 
 ## Supported Features
 
-- Creates AWS EventBridge Resources (bus, rules, targets, permissions, connections, destinations)
+- Creates AWS EventBridge Resources (bus, rules, targets, permissions, connections, destinations, schedules)
 - Attach resources to an existing EventBridge bus
 - Support AWS EventBridge Archives and Replays
 - Conditional creation for many types of resources
 - Support IAM policy attachments and various ways to create and attach additional policies
-
-## Feature Roadmap
-
-- Support monitoring usage with Cloudwatch Metrics
 
 ## Usage
 
@@ -486,7 +482,7 @@ No modules.
 | <a name="input_sqs_target_arns"></a> [sqs\_target\_arns](#input\_sqs\_target\_arns) | The Amazon Resource Name (ARN) of the AWS SQS Queues you want to use as EventBridge targets | `list(string)` | `[]` | no |
 | <a name="input_tags"></a> [tags](#input\_tags) | A map of tags to assign to resources. | `map(string)` | `{}` | no |
 | <a name="input_targets"></a> [targets](#input\_targets) | A map of objects with EventBridge Target definitions. | `any` | `{}` | no |
-| <a name="input_trusted_entities"></a> [trusted\_entities](#input\_trusted\_entities) | Step Function additional trusted entities for assuming roles (trust relationship) | `list(string)` | `[]` | no |
+| <a name="input_trusted_entities"></a> [trusted\_entities](#input\_trusted\_entities) | Additional trusted entities for assuming roles (trust relationship) | `list(string)` | `[]` | no |
 
 ## Outputs
 

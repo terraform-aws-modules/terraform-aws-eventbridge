@@ -15,6 +15,9 @@ module "eventbridge" {
 
   trusted_entities = ["scheduler.amazonaws.com"]
 
+  attach_lambda_policy = true
+  lambda_target_arns   = [module.lambda.lambda_function_arn]
+
   schedules = {
     lambda-cron = {
       description         = "Trigger for a Lambda"
@@ -40,7 +43,7 @@ resource "random_pet" "this" {
 
 module "lambda" {
   source  = "terraform-aws-modules/lambda/aws"
-  version = "~> 2.0"
+  version = "~> 4.0"
 
   function_name = "${random_pet.this.id}-lambda"
   handler       = "index.lambda_handler"
@@ -49,10 +52,12 @@ module "lambda" {
   create_package         = false
   local_existing_package = local.downloaded
 
+  trusted_entities = ["scheduler.amazonaws.com"]
+
   create_current_version_allowed_triggers = false
   allowed_triggers = {
     ScanAmiRule = {
-      principal  = "schedules.amazonaws.com"
+      principal  = "scheduler.amazonaws.com"
       source_arn = module.eventbridge.eventbridge_schedule_arns["lambda-cron"]
     }
   }

@@ -423,11 +423,10 @@ resource "aws_scheduler_schedule" "this" {
 
   kms_key_arn = lookup(each.value, "kms_key_arn", null)
 
-  schedule_expression          = lookup(each.value, "schedule_expression", null)
+  schedule_expression          = each.value.schedule_expression
   schedule_expression_timezone = lookup(each.value, "timezone", null)
 
-  state = lookup(each.value, "enabled", true) ? "ENABLED" : "DISABLED"
-
+  state = lookup(each.value, "state", true) ? "ENABLED" : "DISABLED"
 
   flexible_time_window {
     maximum_window_in_minutes = lookup(each.value, "maximum_window_in_minutes", null)
@@ -435,9 +434,10 @@ resource "aws_scheduler_schedule" "this" {
   }
 
   target {
-    arn      = lookup(each.value, "arn", null)
-    input    = lookup(each.value, "input", null)
+    arn      = each.value.arn
     role_arn = can(length(each.value.role_arn) > 0) ? each.value.role_arn : aws_iam_role.eventbridge[0].arn
+
+    input = lookup(each.value, "input", null)
 
     dynamic "dead_letter_config" {
       for_each = lookup(each.value, "dead_letter_arn", null) != null ? [true] : []
@@ -453,7 +453,7 @@ resource "aws_scheduler_schedule" "this" {
       ] : []
 
       content {
-        task_definition_arn     = lookup(ecs_parameters.value, "task_definition_arn", null)
+        task_definition_arn     = ecs_parameters.value.task_definition_arn
         enable_ecs_managed_tags = lookup(ecs_parameters.value, "enable_ecs_managed_tags", null)
         enable_execute_command  = lookup(ecs_parameters.value, "enable_execute_command", null)
         group                   = lookup(ecs_parameters.value, "group", null)
@@ -464,15 +464,14 @@ resource "aws_scheduler_schedule" "this" {
         tags                    = lookup(ecs_parameters.value, "tags", null)
         task_count              = lookup(ecs_parameters.value, "task_count", null)
 
-
         dynamic "capacity_provider_strategy" {
           for_each = lookup(ecs_parameters.value, "capacity_provider_strategy", null) != null ? [
             ecs_parameters.value.capacity_provider_strategy
           ] : []
 
           content {
+            capacity_provider = capacity_provider_strategy.value.capacity_provider
             base              = lookup(capacity_provider_strategy.value, "base", null)
-            capacity_provider = lookup(capacity_provider_strategy.value, "capacapacity_provider", null)
             weight            = lookup(capacity_provider_strategy.value, "weight", null)
           }
         }
@@ -495,8 +494,8 @@ resource "aws_scheduler_schedule" "this" {
           ] : []
 
           content {
+            type       = placement_constraints.value.type
             expression = lookup(placement_constraints.value, "expression", null)
-            type       = lookup(placement_constraints.value, "type", null)
           }
         }
 
@@ -506,8 +505,8 @@ resource "aws_scheduler_schedule" "this" {
           ] : []
 
           content {
+            type  = placement_strategy.value.type
             field = lookup(placement_strategy.value, "field", null)
-            type  = lookup(placement_strategy.value, "type", null)
           }
         }
       }
@@ -519,8 +518,8 @@ resource "aws_scheduler_schedule" "this" {
       ] : []
 
       content {
-        detail_type = lookup(eventbridge_parameters.value, "detail_type", null)
-        source      = lookup(eventbridge_parameters.value, "source", null)
+        detail_type = eventbridge_parameters.value.detail_type
+        source      = eventbridge_parameters.value.source
       }
     }
 
@@ -528,7 +527,7 @@ resource "aws_scheduler_schedule" "this" {
       for_each = lookup(each.value, "kinesis_parameters", null) != null ? [true] : []
 
       content {
-        partition_key = lookup(kinesis_parameters.value, "partition_key", null)
+        partition_key = kinesis_parameters.value.partition_key
       }
     }
 
@@ -540,13 +539,12 @@ resource "aws_scheduler_schedule" "this" {
       content {
         dynamic "pipeline_parameter" {
           for_each = lookup(sagemaker_pipeline_parameters, "pipeline_parameter", null) != null ? [
-            sagemaker_pipeline_parameters.value.pineline_parameter
+            sagemaker_pipeline_parameters.value.pipeline_parameter
           ] : []
 
           content {
-            name  = lookup(pipeline_parameter.value, "name", null)
-            value = lookup(pipeline_parameter.value, "value", null)
-
+            name  = pipeline_parameter.value.name
+            value = pipeline_parameter.value.value
           }
         }
       }
