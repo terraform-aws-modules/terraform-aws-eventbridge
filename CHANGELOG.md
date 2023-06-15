@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file.
 
+## [2.2.0](https://github.com/terraform-aws-modules/terraform-aws-eventbridge/compare/v2.1.0...v2.2.0) (2023-06-15)
+
+
+### Features
+
+* Add attach_sns_policy ([#89](https://github.com/terraform-aws-modules/terraform-aws-eventbridge/issues/89)) ([6e09aa1](https://github.com/terraform-aws-modules/terraform-aws-eventbridge/commit/6e09aa190aef287a1e917b430d275d9ff5f31bde))
+
 ## [2.1.0](https://github.com/terraform-aws-modules/terraform-aws-eventbridge/compare/v2.0.0...v2.1.0) (2023-04-28)
 
 
