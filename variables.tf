@@ -200,6 +200,12 @@ variable "attach_sqs_policy" {
   default     = false
 }
 
+variable "attach_sns_policy" {
+  description = "Controls whether the SNS policy should be added to IAM role for EventBridge Target"
+  type        = bool
+  default     = false
+}
+
 variable "attach_ecs_policy" {
   description = "Controls whether the ECS policy should be added to IAM role for EventBridge Target"
   type        = bool

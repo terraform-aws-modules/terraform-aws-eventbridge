@@ -169,6 +169,42 @@ resource "aws_iam_policy_attachment" "sqs" {
 }
 
 #############
+# SNS Config
+#############
+
+data "aws_iam_policy_document" "sns" {
+  count = local.create_role && var.attach_sns_policy ? 1 : 0
+
+  statement {
+    sid    = "SNSAccess"
+    effect = "Allow"
+    actions = [
+      "sns:Publish",
+      "kms:Decrypt",
+      "kms:GenerateDataKey"
+    ]
+    resources = var.sns_target_arns
+  }
+}
+
+resource "aws_iam_policy" "sns" {
+  count = local.create_role && var.attach_sns_policy ? 1 : 0
+
+  name   = "${local.role_name}-sns"
+  policy = data.aws_iam_policy_document.sns[0].json
+
+  tags = merge({ Name = "${local.role_name}-sns" }, var.tags)
+}
+
+resource "aws_iam_policy_attachment" "sns" {
+  count = local.create_role && var.attach_sns_policy ? 1 : 0
+
+  name       = "${local.role_name}-sns"
+  roles      = [aws_iam_role.eventbridge[0].name]
+  policy_arn = aws_iam_policy.sns[0].arn
+}
+
+#############
 # ECS Config
 #############
 
