@@ -260,6 +260,12 @@ variable "sqs_target_arns" {
   default     = []
 }
 
+variable "sns_target_arns" {
+  description = "The Amazon Resource Name (ARN) of the AWS SNS's you want to use as EventBridge targets"
+  type        = list(string)
+  default     = []
+}
+
 variable "ecs_target_arns" {
   description = "The Amazon Resource Name (ARN) of the AWS ECS Tasks you want to use as EventBridge targets"
   type        = list(string)
