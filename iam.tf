@@ -180,11 +180,20 @@ data "aws_iam_policy_document" "sns" {
     effect = "Allow"
     actions = [
       "sns:Publish",
+    ]
+    resources = var.sns_target_arns
+  }
+
+  statement {
+    sid    = "SNSAccess"
+    effect = "Allow"
+    actions = [
       "kms:Decrypt",
       "kms:GenerateDataKey"
     ]
     resources = var.sns_target_arns
   }
+
 }
 
 resource "aws_iam_policy" "sns" {
