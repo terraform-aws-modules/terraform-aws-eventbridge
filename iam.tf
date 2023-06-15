@@ -185,7 +185,7 @@ data "aws_iam_policy_document" "sns" {
   }
 
   statement {
-    sid    = "SNSAccess"
+    sid    = "SNSKMSAccess"
     effect = "Allow"
     actions = [
       "kms:Decrypt",
