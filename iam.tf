@@ -191,7 +191,7 @@ data "aws_iam_policy_document" "sns" {
       "kms:Decrypt",
       "kms:GenerateDataKey"
     ]
-    resources = var.sns_target_arns
+    resources = ["*"]
   }
 
 }
