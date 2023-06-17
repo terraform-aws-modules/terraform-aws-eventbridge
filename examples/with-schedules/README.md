@@ -1,6 +1,6 @@
-# EventBridge Lambda & Scheduler Schedules Example
+# EventBridge Scheduler with Schedule Groups Example
 
-Configuration in this directory creates EventBridge resource configuration including an Lambda service.
+Configuration in this directory creates EventBridge Scheduler resources which triggers Lambda Function.
 
 ## Usage
 
