@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file.
 
+## [2.3.0](https://github.com/terraform-aws-modules/terraform-aws-eventbridge/compare/v2.2.0...v2.3.0) (2023-06-17)
+
+
+### Features
+
+* Support for Eventbridge Scheduler Schedules ([#83](https://github.com/terraform-aws-modules/terraform-aws-eventbridge/issues/83)) ([e3c4ffe](https://github.com/terraform-aws-modules/terraform-aws-eventbridge/commit/e3c4ffedb73a7d0fcbcafad7877c5268c147af48))
+
 ## [2.2.0](https://github.com/terraform-aws-modules/terraform-aws-eventbridge/compare/v2.1.0...v2.2.0) (2023-06-15)
 
 
