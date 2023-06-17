@@ -21,7 +21,7 @@ data "aws_iam_policy_document" "assume_role" {
 
     principals {
       type        = "Service"
-      identifiers = distinct(concat(["events.amazonaws.com"], var.trusted_entities))
+      identifiers = distinct(concat(["events.amazonaws.com"], var.trusted_entities, length(keys(var.schedules)) > 0 && var.create_schedules ? ["scheduler.amazonaws.com"] : []))
     }
   }
 }

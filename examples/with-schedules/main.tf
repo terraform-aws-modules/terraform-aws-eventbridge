@@ -11,23 +11,38 @@ provider "aws" {
 module "eventbridge" {
   source = "../../"
 
-  create_bus = false
+  create_bus = true
+  bus_name   = "example" # "default" bus already support schedule_expression in rules
 
-  rules = {
-    crons = {
-      description         = "Trigger for a Lambda"
-      schedule_expression = "rate(5 minutes)"
+  attach_lambda_policy = true
+  lambda_target_arns   = [module.lambda.lambda_function_arn]
+
+  schedule_groups = {
+    dev = {
+      name_prefix = "tmp-dev-"
+    }
+    prod = {
+      name = "prod"
+      tags = {
+        Env = "SuperProd"
+      }
     }
   }
 
-  targets = {
-    crons = [
-      {
-        name  = "lambda-loves-cron"
-        arn   = module.lambda.lambda_function_arn
-        input = jsonencode({ "job" : "cron-by-rate" })
-      }
-    ]
+  schedules = {
+    lambda-cron = {
+      group_name          = "dev"
+      description         = "Trigger for a Lambda"
+      schedule_expression = "cron(0 1 * * ? *)"
+      timezone            = "Europe/London"
+      arn                 = module.lambda.lambda_function_arn
+      input               = jsonencode({ "job" : "cron-by-rate" })
+    }
+    prod-lambda-cron = {
+      group_name          = "prod"
+      schedule_expression = "rate(10 hours)"
+      arn                 = module.lambda.lambda_function_arn
+    }
   }
 }
 
@@ -45,7 +60,7 @@ resource "random_pet" "this" {
 
 module "lambda" {
   source  = "terraform-aws-modules/lambda/aws"
-  version = "~> 2.0"
+  version = "~> 5.0"
 
   function_name = "${random_pet.this.id}-lambda"
   handler       = "index.lambda_handler"
@@ -54,11 +69,13 @@ module "lambda" {
   create_package         = false
   local_existing_package = local.downloaded
 
+  trusted_entities = ["scheduler.amazonaws.com"]
+
   create_current_version_allowed_triggers = false
   allowed_triggers = {
     ScanAmiRule = {
-      principal  = "events.amazonaws.com"
-      source_arn = module.eventbridge.eventbridge_rule_arns["crons"]
+      principal  = "scheduler.amazonaws.com"
+      source_arn = module.eventbridge.eventbridge_schedule_arns["lambda-cron"]
     }
   }
 }

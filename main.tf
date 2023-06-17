@@ -29,6 +29,19 @@ locals {
       "Name" = var.append_destination_postfix ? "${replace(index, "_", "-")}-destination" : index
     })
   ])
+  eventbridge_schedule_groups = {
+    for index, group in var.schedule_groups :
+    index => merge(group, {
+      "Name" = var.append_schedule_group_postfix ? "${replace(index, "_", "-")}-group" : index
+    })
+  }
+  eventbridge_schedules = flatten([
+    for index, sched in var.schedules :
+    merge(sched, {
+      "name" = index
+      "Name" = var.append_schedule_postfix ? "${replace(index, "_", "-")}-schedule" : index
+    })
+  ])
 }
 
 data "aws_cloudwatch_event_bus" "this" {
@@ -232,7 +245,7 @@ resource "aws_cloudwatch_event_target" "this" {
 resource "aws_cloudwatch_event_archive" "this" {
   for_each = var.create && var.create_archives ? var.archives : {}
 
-  name             = each.key
+  name             = lookup(each.value, "name", each.key)
   event_source_arn = try(each.value["event_source_arn"], aws_cloudwatch_event_bus.this[0].arn)
 
   description    = lookup(each.value, "description", null)
@@ -401,4 +414,183 @@ resource "aws_cloudwatch_event_api_destination" "this" {
   http_method                      = each.value.http_method
   invocation_rate_limit_per_second = lookup(each.value, "invocation_rate_limit_per_second", null)
   connection_arn                   = aws_cloudwatch_event_connection.this[each.value.name].arn
+}
+
+resource "aws_scheduler_schedule_group" "this" {
+  for_each = { for k, v in local.eventbridge_schedule_groups : k => v if var.create && var.create_schedule_groups }
+
+  name        = lookup(each.value, "name_prefix", null) == null ? try(each.value.name, each.key) : null
+  name_prefix = lookup(each.value, "name_prefix", null) != null ? each.value.name_prefix : null
+
+  tags = lookup(each.value, "tags", {})
+
+  timeouts {
+    create = try(var.schedule_group_timeouts.create, null)
+    delete = try(var.schedule_group_timeouts.delete, null)
+  }
+
+  lifecycle {
+    create_before_destroy = true
+  }
+}
+
+resource "aws_scheduler_schedule" "this" {
+  for_each = { for k, v in local.eventbridge_schedules : v.name => v if var.create && var.create_schedules }
+
+  name        = each.value.Name
+  name_prefix = lookup(each.value, "name_prefix", null)
+  description = lookup(each.value, "description", null)
+  group_name  = try(aws_scheduler_schedule_group.this[each.value.group_name].id, lookup(each.value, "group_name", null))
+
+  start_date = lookup(each.value, "start_date", null)
+  end_date   = lookup(each.value, "end_date", null)
+
+  kms_key_arn = lookup(each.value, "kms_key_arn", null)
+
+  schedule_expression          = each.value.schedule_expression
+  schedule_expression_timezone = lookup(each.value, "timezone", null)
+
+  state = lookup(each.value, "state", true) ? "ENABLED" : "DISABLED"
+
+  flexible_time_window {
+    maximum_window_in_minutes = lookup(each.value, "maximum_window_in_minutes", null)
+    mode                      = lookup(each.value, "use_flexible_time_window", false) ? "FLEXIBLE" : "OFF"
+  }
+
+  target {
+    arn      = each.value.arn
+    role_arn = can(length(each.value.role_arn) > 0) ? each.value.role_arn : aws_iam_role.eventbridge[0].arn
+
+    input = lookup(each.value, "input", null)
+
+    dynamic "dead_letter_config" {
+      for_each = lookup(each.value, "dead_letter_arn", null) != null ? [true] : []
+
+      content {
+        arn = each.value.dead_letter_arn
+      }
+    }
+
+    dynamic "ecs_parameters" {
+      for_each = lookup(each.value, "ecs_parameters", null) != null ? [
+        each.value.ecs_parameters
+      ] : []
+
+      content {
+        task_definition_arn     = ecs_parameters.value.task_definition_arn
+        enable_ecs_managed_tags = lookup(ecs_parameters.value, "enable_ecs_managed_tags", null)
+        enable_execute_command  = lookup(ecs_parameters.value, "enable_execute_command", null)
+        group                   = lookup(ecs_parameters.value, "group", null)
+        launch_type             = lookup(ecs_parameters.value, "launch_type", null)
+        platform_version        = lookup(ecs_parameters.value, "platform_version", null)
+        propagate_tags          = lookup(ecs_parameters.value, "propagate_tags", null)
+        reference_id            = lookup(ecs_parameters.value, "reference_id", null)
+        tags                    = lookup(ecs_parameters.value, "tags", null)
+        task_count              = lookup(ecs_parameters.value, "task_count", null)
+
+        dynamic "capacity_provider_strategy" {
+          for_each = lookup(ecs_parameters.value, "capacity_provider_strategy", null) != null ? [
+            ecs_parameters.value.capacity_provider_strategy
+          ] : []
+
+          content {
+            capacity_provider = capacity_provider_strategy.value.capacity_provider
+            base              = lookup(capacity_provider_strategy.value, "base", null)
+            weight            = lookup(capacity_provider_strategy.value, "weight", null)
+          }
+        }
+
+        dynamic "network_configuration" {
+          for_each = lookup(ecs_parameters.value, "network_configuration", null) != null ? [
+            ecs_parameters.value.network_configuration
+          ] : []
+
+          content {
+            subnets          = lookup(network_configuration.value, "subnets", null)
+            security_groups  = lookup(network_configuration.value, "security_groups", null)
+            assign_public_ip = lookup(network_configuration.value, "assign_public_ip", null)
+          }
+        }
+
+        dynamic "placement_constraints" {
+          for_each = lookup(ecs_parameters.value, "placement_constraints", null) != null ? [
+            ecs_parameters.value.placement_constraints
+          ] : []
+
+          content {
+            type       = placement_constraints.value.type
+            expression = lookup(placement_constraints.value, "expression", null)
+          }
+        }
+
+        dynamic "placement_strategy" {
+          for_each = lookup(ecs_parameters.value, "placement_strategy", null) != null ? [
+            ecs_parameters.value.placement_strategy
+          ] : []
+
+          content {
+            type  = placement_strategy.value.type
+            field = lookup(placement_strategy.value, "field", null)
+          }
+        }
+      }
+    }
+
+    dynamic "eventbridge_parameters" {
+      for_each = lookup(each.value, "eventbridge_parameters", null) != null ? [
+        each.value.eventbridge_parameters
+      ] : []
+
+      content {
+        detail_type = eventbridge_parameters.value.detail_type
+        source      = eventbridge_parameters.value.source
+      }
+    }
+
+    dynamic "kinesis_parameters" {
+      for_each = lookup(each.value, "kinesis_parameters", null) != null ? [true] : []
+
+      content {
+        partition_key = kinesis_parameters.value.partition_key
+      }
+    }
+
+    dynamic "sagemaker_pipeline_parameters" {
+      for_each = lookup(each.value, "sagemaker_pipeline_parameters", null) != null ? [
+        each.value.sagemaker_pipeline_parameters
+      ] : []
+
+      content {
+        dynamic "pipeline_parameter" {
+          for_each = lookup(sagemaker_pipeline_parameters, "pipeline_parameter", null) != null ? [
+            sagemaker_pipeline_parameters.value.pipeline_parameter
+          ] : []
+
+          content {
+            name  = pipeline_parameter.value.name
+            value = pipeline_parameter.value.value
+          }
+        }
+      }
+    }
+
+    dynamic "sqs_parameters" {
+      for_each = lookup(each.value, "message_group_id", null) != null ? [true] : []
+
+      content {
+        message_group_id = each.value.message_group_id
+      }
+    }
+
+    dynamic "retry_policy" {
+      for_each = lookup(each.value, "retry_policy", null) != null ? [
+        each.value.retry_policy
+      ] : []
+
+      content {
+        maximum_event_age_in_seconds = retry_policy.value.maximum_event_age_in_seconds
+        maximum_retry_attempts       = retry_policy.value.maximum_retry_attempts
+      }
+    }
+  }
 }
