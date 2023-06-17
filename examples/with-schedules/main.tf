@@ -1,5 +1,5 @@
 provider "aws" {
-  region = "ap-southeast-1"
+  region = "eu-west-1"
 
   # Make it faster by skipping something
   skip_metadata_api_check     = true
@@ -11,20 +11,37 @@ provider "aws" {
 module "eventbridge" {
   source = "../../"
 
-  create_bus = false
-
-  trusted_entities = ["scheduler.amazonaws.com"]
+  create_bus = true
+  bus_name   = "example" # "default" bus already support schedule_expression in rules
 
   attach_lambda_policy = true
   lambda_target_arns   = [module.lambda.lambda_function_arn]
 
+  schedule_groups = {
+    dev = {
+      name_prefix = "tmp-dev-"
+    }
+    prod = {
+      name = "prod"
+      tags = {
+        Env = "SuperProd"
+      }
+    }
+  }
+
   schedules = {
     lambda-cron = {
+      group_name          = "dev"
       description         = "Trigger for a Lambda"
       schedule_expression = "cron(0 1 * * ? *)"
       timezone            = "Europe/London"
       arn                 = module.lambda.lambda_function_arn
       input               = jsonencode({ "job" : "cron-by-rate" })
+    }
+    prod-lambda-cron = {
+      group_name          = "prod"
+      schedule_expression = "rate(10 hours)"
+      arn                 = module.lambda.lambda_function_arn
     }
   }
 }
@@ -43,7 +60,7 @@ resource "random_pet" "this" {
 
 module "lambda" {
   source  = "terraform-aws-modules/lambda/aws"
-  version = "~> 4.0"
+  version = "~> 5.0"
 
   function_name = "${random_pet.this.id}-lambda"
   handler       = "index.lambda_handler"

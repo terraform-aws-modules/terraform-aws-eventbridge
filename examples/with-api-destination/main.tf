@@ -1,5 +1,5 @@
 provider "aws" {
-  region = "ap-southeast-1"
+  region = "eu-west-1"
 
   # Make it faster by skipping something
   skip_metadata_api_check     = true

@@ -28,6 +28,12 @@ variable "append_destination_postfix" {
   default     = true
 }
 
+variable "append_schedule_group_postfix" {
+  description = "Controls whether to append '-group' to the name of the schedule group"
+  type        = bool
+  default     = true
+}
+
 variable "append_schedule_postfix" {
   description = "Controls whether to append '-schedule' to the name of the schedule"
   type        = bool
@@ -80,6 +86,12 @@ variable "create_schemas_discoverer" {
   description = "Controls whether default schemas discoverer should be created"
   type        = bool
   default     = false
+}
+
+variable "create_schedule_groups" {
+  description = "Controls whether EventBridge Schedule Group resources should be created"
+  type        = bool
+  default     = true
 }
 
 variable "create_schedules" {
@@ -144,6 +156,12 @@ variable "api_destinations" {
   default     = {}
 }
 
+variable "schedule_groups" {
+  description = "A map of objects with EventBridge Schedule Group definitions."
+  type        = any
+  default     = {}
+}
+
 variable "schedules" {
   description = "A map of objects with EventBridge Schedule definitions."
   type        = map(any)
@@ -152,6 +170,12 @@ variable "schedules" {
 
 variable "tags" {
   description = "A map of tags to assign to resources."
+  type        = map(string)
+  default     = {}
+}
+
+variable "schedule_group_timeouts" {
+  description = "A map of objects with EventBridge Schedule Group create and delete timeouts."
   type        = map(string)
   default     = {}
 }

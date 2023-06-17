@@ -29,6 +29,12 @@ locals {
       "Name" = var.append_destination_postfix ? "${replace(index, "_", "-")}-destination" : index
     })
   ])
+  eventbridge_schedule_groups = {
+    for index, group in var.schedule_groups :
+    index => merge(group, {
+      "Name" = var.append_schedule_group_postfix ? "${replace(index, "_", "-")}-group" : index
+    })
+  }
   eventbridge_schedules = flatten([
     for index, sched in var.schedules :
     merge(sched, {
@@ -239,7 +245,7 @@ resource "aws_cloudwatch_event_target" "this" {
 resource "aws_cloudwatch_event_archive" "this" {
   for_each = var.create && var.create_archives ? var.archives : {}
 
-  name             = each.key
+  name             = lookup(each.value, "name", each.key)
   event_source_arn = try(each.value["event_source_arn"], aws_cloudwatch_event_bus.this[0].arn)
 
   description    = lookup(each.value, "description", null)
@@ -410,13 +416,31 @@ resource "aws_cloudwatch_event_api_destination" "this" {
   connection_arn                   = aws_cloudwatch_event_connection.this[each.value.name].arn
 }
 
+resource "aws_scheduler_schedule_group" "this" {
+  for_each = { for k, v in local.eventbridge_schedule_groups : k => v if var.create && var.create_schedule_groups }
+
+  name        = lookup(each.value, "name_prefix", null) == null ? try(each.value.name, each.key) : null
+  name_prefix = lookup(each.value, "name_prefix", null) != null ? each.value.name_prefix : null
+
+  tags = lookup(each.value, "tags", {})
+
+  timeouts {
+    create = try(var.schedule_group_timeouts.create, null)
+    delete = try(var.schedule_group_timeouts.delete, null)
+  }
+
+  lifecycle {
+    create_before_destroy = true
+  }
+}
+
 resource "aws_scheduler_schedule" "this" {
   for_each = { for k, v in local.eventbridge_schedules : v.name => v if var.create && var.create_schedules }
 
   name        = each.value.Name
   name_prefix = lookup(each.value, "name_prefix", null)
   description = lookup(each.value, "description", null)
-  group_name  = lookup(each.value, "group_name", null)
+  group_name  = try(aws_scheduler_schedule_group.this[each.value.group_name].id, lookup(each.value, "group_name", null))
 
   start_date = lookup(each.value, "start_date", null)
   end_date   = lookup(each.value, "end_date", null)
