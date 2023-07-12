@@ -194,10 +194,10 @@ resource "aws_cloudwatch_event_target" "this" {
   }
 
   dynamic "kinesis_target" {
-    for_each = lookup(each.value, "kinesis_target", null) != null ? [true] : []
+    for_each = lookup(each.value, "partition_key_path", null) != null ? [true] : []
 
     content {
-      partition_key_path = lookup(kinesis_target.value, "partition_key_path", null)
+      partition_key_path = each.value.partition_key_path
     }
   }
 
@@ -560,10 +560,10 @@ resource "aws_scheduler_schedule" "this" {
     }
 
     dynamic "kinesis_parameters" {
-      for_each = lookup(each.value, "kinesis_parameters", null) != null ? [true] : []
+      for_each = lookup(each.value, "partition_key", null) != null ? [true] : []
 
       content {
-        partition_key = kinesis_parameters.value.partition_key
+        partition_key = each.value.partition_key
       }
     }
 
