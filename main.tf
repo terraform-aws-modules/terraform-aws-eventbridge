@@ -1,3 +1,6 @@
+data "aws_region" "current" {}
+data "aws_caller_identity" "current" {}
+
 locals {
   eventbridge_rules = flatten([
     for index, rule in var.rules :
@@ -40,6 +43,13 @@ locals {
     merge(sched, {
       "name" = index
       "Name" = var.append_schedule_postfix ? "${replace(index, "_", "-")}-schedule" : index
+    })
+  ])
+  eventbridge_pipes = flatten([
+    for index, pipe in var.pipes :
+    merge(pipe, {
+      "name" = index
+      "Name" = var.append_pipe_postfix ? "${replace(index, "_", "-")}-pipe" : index
     })
   ])
 }
@@ -593,4 +603,56 @@ resource "aws_scheduler_schedule" "this" {
       }
     }
   }
+}
+
+resource "aws_pipes_pipe" "this" {
+  for_each = { for k, v in local.eventbridge_pipes : v.name => v if var.create && var.create_pipes }
+
+  name        = each.value.Name
+  name_prefix = lookup(each.value, "name_prefix", null)
+
+  #  role_arn = "arn:aws:iam::835367859851:role/service-role/Amazon_EventBridge_Pipe_test_85cdfd6c"
+
+  role_arn = try(each.value.role_arn, aws_iam_role.eventbridge_pipe[each.key].arn)
+
+  source = each.value.source
+  target = each.value.target
+
+  description   = lookup(each.value, "description", null)
+  desired_state = lookup(each.value, "desired_state", null)
+
+  tags = lookup(each.value, "tags", {})
+
+  #source_parameters - (Optional) Parameters to configure a source for the pipe. Detailed below.
+
+  #  source_parameters {
+  #    sqs_queue_parameters {
+  #      batch_size                         = 1
+  #      maximum_batching_window_in_seconds = 90
+  #    }
+  #  }
+
+  #target_parameters - (Optional) Parameters to configure a target for your pipe. Detailed below.
+
+  #  enrichment  = lookup(each.value, "enrichment", null) != null ? aws_cloudwatch_event_api_destination.this[each.value.enrichment].arn : each.value.enrichment
+  enrichment = try(aws_cloudwatch_event_api_destination.this[each.value.enrichment].arn, each.value.enrichment, null)
+
+  dynamic "enrichment_parameters" {
+    for_each = try([each.value.enrichment_parameters], [])
+
+    content {
+      input_template = try(each.value.enrichment_parameters.input_template, null)
+
+      dynamic "http_parameters" {
+        for_each = try([each.value.enrichment_parameters.http_parameters], [])
+
+        content {
+          path_parameter_values   = try(http_parameters.value.path_parameter_values, null)
+          header_parameters       = try(http_parameters.value.header_parameters, null)
+          query_string_parameters = try(http_parameters.value.query_string_parameters, null)
+        }
+      }
+    }
+  }
+
 }

@@ -40,6 +40,12 @@ variable "append_schedule_postfix" {
   default     = true
 }
 
+variable "append_pipe_postfix" {
+  description = "Controls whether to append '-pipe' to the name of the pipe"
+  type        = bool
+  default     = true
+}
+
 variable "create_bus" {
   description = "Controls whether EventBridge Bus resource should be created"
   type        = bool
@@ -96,6 +102,12 @@ variable "create_schedule_groups" {
 
 variable "create_schedules" {
   description = "Controls whether EventBridge Schedule resources should be created"
+  type        = bool
+  default     = true
+}
+
+variable "create_pipes" {
+  description = "Controls whether EventBridge Pipes resources should be created"
   type        = bool
   default     = true
 }
@@ -165,6 +177,12 @@ variable "schedule_groups" {
 variable "schedules" {
   description = "A map of objects with EventBridge Schedule definitions."
   type        = map(any)
+  default     = {}
+}
+
+variable "pipes" {
+  description = "A map of objects with EventBridge Pipe definitions."
+  type        = any
   default     = {}
 }
 
