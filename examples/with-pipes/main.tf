@@ -37,9 +37,6 @@ module "eventbridge" {
     }
   }
 
-  # todo:
-  # Delete this from console - "arn:aws:iam::835367859851:role/service-role/Amazon_EventBridge_Pipe_test_85cdfd6c"
-
   pipes = {
     # With enrichment via API Destination
     enrichment = {

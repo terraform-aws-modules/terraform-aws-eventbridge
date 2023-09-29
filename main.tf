@@ -755,7 +755,6 @@ resource "aws_pipes_pipe" "this" {
     }
   }
 
-  #  enrichment  = lookup(each.value, "enrichment", null) != null ? aws_cloudwatch_event_api_destination.this[each.value.enrichment].arn : each.value.enrichment
   enrichment = try(aws_cloudwatch_event_api_destination.this[each.value.enrichment].arn, each.value.enrichment, null)
 
   dynamic "enrichment_parameters" {
