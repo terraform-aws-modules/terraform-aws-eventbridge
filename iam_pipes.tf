@@ -97,6 +97,16 @@ locals {
           values            = [v.target],
           matching_services = ["sns"]
         },
+
+        # Dead-letter queue (DLQ) for DynamoDB Streams and Kinesis Streams
+        sqs_dlq = {
+          values = [
+            try(v.source_parameters.dynamodb_stream_parameters.dead_letter_config.arn, null),
+            try(v.source_parameters.kinesis_stream_parameters.dead_letter_config.arn, null)
+          ],
+          matching_services = ["sqs"]
+        },
+
       }
     })
     if local.create_role_for_pipes && try(v.create_role, true) == true
@@ -140,6 +150,12 @@ locals {
     sqs_target = {
       actions = [
         "sqs:SendMessage"
+      ]
+    }
+
+    sqs_dlq = {
+      actions = [
+        "sqs:SendMessage" # ??? Not sure which IAM policy to use for DLQ
       ]
     }
 
@@ -348,7 +364,7 @@ data "aws_iam_policy_document" "service" {
 
     content {
       effect    = lookup(local.aws_service_policies[statement.key], "effect", "Allow")
-      sid       = replace("${each.key}${title(statement.key)}", "/[^0-9A-Za-z]*/", "")
+      sid       = replace(replace(title(replace("${each.key}${title(statement.key)}", "/[_-]/", " ")), " ", ""), "/[^0-9A-Za-z]*/", "")
       actions   = local.aws_service_policies[statement.key]["actions"]
       resources = tolist(statement.value)
 

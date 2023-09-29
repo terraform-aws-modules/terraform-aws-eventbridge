@@ -4,7 +4,7 @@ Terraform module to create EventBridge resources.
 
 ## Supported Features
 
-- Creates AWS EventBridge Resources (bus, rules, targets, permissions, connections, destinations, schedules and schedule groups)
+- Creates AWS EventBridge Resources (bus, rules, targets, permissions, connections, destinations, pipes, schedules and schedule groups)
 - Attach resources to an existing EventBridge bus
 - Support AWS EventBridge Archives and Replays
 - Conditional creation for many types of resources
@@ -345,6 +345,7 @@ module "eventbridge" {
   create_api_destinations = false  # to control creation of EventBridge Destination resources
   create_schedule_groups  = false  # to control creation of EventBridge Schedule Group resources
   create_schedules        = false  # to control creation of EventBridge Schedule resources
+  create_pipes            = false  # to control creation of EventBridge Pipes resources
 
   attach_cloudwatch_policy       = false
   attach_ecs_policy              = false
@@ -371,6 +372,7 @@ module "eventbridge" {
 * [ECS Scheduling Events](https://github.com/terraform-aws-modules/terraform-aws-eventbridge/tree/master/examples/with-ecs-scheduling) - Use default bus to schedule events on ECS.
 * [Lambda Scheduling Events](https://github.com/terraform-aws-modules/terraform-aws-eventbridge/tree/master/examples/with-lambda-scheduling) - Trigger Lambda functions on schedule (works only with default bus).
 * [API Destination](https://github.com/terraform-aws-modules/terraform-aws-eventbridge/tree/master/examples/with-api-destination) - Control access to EventBridge using API destinations.
+* [Pipes](https://github.com/terraform-aws-modules/terraform-aws-eventbridge/tree/master/examples/with-pipes) - EventBridge Pipes with lots of configurations.
 
 
 <!-- BEGINNING OF PRE-COMMIT-TERRAFORM DOCS HOOK -->
@@ -542,6 +544,10 @@ No modules.
 | <a name="output_eventbridge_connection_arns"></a> [eventbridge\_connection\_arns](#output\_eventbridge\_connection\_arns) | The EventBridge Connection Arns |
 | <a name="output_eventbridge_connection_ids"></a> [eventbridge\_connection\_ids](#output\_eventbridge\_connection\_ids) | The EventBridge Connection IDs |
 | <a name="output_eventbridge_permission_ids"></a> [eventbridge\_permission\_ids](#output\_eventbridge\_permission\_ids) | The EventBridge Permission IDs |
+| <a name="output_eventbridge_pipe_arns"></a> [eventbridge\_pipe\_arns](#output\_eventbridge\_pipe\_arns) | The EventBridge Pipes ARNs |
+| <a name="output_eventbridge_pipe_ids"></a> [eventbridge\_pipe\_ids](#output\_eventbridge\_pipe\_ids) | The EventBridge Pipes IDs |
+| <a name="output_eventbridge_pipe_role_arns"></a> [eventbridge\_pipe\_role\_arns](#output\_eventbridge\_pipe\_role\_arns) | The ARNs of the IAM role created for EventBridge Pipes |
+| <a name="output_eventbridge_pipe_role_names"></a> [eventbridge\_pipe\_role\_names](#output\_eventbridge\_pipe\_role\_names) | The names of the IAM role created for EventBridge Pipes |
 | <a name="output_eventbridge_role_arn"></a> [eventbridge\_role\_arn](#output\_eventbridge\_role\_arn) | The ARN of the IAM role created for EventBridge |
 | <a name="output_eventbridge_role_name"></a> [eventbridge\_role\_name](#output\_eventbridge\_role\_name) | The name of the IAM role created for EventBridge |
 | <a name="output_eventbridge_rule_arns"></a> [eventbridge\_rule\_arns](#output\_eventbridge\_rule\_arns) | The EventBridge Rule ARNs |

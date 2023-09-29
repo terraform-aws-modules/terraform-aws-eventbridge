@@ -86,3 +86,25 @@ output "eventbridge_role_name" {
   description = "The name of the IAM role created for EventBridge"
   value       = try(aws_iam_role.eventbridge[0].name, "")
 }
+
+# EventBridge Pipes
+output "eventbridge_pipe_ids" {
+  description = "The EventBridge Pipes IDs"
+  value       = { for k, v in aws_pipes_pipe.this : k => v.id }
+}
+
+output "eventbridge_pipe_arns" {
+  description = "The EventBridge Pipes ARNs"
+  value       = { for k, v in aws_pipes_pipe.this : k => v.arn }
+}
+
+# IAM Role for EventBridge Pipes
+output "eventbridge_pipe_role_arns" {
+  description = "The ARNs of the IAM role created for EventBridge Pipes"
+  value       = { for k, v in aws_iam_role.eventbridge_pipe : k => v.arn }
+}
+
+output "eventbridge_pipe_role_names" {
+  description = "The names of the IAM role created for EventBridge Pipes"
+  value       = { for k, v in aws_iam_role.eventbridge_pipe : k => v.name }
+}
