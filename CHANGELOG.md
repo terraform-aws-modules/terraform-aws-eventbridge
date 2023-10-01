@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file.
 
+## [2.4.0](https://github.com/terraform-aws-modules/terraform-aws-eventbridge/compare/v2.3.0...v2.4.0) (2023-10-01)
+
+
+### Features
+
+* Add support for EventBridge Pipes ([#92](https://github.com/terraform-aws-modules/terraform-aws-eventbridge/issues/92)) ([ff131eb](https://github.com/terraform-aws-modules/terraform-aws-eventbridge/commit/ff131eb904358d7956d3941bae691ca710daa838))
+
 ## [2.3.0](https://github.com/terraform-aws-modules/terraform-aws-eventbridge/compare/v2.2.0...v2.3.0) (2023-06-17)
 
 
