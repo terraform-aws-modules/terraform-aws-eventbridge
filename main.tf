@@ -1,3 +1,7 @@
+data "aws_region" "current" {}
+data "aws_caller_identity" "current" {}
+data "aws_partition" "current" {}
+
 locals {
   eventbridge_rules = flatten([
     for index, rule in var.rules :
@@ -40,6 +44,13 @@ locals {
     merge(sched, {
       "name" = index
       "Name" = var.append_schedule_postfix ? "${replace(index, "_", "-")}-schedule" : index
+    })
+  ])
+  eventbridge_pipes = flatten([
+    for index, pipe in var.pipes :
+    merge(pipe, {
+      "name" = index
+      "Name" = var.append_pipe_postfix ? "${replace(index, "_", "-")}-pipe" : index
     })
   ])
 }
@@ -593,4 +604,176 @@ resource "aws_scheduler_schedule" "this" {
       }
     }
   }
+}
+
+resource "aws_pipes_pipe" "this" {
+  for_each = { for k, v in local.eventbridge_pipes : v.name => v if local.create_pipes }
+
+  name = each.value.Name
+
+  role_arn = try(each.value.role_arn, aws_iam_role.eventbridge_pipe[each.key].arn)
+
+  source = each.value.source
+  target = each.value.target
+
+  description   = lookup(each.value, "description", null)
+  desired_state = lookup(each.value, "desired_state", null)
+
+  dynamic "source_parameters" {
+    for_each = try([each.value.source_parameters], [])
+
+    content {
+      dynamic "filter_criteria" {
+        for_each = try([source_parameters.value.filter_criteria], [])
+
+        content {
+          dynamic "filter" {
+            for_each = try(filter_criteria.value, [])
+
+            content {
+              pattern = filter.value.pattern
+            }
+          }
+        }
+      }
+
+      dynamic "sqs_queue_parameters" {
+        for_each = try([source_parameters.value.sqs_queue_parameters], [])
+
+        content {
+          batch_size                         = try(sqs_queue_parameters.value.batch_size, null)
+          maximum_batching_window_in_seconds = try(sqs_queue_parameters.value.maximum_batching_window_in_seconds, null)
+        }
+      }
+
+      dynamic "dynamodb_stream_parameters" {
+        for_each = try([source_parameters.value.dynamodb_stream_parameters], [])
+
+        content {
+          batch_size                         = try(dynamodb_stream_parameters.value.batch_size, null)
+          maximum_batching_window_in_seconds = try(dynamodb_stream_parameters.value.maximum_batching_window_in_seconds, null)
+          maximum_record_age_in_seconds      = try(dynamodb_stream_parameters.value.maximum_record_age_in_seconds, null)
+          maximum_retry_attempts             = try(dynamodb_stream_parameters.value.maximum_retry_attempts, null)
+          on_partial_batch_item_failure      = try(dynamodb_stream_parameters.value.on_partial_batch_item_failure, null)
+          parallelization_factor             = try(dynamodb_stream_parameters.value.parallelization_factor, null)
+          starting_position                  = try(dynamodb_stream_parameters.value.starting_position, null)
+
+          dynamic "dead_letter_config" {
+            for_each = try([dynamodb_stream_parameters.value.dead_letter_config], [])
+
+            content {
+              arn = dead_letter_config.value.arn
+            }
+          }
+        }
+      }
+
+      dynamic "kinesis_stream_parameters" {
+        for_each = try([source_parameters.value.kinesis_stream_parameters], [])
+
+        content {
+          batch_size                         = try(kinesis_stream_parameters.value.batch_size, null)
+          maximum_batching_window_in_seconds = try(kinesis_stream_parameters.value.maximum_batching_window_in_seconds, null)
+          maximum_record_age_in_seconds      = try(kinesis_stream_parameters.value.maximum_record_age_in_seconds, null)
+          maximum_retry_attempts             = try(kinesis_stream_parameters.value.maximum_retry_attempts, null)
+          on_partial_batch_item_failure      = try(kinesis_stream_parameters.value.on_partial_batch_item_failure, null)
+          parallelization_factor             = try(kinesis_stream_parameters.value.parallelization_factor, null)
+          starting_position                  = try(kinesis_stream_parameters.value.starting_position, null)
+          starting_position_timestamp        = try(kinesis_stream_parameters.value.starting_position_timestamp, null)
+
+          dynamic "dead_letter_config" {
+            for_each = try([kinesis_stream_parameters.value.dead_letter_config], [])
+
+            content {
+              arn = dead_letter_config.value.arn
+            }
+          }
+        }
+      }
+    }
+  }
+
+  dynamic "target_parameters" {
+    for_each = try([each.value.target_parameters], [])
+
+    content {
+      dynamic "sqs_queue_parameters" {
+        for_each = try([target_parameters.value.sqs_queue_parameters], [])
+
+        content {
+          message_deduplication_id = try(sqs_queue_parameters.value.message_deduplication_id, null)
+          message_group_id         = try(sqs_queue_parameters.value.message_group_id, null)
+        }
+      }
+
+      dynamic "cloudwatch_logs_parameters" {
+        for_each = try([target_parameters.value.cloudwatch_logs_parameters], [])
+
+        content {
+          log_stream_name = try(cloudwatch_logs_parameters.value.log_stream_name, null)
+          timestamp       = try(cloudwatch_logs_parameters.value.timestamp, null)
+        }
+      }
+
+      dynamic "lambda_function_parameters" {
+        for_each = try([target_parameters.value.lambda_function_parameters], [])
+
+        content {
+          invocation_type = try(lambda_function_parameters.value.invocation_type, null)
+        }
+      }
+
+      dynamic "step_function_state_machine_parameters" {
+        for_each = try([target_parameters.value.step_function_state_machine_parameters], [])
+
+        content {
+          invocation_type = try(step_function_state_machine_parameters.value.invocation_type, null)
+        }
+      }
+
+      dynamic "eventbridge_event_bus_parameters" {
+        for_each = try([target_parameters.value.eventbridge_event_bus_parameters], [])
+
+        content {
+          detail_type = try(eventbridge_event_bus_parameters.value.detail_type, null)
+          endpoint_id = try(eventbridge_event_bus_parameters.value.endpoint_id, null)
+          resources   = try(eventbridge_event_bus_parameters.value.resources, null)
+          source      = try(eventbridge_event_bus_parameters.value.source, null)
+          time        = try(eventbridge_event_bus_parameters.value.time, null)
+        }
+      }
+
+      dynamic "http_parameters" {
+        for_each = try([target_parameters.value.http_parameters], [])
+
+        content {
+          header_parameters       = try(http_parameters.value.header_parameters, null)
+          path_parameter_values   = try(http_parameters.value.path_parameter_values, null)
+          query_string_parameters = try(http_parameters.value.query_string_parameters, null)
+        }
+      }
+    }
+  }
+
+  enrichment = try(aws_cloudwatch_event_api_destination.this[each.value.enrichment].arn, each.value.enrichment, null)
+
+  dynamic "enrichment_parameters" {
+    for_each = try([each.value.enrichment_parameters], [])
+
+    content {
+      input_template = try(each.value.enrichment_parameters.input_template, null)
+
+      dynamic "http_parameters" {
+        for_each = try([each.value.enrichment_parameters.http_parameters], [])
+
+        content {
+          path_parameter_values   = try(http_parameters.value.path_parameter_values, null)
+          header_parameters       = try(http_parameters.value.header_parameters, null)
+          query_string_parameters = try(http_parameters.value.query_string_parameters, null)
+        }
+      }
+    }
+  }
+
+  tags = merge(var.tags, try(each.value.tags, {}))
 }

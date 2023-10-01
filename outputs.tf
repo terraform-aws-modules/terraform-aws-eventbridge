@@ -86,3 +86,82 @@ output "eventbridge_role_name" {
   description = "The name of the IAM role created for EventBridge"
   value       = try(aws_iam_role.eventbridge[0].name, "")
 }
+
+# EventBridge Pipes
+output "eventbridge_pipe_ids" {
+  description = "The EventBridge Pipes IDs"
+  value       = { for k, v in aws_pipes_pipe.this : k => v.id }
+}
+
+output "eventbridge_pipe_arns" {
+  description = "The EventBridge Pipes ARNs"
+  value       = { for k, v in aws_pipes_pipe.this : k => v.arn }
+}
+
+# IAM Role for EventBridge Pipes
+output "eventbridge_pipe_role_arns" {
+  description = "The ARNs of the IAM role created for EventBridge Pipes"
+  value       = { for k, v in aws_iam_role.eventbridge_pipe : k => v.arn }
+}
+
+output "eventbridge_pipe_role_names" {
+  description = "The names of the IAM role created for EventBridge Pipes"
+  value       = { for k, v in aws_iam_role.eventbridge_pipe : k => v.name }
+}
+
+# Resources
+output "eventbridge_bus" {
+  description = "The EventBridge Bus created and their attributes"
+  value       = aws_cloudwatch_event_bus.this
+}
+
+output "eventbridge_archives" {
+  description = "The EventBridge Archives created and their attributes"
+  value       = aws_cloudwatch_event_archive.this
+}
+
+output "eventbridge_permissions" {
+  description = "The EventBridge Permissions created and their attributes"
+  value       = aws_cloudwatch_event_permission.this
+}
+
+output "eventbridge_connections" {
+  description = "The EventBridge Connections created and their attributes"
+  value       = aws_cloudwatch_event_connection.this
+}
+
+output "eventbridge_api_destinations" {
+  description = "The EventBridge API Destinations created and their attributes"
+  value       = aws_cloudwatch_event_api_destination.this
+}
+
+output "eventbridge_rules" {
+  description = "The EventBridge Rules created and their attributes"
+  value       = aws_cloudwatch_event_rule.this
+}
+
+output "eventbridge_schedule_groups" {
+  description = "The EventBridge Schedule Groups created and their attributes"
+  value       = aws_scheduler_schedule_group.this
+}
+
+output "eventbridge_schedules" {
+  description = "The EventBridge Schedules created and their attributes"
+  value       = aws_scheduler_schedule.this
+}
+
+output "eventbridge_pipes" {
+  description = "The EventBridge Pipes created and their attributes"
+  value       = aws_pipes_pipe.this
+}
+
+# IAM Roles
+output "eventbridge_pipes_iam_roles" {
+  description = "The EventBridge Pipes IAM roles created and their attributes"
+  value       = aws_iam_role.eventbridge_pipe
+}
+
+output "eventbridge_iam_roles" {
+  description = "The EventBridge IAM roles created and their attributes"
+  value       = aws_iam_role.eventbridge
+}
