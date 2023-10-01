@@ -245,14 +245,18 @@ module "eventbridge" {
     }
 
     # Minimal with specific IAM role name to create
-    minimal_role_name = {
-      role_name = "something"
+    minimal_role_name_prefix = {
+      role_name_prefix = "something"
 
       source = aws_sqs_queue.source.arn
       target = aws_sqs_queue.target.arn
 
+      role_tags = {
+        MyRoleTag = "TagValue"
+      }
+
       tags = {
-        Pipe = "minimal_role_name"
+        Pipe = "minimal_role_name_prefix"
       }
     }
 

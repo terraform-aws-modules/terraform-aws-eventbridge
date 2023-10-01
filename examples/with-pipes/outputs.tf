@@ -19,3 +19,14 @@ output "eventbridge_pipe_role_names" {
   description = "The names of the IAM role created for EventBridge Pipes"
   value       = module.eventbridge.eventbridge_pipe_role_names
 }
+
+# Resources
+output "eventbridge_pipes" {
+  description = "The EventBridge Pipes created and their attributes"
+  value       = module.eventbridge.eventbridge_pipes
+}
+
+output "eventbridge_pipes_iam_roles" {
+  description = "The EventBridge Pipes IAM roles created and their attributes"
+  value       = module.eventbridge.eventbridge_pipes_iam_roles
+}

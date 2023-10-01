@@ -1,5 +1,6 @@
 data "aws_region" "current" {}
 data "aws_caller_identity" "current" {}
+data "aws_partition" "current" {}
 
 locals {
   eventbridge_rules = flatten([
@@ -606,10 +607,9 @@ resource "aws_scheduler_schedule" "this" {
 }
 
 resource "aws_pipes_pipe" "this" {
-  for_each = { for k, v in local.eventbridge_pipes : v.name => v if var.create && var.create_pipes }
+  for_each = { for k, v in local.eventbridge_pipes : v.name => v if local.create_pipes }
 
-  name        = each.value.Name
-  name_prefix = lookup(each.value, "name_prefix", null)
+  name = each.value.Name
 
   role_arn = try(each.value.role_arn, aws_iam_role.eventbridge_pipe[each.key].arn)
 
@@ -775,5 +775,5 @@ resource "aws_pipes_pipe" "this" {
     }
   }
 
-  tags = try(each.value.tags, {})
+  tags = merge(var.tags, try(each.value.tags, {}))
 }

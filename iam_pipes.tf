@@ -3,7 +3,7 @@ locals {
   role_for_pipes = {
     for k, v in local.eventbridge_pipes :
     v.name => merge(v, {
-      role_name = try(v.role_name, v.name),
+      role_name = try(v.role_name_prefix, v.name),
       service_integrations = {
         # Source only
         dynamodb = {
@@ -109,7 +109,7 @@ locals {
 
       }
     })
-    if local.create_role_for_pipes && try(v.create_role, true) == true
+    if local.create_role_for_pipes && try(v.create_role, true)
   }
 
   service_integrations_for_pipes = {
@@ -321,7 +321,7 @@ data "aws_iam_policy_document" "assume_role_pipe" {
 
     principals {
       type        = "Service"
-      identifiers = ["pipes.amazonaws.com"]
+      identifiers = ["pipes.${data.aws_partition.current.dns_suffix}"]
     }
 
     condition {
@@ -341,14 +341,15 @@ data "aws_iam_policy_document" "assume_role_pipe" {
 resource "aws_iam_role" "eventbridge_pipe" {
   for_each = local.role_for_pipes
 
-  name                  = each.value.role_name
+  name_prefix = each.value.role_name
+
   description           = try(each.value.role_description, null)
   path                  = try(each.value.role_path, null)
   force_detach_policies = try(each.value.role_force_detach_policies, null)
   permissions_boundary  = try(each.value.role_permissions_boundary, null)
   assume_role_policy    = data.aws_iam_policy_document.assume_role_pipe[each.key].json
 
-  tags = merge({ Name = each.value.role_name }, var.tags)
+  tags = merge({ Name = each.value.role_name }, try(each.value.role_tags, {}), var.tags)
 }
 
 
@@ -383,14 +384,14 @@ data "aws_iam_policy_document" "service" {
 resource "aws_iam_policy" "service" {
   for_each = { for k, v in local.role_for_pipes : k => v if try(v.attach_policies_for_integrations, true) }
 
-  name   = "${each.value.role_name}-${each.key}"
+  name   = "${aws_iam_role.eventbridge_pipe[each.key].name}-${each.key}"
   policy = data.aws_iam_policy_document.service[each.key].json
 }
 
 resource "aws_iam_policy_attachment" "service" {
   for_each = { for k, v in local.role_for_pipes : k => v if try(v.attach_policies_for_integrations, true) }
 
-  name       = "${each.value.role_name}-${each.key}"
+  name       = "${aws_iam_role.eventbridge_pipe[each.key].name}-${each.key}"
   roles      = [aws_iam_role.eventbridge_pipe[each.key].name]
   policy_arn = aws_iam_policy.service[each.key].arn
 }
