@@ -2,6 +2,18 @@
 
 All notable changes to this project will be documented in this file.
 
+## [3.0.0](https://github.com/terraform-aws-modules/terraform-aws-eventbridge/compare/v2.3.0...v3.0.0) (2023-10-02)
+
+
+### ⚠ BREAKING CHANGES
+
+* Upgraded AWS provider to v5 (required for Pipes) (#94)
+
+### Features
+
+* Add support for EventBridge Pipes ([#92](https://github.com/terraform-aws-modules/terraform-aws-eventbridge/issues/92)) ([ff131eb](https://github.com/terraform-aws-modules/terraform-aws-eventbridge/commit/ff131eb904358d7956d3941bae691ca710daa838))
+* Upgraded AWS provider to v5 (required for Pipes) ([#94](https://github.com/terraform-aws-modules/terraform-aws-eventbridge/issues/94)) ([ba4d055](https://github.com/terraform-aws-modules/terraform-aws-eventbridge/commit/ba4d055d0aabb16e356934c594ad26cc2057f058))
+
 ## [2.4.0](https://github.com/terraform-aws-modules/terraform-aws-eventbridge/compare/v2.3.0...v2.4.0) (2023-10-01)
 
 
