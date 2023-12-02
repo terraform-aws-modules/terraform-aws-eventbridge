@@ -44,12 +44,12 @@ module "eventbridge" {
     orders = {
       description   = "Capture all order data"
       event_pattern = jsonencode({ "source" : ["myapp.orders"] })
-      enabled       = false
+      state         = "DISABLED" # conflicts with is_enabled which is deprecated
     }
     emails = {
       description   = "Capture all emails data"
       event_pattern = jsonencode({ "source" : ["myapp.emails"] })
-      enabled       = true
+      state         = "ENABLED" # conflicts with is_enabled which is deprecated
     }
     crons = {
       description         = "Trigger for a Lambda"
