@@ -55,6 +55,11 @@ module "eventbridge" {
       description         = "Trigger for a Lambda"
       schedule_expression = "rate(5 minutes)"
     }
+    ecs = {
+      description   = "Capture ECS events"
+      event_pattern = jsonencode({ "source" : ["aws.ecs"] })
+      state         = "ENABLED_WITH_ALL_CLOUDTRAIL_MANAGEMENT_EVENTS"
+    }
   }
 
   targets = {
@@ -119,6 +124,13 @@ module "eventbridge" {
         name  = "something-for-cron"
         arn   = module.lambda.lambda_function_arn
         input = jsonencode({ "job" : "crons" })
+      }
+    ]
+
+    ecs = [
+      {
+        name = "something-for-ecs"
+        arn  = module.sns.topic_arn
       }
     ]
   }
@@ -367,6 +379,29 @@ resource "null_resource" "download_package" {
 
   provisioner "local-exec" {
     command = "curl -L -o ${local.downloaded} ${local.package_url}"
+  }
+}
+
+#######
+# SNS
+#######
+
+module "sns" {
+  source  = "terraform-aws-modules/sns/aws"
+  version = "~> 6.0"
+
+  name = "${random_pet.this.id}-notifications"
+  topic_policy_statements = {
+    events = {
+      actions = ["sns:publish"]
+      principals = [{
+        type        = "Service"
+        identifiers = ["events.amazonaws.com"]
+      }]
+    }
+  }
+  tags = {
+    name = "${random_pet.this.id}-notifications"
   }
 }
 
