@@ -56,9 +56,12 @@ module "eventbridge" {
       schedule_expression = "rate(5 minutes)"
     }
     ecs = {
-      description   = "Capture ECS events"
-      event_pattern = jsonencode({ "source" : ["aws.ecs"] })
-      state         = "ENABLED_WITH_ALL_CLOUDTRAIL_MANAGEMENT_EVENTS"
+      description = "Capture ECS events"
+      event_pattern = jsonencode({
+        "source" : ["aws.ecs"]
+      })
+      # https://docs.aws.amazon.com/eventbridge/latest/userguide/eb-service-event.html#eb-service-event-cloudtrail
+      state = "ENABLED_WITH_ALL_CLOUDTRAIL_MANAGEMENT_EVENTS"
     }
   }
 
@@ -403,6 +406,87 @@ module "sns" {
   tags = {
     name = "${random_pet.this.id}-notifications"
   }
+}
+
+##############
+# CloudTrail
+##############
+
+# required for event rule state of ENABLED_WITH_ALL_CLOUDTRAIL_MANAGEMENT_EVENTS
+resource "aws_cloudtrail" "trail" {
+  name                          = "${random_pet.this.id}-trail"
+  s3_bucket_name                = module.bucket.s3_bucket_id
+  include_global_service_events = false
+
+  event_selector {
+    exclude_management_event_sources = [
+      "kms.amazonaws.com",
+      "rdsdata.amazonaws.com"
+    ]
+    read_write_type = "ReadOnly"
+  }
+}
+
+#######
+# s3
+#######
+
+data "aws_region" "current" {}
+data "aws_caller_identity" "current" {}
+
+
+module "bucket" {
+  source  = "terraform-aws-modules/s3-bucket/aws"
+  version = "~> 3.0"
+
+  bucket        = "${random_pet.this.id}-bucket"
+  attach_policy = true
+  policy        = data.aws_iam_policy_document.bucket_policy.json
+
+  force_destroy = true
+}
+
+# https://docs.aws.amazon.com/awscloudtrail/latest/userguide/create-s3-bucket-policy-for-cloudtrail.html
+data "aws_iam_policy_document" "bucket_policy" {
+  statement {
+    sid = "AWSCloudTrailAclCheck20150319"
+    principals {
+      identifiers = ["cloudtrail.amazonaws.com"]
+      type        = "Service"
+    }
+    actions = ["s3:GetBucketAcl"]
+    resources = [
+      "arn:aws:s3:::${random_pet.this.id}-bucket"
+    ]
+    condition {
+      test     = "StringEquals"
+      values   = ["arn:aws:cloudtrail:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:trail/${random_pet.this.id}-trail"]
+      variable = "aws:SourceArn"
+    }
+  }
+
+  statement {
+    sid = "AWSCloudTrailWrite20150319"
+    principals {
+      identifiers = ["cloudtrail.amazonaws.com"]
+      type        = "Service"
+    }
+    actions = ["s3:PutObject"]
+    resources = [
+      "arn:aws:s3:::${random_pet.this.id}-bucket/*"
+    ]
+    condition {
+      test     = "StringEquals"
+      values   = ["bucket-owner-full-control"]
+      variable = "s3:x-amz-acl"
+    }
+    condition {
+      test     = "StringEquals"
+      values   = ["arn:aws:cloudtrail:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:trail/${random_pet.this.id}-trail"]
+      variable = "aws:SourceArn"
+    }
+  }
+
 }
 
 #######
