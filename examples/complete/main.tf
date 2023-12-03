@@ -449,7 +449,7 @@ module "bucket" {
 # https://docs.aws.amazon.com/awscloudtrail/latest/userguide/create-s3-bucket-policy-for-cloudtrail.html
 data "aws_iam_policy_document" "bucket_policy" {
   statement {
-    sid = "AWSCloudTrailAclCheck20150319"
+    sid = "AWSCloudTrailAclCheck"
     principals {
       identifiers = ["cloudtrail.amazonaws.com"]
       type        = "Service"
@@ -466,7 +466,7 @@ data "aws_iam_policy_document" "bucket_policy" {
   }
 
   statement {
-    sid = "AWSCloudTrailWrite20150319"
+    sid = "AWSCloudTrailWrite"
     principals {
       identifiers = ["cloudtrail.amazonaws.com"]
       type        = "Service"
