@@ -134,6 +134,10 @@ module "eventbridge" {
         }
       }
 
+      target_parameters = {
+        input_template = "{\"data\":<$.dynamodb>}"
+      }
+
       tags = {
         Pipe = "dynamodb_stream_source_sqs_target"
       }

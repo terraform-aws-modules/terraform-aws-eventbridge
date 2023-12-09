@@ -697,6 +697,7 @@ resource "aws_pipes_pipe" "this" {
     for_each = try([each.value.target_parameters], [])
 
     content {
+      input_template = try(target_parameters.value.input_template, null)
       dynamic "sqs_queue_parameters" {
         for_each = try([target_parameters.value.sqs_queue_parameters], [])
 
