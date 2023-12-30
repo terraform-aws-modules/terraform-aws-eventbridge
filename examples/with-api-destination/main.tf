@@ -22,7 +22,7 @@ module "eventbridge" {
     orders = {
       description   = "Capture all order data"
       event_pattern = jsonencode({ "source" : ["myapp.orders"] })
-      state         = "ENABLED" # conflicts with is_enabled which is deprecated
+      state         = "ENABLED" # conflicts with enabled which is deprecated
     }
   }
 

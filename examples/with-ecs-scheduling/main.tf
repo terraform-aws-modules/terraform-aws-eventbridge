@@ -44,7 +44,7 @@ module "eventbridge" {
   rules = {
     orders = {
       description         = "Cron for Orders"
-      state               = "DISABLED" # conflicts with is_enabled which is deprecated
+      state               = "DISABLED" # conflicts with enabled which is deprecated
       schedule_expression = "rate(5 minutes)"
     }
   }
