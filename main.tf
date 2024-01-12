@@ -56,7 +56,7 @@ locals {
 }
 
 data "aws_cloudwatch_event_bus" "this" {
-  count = (var.create && var.create_bus) || (var.bus_name == "") ? 0 : 1
+  count = var.create && var.create_bus ? 0 : 1
 
   name = var.bus_name
 }
