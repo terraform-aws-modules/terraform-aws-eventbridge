@@ -5,7 +5,6 @@ provider "aws" {
   skip_metadata_api_check     = true
   skip_region_validation      = true
   skip_credentials_validation = true
-  skip_requesting_account_id  = true
 }
 
 module "eventbridge" {
@@ -23,7 +22,7 @@ module "eventbridge" {
     orders = {
       description   = "Capture all order data"
       event_pattern = jsonencode({ "source" : ["myapp.orders"] })
-      enabled       = true
+      state         = "ENABLED" # conflicts with enabled which is deprecated
     }
   }
 

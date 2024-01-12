@@ -44,16 +44,24 @@ module "eventbridge" {
     orders = {
       description   = "Capture all order data"
       event_pattern = jsonencode({ "source" : ["myapp.orders"] })
-      enabled       = false
+      state         = "DISABLED" # conflicts with enabled which is deprecated
     }
     emails = {
       description   = "Capture all emails data"
       event_pattern = jsonencode({ "source" : ["myapp.emails"] })
-      enabled       = true
+      state         = "ENABLED" # conflicts with enabled which is deprecated
     }
     crons = {
       description         = "Trigger for a Lambda"
       schedule_expression = "rate(5 minutes)"
+    }
+    ecs = {
+      description = "Capture ECS events"
+      event_pattern = jsonencode({
+        "source" : ["aws.ecs"]
+      })
+      # https://docs.aws.amazon.com/eventbridge/latest/userguide/eb-service-event.html#eb-service-event-cloudtrail
+      state = "ENABLED_WITH_ALL_CLOUDTRAIL_MANAGEMENT_EVENTS"
     }
   }
 
@@ -119,6 +127,13 @@ module "eventbridge" {
         name  = "something-for-cron"
         arn   = module.lambda.lambda_function_arn
         input = jsonencode({ "job" : "crons" })
+      }
+    ]
+
+    ecs = [
+      {
+        name = "something-for-ecs"
+        arn  = module.sns.topic_arn
       }
     ]
   }
@@ -368,6 +383,110 @@ resource "null_resource" "download_package" {
   provisioner "local-exec" {
     command = "curl -L -o ${local.downloaded} ${local.package_url}"
   }
+}
+
+#######
+# SNS
+#######
+
+module "sns" {
+  source  = "terraform-aws-modules/sns/aws"
+  version = "~> 6.0"
+
+  name = "${random_pet.this.id}-notifications"
+  topic_policy_statements = {
+    events = {
+      actions = ["sns:publish"]
+      principals = [{
+        type        = "Service"
+        identifiers = ["events.amazonaws.com"]
+      }]
+    }
+  }
+  tags = {
+    name = "${random_pet.this.id}-notifications"
+  }
+}
+
+##############
+# CloudTrail
+##############
+
+# required for event rule state of ENABLED_WITH_ALL_CLOUDTRAIL_MANAGEMENT_EVENTS
+resource "aws_cloudtrail" "trail" {
+  name                          = "${random_pet.this.id}-trail"
+  s3_bucket_name                = module.bucket.s3_bucket_id
+  include_global_service_events = false
+
+  event_selector {
+    exclude_management_event_sources = [
+      "kms.amazonaws.com",
+      "rdsdata.amazonaws.com"
+    ]
+    read_write_type = "ReadOnly"
+  }
+}
+
+#######
+# s3
+#######
+
+data "aws_region" "current" {}
+
+data "aws_caller_identity" "current" {}
+
+module "bucket" {
+  source  = "terraform-aws-modules/s3-bucket/aws"
+  version = "~> 3.0"
+
+  bucket        = "${random_pet.this.id}-bucket"
+  attach_policy = true
+  policy        = data.aws_iam_policy_document.bucket_policy.json
+
+  force_destroy = true
+}
+
+# https://docs.aws.amazon.com/awscloudtrail/latest/userguide/create-s3-bucket-policy-for-cloudtrail.html
+data "aws_iam_policy_document" "bucket_policy" {
+  statement {
+    sid = "AWSCloudTrailAclCheck"
+    principals {
+      identifiers = ["cloudtrail.amazonaws.com"]
+      type        = "Service"
+    }
+    actions = ["s3:GetBucketAcl"]
+    resources = [
+      "arn:aws:s3:::${random_pet.this.id}-bucket"
+    ]
+    condition {
+      test     = "StringEquals"
+      values   = ["arn:aws:cloudtrail:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:trail/${random_pet.this.id}-trail"]
+      variable = "aws:SourceArn"
+    }
+  }
+
+  statement {
+    sid = "AWSCloudTrailWrite"
+    principals {
+      identifiers = ["cloudtrail.amazonaws.com"]
+      type        = "Service"
+    }
+    actions = ["s3:PutObject"]
+    resources = [
+      "arn:aws:s3:::${random_pet.this.id}-bucket/*"
+    ]
+    condition {
+      test     = "StringEquals"
+      values   = ["bucket-owner-full-control"]
+      variable = "s3:x-amz-acl"
+    }
+    condition {
+      test     = "StringEquals"
+      values   = ["arn:aws:cloudtrail:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:trail/${random_pet.this.id}-trail"]
+      variable = "aws:SourceArn"
+    }
+  }
+
 }
 
 #######

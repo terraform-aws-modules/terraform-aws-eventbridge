@@ -5,7 +5,6 @@ provider "aws" {
   skip_metadata_api_check     = true
   skip_region_validation      = true
   skip_credentials_validation = true
-  skip_requesting_account_id  = true
 }
 
 #############################################################
@@ -45,7 +44,7 @@ module "eventbridge" {
   rules = {
     orders = {
       description         = "Cron for Orders"
-      enabled             = false
+      state               = "DISABLED" # conflicts with enabled which is deprecated
       schedule_expression = "rate(5 minutes)"
     }
   }

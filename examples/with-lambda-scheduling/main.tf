@@ -5,7 +5,6 @@ provider "aws" {
   skip_metadata_api_check     = true
   skip_region_validation      = true
   skip_credentials_validation = true
-  skip_requesting_account_id  = true
 }
 
 module "eventbridge" {
@@ -45,7 +44,7 @@ resource "random_pet" "this" {
 
 module "lambda" {
   source  = "terraform-aws-modules/lambda/aws"
-  version = "~> 2.0"
+  version = "~> 6.0"
 
   function_name = "${random_pet.this.id}-lambda"
   handler       = "index.lambda_handler"
