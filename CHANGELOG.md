@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file.
 
+## [3.2.0](https://github.com/terraform-aws-modules/terraform-aws-eventbridge/compare/v3.1.0...v3.2.0) (2024-01-12)
+
+
+### Features
+
+* Add input_template in target_parameters for pipes ([#102](https://github.com/terraform-aws-modules/terraform-aws-eventbridge/issues/102)) ([9406fcb](https://github.com/terraform-aws-modules/terraform-aws-eventbridge/commit/9406fcbec0234c31eb602fc9e95dca99d61cac98))
+
 ## [3.1.0](https://github.com/terraform-aws-modules/terraform-aws-eventbridge/compare/v3.0.1...v3.1.0) (2024-01-12)
 
 
