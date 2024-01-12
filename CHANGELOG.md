@@ -2,6 +2,20 @@
 
 All notable changes to this project will be documented in this file.
 
+## [3.1.0](https://github.com/terraform-aws-modules/terraform-aws-eventbridge/compare/v3.0.1...v3.1.0) (2024-01-12)
+
+
+### Features
+
+* Add `state` to `aws_cloudwatch_event_rule` ([#100](https://github.com/terraform-aws-modules/terraform-aws-eventbridge/issues/100)) ([963753f](https://github.com/terraform-aws-modules/terraform-aws-eventbridge/commit/963753f118f93b470efdf72e4dc0e620fbeac58a))
+
+### [3.0.1](https://github.com/terraform-aws-modules/terraform-aws-eventbridge/compare/v3.0.0...v3.0.1) (2024-01-12)
+
+
+### Bug Fixes
+
+* Event bus data source count conditional ([#101](https://github.com/terraform-aws-modules/terraform-aws-eventbridge/issues/101)) ([ebe5963](https://github.com/terraform-aws-modules/terraform-aws-eventbridge/commit/ebe5963b58d64625fc3c29e86e8a3454e0b9b636))
+
 ## [3.0.0](https://github.com/terraform-aws-modules/terraform-aws-eventbridge/compare/v2.3.0...v3.0.0) (2023-10-02)
 
 
