@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file.
 
+### [3.2.1](https://github.com/terraform-aws-modules/terraform-aws-eventbridge/compare/v3.2.0...v3.2.1) (2024-02-02)
+
+
+### Bug Fixes
+
+* Fixed newline handling in input_template ([#107](https://github.com/terraform-aws-modules/terraform-aws-eventbridge/issues/107)) ([35a2acb](https://github.com/terraform-aws-modules/terraform-aws-eventbridge/commit/35a2acb4d1bc32b9c746df133d7c75b68b2a76f7))
+
 ## [3.2.0](https://github.com/terraform-aws-modules/terraform-aws-eventbridge/compare/v3.1.0...v3.2.0) (2024-01-12)
 
 
