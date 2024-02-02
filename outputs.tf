@@ -135,6 +135,11 @@ output "eventbridge_api_destinations" {
   value       = aws_cloudwatch_event_api_destination.this
 }
 
+output "eventbridge_targets" {
+  description = "The EventBridge Targets created and their attributes"
+  value       = aws_cloudwatch_event_target.this
+}
+
 output "eventbridge_rules" {
   description = "The EventBridge Rules created and their attributes"
   value       = aws_cloudwatch_event_rule.this

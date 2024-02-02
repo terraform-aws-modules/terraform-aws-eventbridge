@@ -39,6 +39,11 @@ output "eventbridge_api_destinations" {
   value       = module.eventbridge.eventbridge_api_destinations
 }
 
+output "eventbridge_targets" {
+  description = "The EventBridge Targets created and their attributes"
+  value       = module.eventbridge.eventbridge_targets
+}
+
 output "eventbridge_rules" {
   description = "The EventBridge Rules created and their attributes"
   value       = module.eventbridge.eventbridge_rules

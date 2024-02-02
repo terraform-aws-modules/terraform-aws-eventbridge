@@ -221,7 +221,7 @@ locals {
     input_paths = {
       order_id = "$.detail.order_id"
     }
-    input_template = <<EOF
+    input_template = <<-EOF
     {
       "id": <order_id>
     }
