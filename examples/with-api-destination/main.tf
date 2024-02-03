@@ -164,9 +164,10 @@ module "eventbridge" {
       http_method                      = "POST"
       invocation_rate_limit_per_second = 20
     }
+    # reuse github connection
     refunds_github = {
       description                      = "my refunds to github endpoint"
-      invocation_endpoint              = "https://smee.io/hgoubGoIbWEKt331"
+      invocation_endpoint              = "https://smee.io/QaM356V2p1PFFZS"
       http_method                      = "POST"
       invocation_rate_limit_per_second = 20
       connection_name                  = "github"
