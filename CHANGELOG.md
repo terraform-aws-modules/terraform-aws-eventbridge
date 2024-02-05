@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file.
 
+### [3.2.2](https://github.com/terraform-aws-modules/terraform-aws-eventbridge/compare/v3.2.1...v3.2.2) (2024-02-05)
+
+
+### Bug Fixes
+
+* Allow API destinations to reuse connections ([#108](https://github.com/terraform-aws-modules/terraform-aws-eventbridge/issues/108)) ([78ac5d7](https://github.com/terraform-aws-modules/terraform-aws-eventbridge/commit/78ac5d7711b2715c93f69632a38c6e508e8f7cdd))
+
 ### [3.2.1](https://github.com/terraform-aws-modules/terraform-aws-eventbridge/compare/v3.2.0...v3.2.1) (2024-02-02)
 
 
