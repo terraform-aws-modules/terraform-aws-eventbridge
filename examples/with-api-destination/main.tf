@@ -24,6 +24,11 @@ module "eventbridge" {
       event_pattern = jsonencode({ "source" : ["myapp.orders"] })
       state         = "ENABLED" # conflicts with enabled which is deprecated
     }
+    refunds = {
+      description   = "Capture all refund data"
+      event_pattern = jsonencode({ "source" : ["myapp.refunds"] })
+      state         = "ENABLED" # conflicts with enabled which is deprecated
+    }
   }
 
   targets = {
@@ -36,6 +41,13 @@ module "eventbridge" {
       {
         name            = "send-orders-to-github"
         destination     = "github"
+        attach_role_arn = true
+      }
+    ]
+    refunds = [
+      {
+        name            = "send-refunds-to-github"
+        destination     = "refunds_github"
         attach_role_arn = true
       }
     ]
@@ -151,6 +163,14 @@ module "eventbridge" {
       invocation_endpoint              = "https://smee.io/hgoubGoIbWEKt331"
       http_method                      = "POST"
       invocation_rate_limit_per_second = 20
+    }
+    # reuse github connection
+    refunds_github = {
+      description                      = "my refunds to github endpoint"
+      invocation_endpoint              = "https://smee.io/QaM356V2p1PFFZS"
+      http_method                      = "POST"
+      invocation_rate_limit_per_second = 20
+      connection_name                  = "github"
     }
   }
 }
