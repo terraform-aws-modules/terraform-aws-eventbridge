@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file.
 
+## [3.2.3](https://github.com/terraform-aws-modules/terraform-aws-eventbridge/compare/v3.2.2...v3.2.3) (2024-03-07)
+
+
+### Bug Fixes
+
+* Update CI workflow versions to remove deprecated runtime warnings ([#111](https://github.com/terraform-aws-modules/terraform-aws-eventbridge/issues/111)) ([a75692c](https://github.com/terraform-aws-modules/terraform-aws-eventbridge/commit/a75692c08ee7ae4f323c429ee75260660cd022c7))
+
 ### [3.2.2](https://github.com/terraform-aws-modules/terraform-aws-eventbridge/compare/v3.2.1...v3.2.2) (2024-02-05)
 
 
