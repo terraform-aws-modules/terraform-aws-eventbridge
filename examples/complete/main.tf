@@ -95,6 +95,32 @@ module "eventbridge" {
       {
         name = "log-orders-to-cloudwatch"
         arn  = aws_cloudwatch_log_group.this.arn
+      },
+      {
+        name  = "run-shell-script-one-target"
+        arn   = "arn:aws:ssm:${data.aws_region.current.name}::document/AWS-RunShellScript"
+        input = "{\"commands\": [\"uptime\"]}"
+        run_command_targets = [
+          {
+            key    = "InstanceIds"
+            values = ["i-123456"]
+          }
+        ]
+      },
+      {
+        name  = "run-shell-script-multi-target"
+        arn   = "arn:aws:ssm:${data.aws_region.current.name}::document/AWS-RunShellScript"
+        input = "{\"commands\": [\"uptime\"]}"
+        run_command_targets = [
+          {
+            key    = "tag:Name"
+            values = ["FooBar"]
+          },
+          {
+            key    = "InstanceIds"
+            values = ["i-123456"]
+          }
+        ]
       }
     ]
 
