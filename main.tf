@@ -227,7 +227,7 @@ resource "aws_cloudwatch_event_target" "this" {
     ] : []
 
     content {
-      input_paths    = input_transformer.value.input_paths
+      input_paths    = try(input_transformer.value.input_paths, null)
       input_template = chomp(input_transformer.value.input_template)
     }
   }
