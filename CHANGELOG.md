@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file.
 
+## [3.2.4](https://github.com/terraform-aws-modules/terraform-aws-eventbridge/compare/v3.2.3...v3.2.4) (2024-04-05)
+
+
+### Bug Fixes
+
+* Made input_paths in input_transformer optional ([#116](https://github.com/terraform-aws-modules/terraform-aws-eventbridge/issues/116)) ([1ce4aca](https://github.com/terraform-aws-modules/terraform-aws-eventbridge/commit/1ce4acaeee77f8043395cb81d598d97330404ebd))
+
 ## [3.2.3](https://github.com/terraform-aws-modules/terraform-aws-eventbridge/compare/v3.2.2...v3.2.3) (2024-03-07)
 
 
