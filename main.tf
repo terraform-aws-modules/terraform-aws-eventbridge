@@ -91,7 +91,7 @@ resource "aws_cloudwatch_event_rule" "this" {
   event_pattern       = lookup(each.value, "event_pattern", null)
   schedule_expression = lookup(each.value, "schedule_expression", null)
   role_arn            = lookup(each.value, "role_arn", false) ? aws_iam_role.eventbridge[0].arn : null
-  state               = lookup(each.value, "enabled", null) ? "ENABLED" : "DISABLED"
+  state               = coalesce(lookup(each.value, "enabled", null), false) ? "ENABLED" : "DISABLED"
 
   tags = merge(var.tags, {
     Name = each.value.Name
