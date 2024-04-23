@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file.
 
+## [3.3.0](https://github.com/terraform-aws-modules/terraform-aws-eventbridge/compare/v3.2.4...v3.3.0) (2024-04-23)
+
+
+### Features
+
+* Replace deprecated is_enabled with state in EventBridge rules ([#119](https://github.com/terraform-aws-modules/terraform-aws-eventbridge/issues/119)) ([920138a](https://github.com/terraform-aws-modules/terraform-aws-eventbridge/commit/920138a97e88e1c89f2439c737e17060a23f64de))
+
 ## [3.2.4](https://github.com/terraform-aws-modules/terraform-aws-eventbridge/compare/v3.2.3...v3.2.4) (2024-04-05)
 
 
