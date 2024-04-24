@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file.
 
+## [3.3.1](https://github.com/terraform-aws-modules/terraform-aws-eventbridge/compare/v3.3.0...v3.3.1) (2024-04-24)
+
+
+### Bug Fixes
+
+* Default to null when state argument is not set ([#122](https://github.com/terraform-aws-modules/terraform-aws-eventbridge/issues/122)) ([ed4b013](https://github.com/terraform-aws-modules/terraform-aws-eventbridge/commit/ed4b013a512c40277d7b707c03bf23e235a058ec))
+
 ## [3.3.0](https://github.com/terraform-aws-modules/terraform-aws-eventbridge/compare/v3.2.4...v3.3.0) (2024-04-23)
 
 
