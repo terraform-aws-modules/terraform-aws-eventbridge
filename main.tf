@@ -92,6 +92,7 @@ resource "aws_cloudwatch_event_rule" "this" {
   schedule_expression = lookup(each.value, "schedule_expression", null)
   role_arn            = lookup(each.value, "role_arn", false) ? aws_iam_role.eventbridge[0].arn : null
   state               = try(each.value.enabled ? "ENABLED" : "DISABLED", tobool(each.value.state) ? "ENABLED" : "DISABLED", upper(each.value.state), null)
+  force_destroy       = lookup(each.value, "force_destroy", null)
 
   tags = merge(var.tags, {
     Name = each.value.Name
@@ -108,9 +109,10 @@ resource "aws_cloudwatch_event_target" "this" {
 
   role_arn = can(length(each.value.attach_role_arn) > 0) ? each.value.attach_role_arn : (try(each.value.attach_role_arn, null) == true ? aws_iam_role.eventbridge[0].arn : null)
 
-  target_id  = lookup(each.value, "target_id", null)
-  input      = lookup(each.value, "input", null)
-  input_path = lookup(each.value, "input_path", null)
+  target_id     = lookup(each.value, "target_id", null)
+  input         = lookup(each.value, "input", null)
+  input_path    = lookup(each.value, "input_path", null)
+  force_destroy = lookup(each.value, "force_destroy", null)
 
   dynamic "run_command_targets" {
     for_each = try([each.value.run_command_targets], [])
