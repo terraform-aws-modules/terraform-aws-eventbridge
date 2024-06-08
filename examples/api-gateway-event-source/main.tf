@@ -55,30 +55,29 @@ resource "random_pet" "this" {
 
 module "api_gateway" {
   source  = "terraform-aws-modules/apigateway-v2/aws"
-  version = "~> 5.0"
+  version = "~> 4.0"
 
   name          = "${random_pet.this.id}-http"
   description   = "My ${random_pet.this.id} HTTP API Gateway"
   protocol_type = "HTTP"
 
-  create_domain_name = false
+  create_api_domain_name = false
 
-  routes = {
+  integrations = {
     "POST /orders/create" = {
-      integration = {
-        type            = "AWS_PROXY"
-        subtype         = "EventBridge-PutEvents"
-        credentials_arn = module.apigateway_put_events_to_eventbridge_role.iam_role_arn
+      integration_type    = "AWS_PROXY"
+      integration_subtype = "EventBridge-PutEvents"
+      credentials_arn     = module.apigateway_put_events_to_eventbridge_role.iam_role_arn
 
-        request_parameters = {
-          EventBusName = module.eventbridge.eventbridge_bus_name,
-          Source       = "api.gateway.orders.create",
-          DetailType   = "Order Create",
-          Detail       = "$request.body",
-          Time         = "$context.requestTimeEpoch"
-        }
-        payload_format_version = "1.0"
-      }
+      request_parameters = jsonencode({
+        EventBusName = module.eventbridge.eventbridge_bus_name,
+        Source       = "api.gateway.orders.create",
+        DetailType   = "Order Create",
+        Detail       = "$request.body",
+        Time         = "$context.requestTimeEpoch"
+      })
+
+      payload_format_version = "1.0"
     }
   }
 }
