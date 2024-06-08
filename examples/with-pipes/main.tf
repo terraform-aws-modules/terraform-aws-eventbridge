@@ -101,6 +101,13 @@ module "eventbridge" {
         }
       }
 
+      log_configuration = {
+        level = "TRACE"
+        cloudwatch_logs_log_destination = {
+          log_group_arn = aws_cloudwatch_log_group.logs.arn
+        }
+      }
+
       # target_parameters = {
       #   # Only supported for target FIFO SQS Queues
       #   sqs_queue_parameters = {
@@ -476,4 +483,8 @@ module "step_function_target" {
   }
 }
 EOF
+}
+
+resource "aws_cloudwatch_log_group" "logs" {
+  name = "${random_pet.this.id}-my-log-group"
 }
