@@ -529,7 +529,7 @@ resource "aws_kinesis_firehose_delivery_stream" "logs" {
 
 module "firehose_to_s3" {
   source  = "terraform-aws-modules/iam/aws//modules/iam-assumable-role"
-  version = ">= 5.30"
+  version = "~> 5.0"
 
   trusted_role_services = [
     "firehose.amazonaws.com"
@@ -547,7 +547,7 @@ module "firehose_to_s3" {
 
 module "firehose_to_s3_policy" {
   source  = "terraform-aws-modules/iam/aws//modules/iam-policy"
-  version = ">= 5.30"
+  version = "~> 5.0"
 
   name        = "${random_pet.this.id}-firehose-to-s3"
   path        = "/"
