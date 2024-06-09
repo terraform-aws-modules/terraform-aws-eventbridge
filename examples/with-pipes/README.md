@@ -37,7 +37,10 @@ Note that this example may create resources which cost money. Run `terraform des
 | Name | Source | Version |
 |------|--------|---------|
 | <a name="module_eventbridge"></a> [eventbridge](#module\_eventbridge) | ../../ | n/a |
+| <a name="module_firehose_to_s3"></a> [firehose\_to\_s3](#module\_firehose\_to\_s3) | terraform-aws-modules/iam/aws//modules/iam-assumable-role | >= 5.30 |
+| <a name="module_firehose_to_s3_policy"></a> [firehose\_to\_s3\_policy](#module\_firehose\_to\_s3\_policy) | terraform-aws-modules/iam/aws//modules/iam-policy | >= 5.30 |
 | <a name="module_lambda_target"></a> [lambda\_target](#module\_lambda\_target) | terraform-aws-modules/lambda/aws | ~> 6.0 |
+| <a name="module_logs_bucket"></a> [logs\_bucket](#module\_logs\_bucket) | terraform-aws-modules/s3-bucket/aws | ~> 4.0 |
 | <a name="module_step_function_target"></a> [step\_function\_target](#module\_step\_function\_target) | terraform-aws-modules/step-functions/aws | ~> 2.0 |
 
 ## Resources
@@ -53,13 +56,16 @@ Note that this example may create resources which cost money. Run `terraform des
 | [aws_dynamodb_table.source](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/dynamodb_table) | resource |
 | [aws_iam_role.eventbridge_pipe](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/iam_role) | resource |
 | [aws_iam_role_policy_attachment.pipe](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/iam_role_policy_attachment) | resource |
+| [aws_kinesis_firehose_delivery_stream.logs](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/kinesis_firehose_delivery_stream) | resource |
 | [aws_kinesis_stream.source](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/kinesis_stream) | resource |
 | [aws_sqs_queue.dlq](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/sqs_queue) | resource |
 | [aws_sqs_queue.source](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/sqs_queue) | resource |
 | [aws_sqs_queue.target](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/sqs_queue) | resource |
 | [null_resource.download_package](https://registry.terraform.io/providers/hashicorp/null/latest/docs/resources/resource) | resource |
 | [random_pet.this](https://registry.terraform.io/providers/hashicorp/random/latest/docs/resources/pet) | resource |
+| [aws_caller_identity.current](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/caller_identity) | data source |
 | [aws_iam_policy_document.assume_role_pipe](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/iam_policy_document) | data source |
+| [aws_iam_policy_document.firehose_to_s3](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/iam_policy_document) | data source |
 
 ## Inputs
 

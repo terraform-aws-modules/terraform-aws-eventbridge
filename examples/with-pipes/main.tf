@@ -7,6 +7,8 @@ provider "aws" {
   skip_credentials_validation = true
 }
 
+data "aws_caller_identity" "current" {}
+
 module "eventbridge" {
   source = "../../"
 
@@ -196,6 +198,15 @@ module "eventbridge" {
         }
       }
 
+      log_configuration = {
+        level = "INFO"
+        s3_log_destination = {
+          bucket_name   = module.logs_bucket.s3_bucket_id
+          bucket_owner  = data.aws_caller_identity.current.account_id
+          output_format = "json"
+        }
+      }
+
       tags = {
         Pipe = "sqs_source_eventbridge_target"
       }
@@ -209,6 +220,13 @@ module "eventbridge" {
       target_parameters = {
         lambda_function_parameters = {
           invocation_type = "REQUEST_RESPONSE"
+        }
+      }
+
+      log_configuration = {
+        level = "INFO"
+        firehose_log_destination = {
+          delivery_stream_arn = aws_kinesis_firehose_delivery_stream.logs.arn
         }
       }
 
@@ -487,4 +505,73 @@ EOF
 
 resource "aws_cloudwatch_log_group" "logs" {
   name = "${random_pet.this.id}-my-log-group"
+}
+
+module "logs_bucket" {
+  source  = "terraform-aws-modules/s3-bucket/aws"
+  version = "~> 4.0"
+
+  bucket_prefix = "${random_pet.this.id}-logs"
+
+  force_destroy = true
+}
+
+resource "aws_kinesis_firehose_delivery_stream" "logs" {
+  name        = "${random_pet.this.id}-logs"
+  destination = "extended_s3"
+
+  extended_s3_configuration {
+    role_arn   = module.firehose_to_s3.iam_role_arn
+    bucket_arn = module.logs_bucket.s3_bucket_arn
+    prefix     = "from-firehose-logs/"
+  }
+}
+
+module "firehose_to_s3" {
+  source  = "terraform-aws-modules/iam/aws//modules/iam-assumable-role"
+  version = ">= 5.30"
+
+  trusted_role_services = [
+    "firehose.amazonaws.com"
+  ]
+
+  create_role = true
+
+  role_name_prefix  = "${random_pet.this.id}-firehose-to-s3-"
+  role_requires_mfa = false
+
+  custom_role_policy_arns = [
+    module.firehose_to_s3_policy.arn
+  ]
+}
+
+module "firehose_to_s3_policy" {
+  source  = "terraform-aws-modules/iam/aws//modules/iam-policy"
+  version = ">= 5.30"
+
+  name        = "${random_pet.this.id}-firehose-to-s3"
+  path        = "/"
+  description = "Pipes logging firehose to s3 policy"
+
+  policy = data.aws_iam_policy_document.firehose_to_s3.json
+}
+
+data "aws_iam_policy_document" "firehose_to_s3" {
+  statement {
+    effect = "Allow"
+
+    actions = [
+      "s3:AbortMultipartUpload",
+      "s3:GetBucketLocation",
+      "s3:GetObject",
+      "s3:ListBucket",
+      "s3:ListBucketMultipartUploads",
+      "s3:PutObject",
+    ]
+
+    resources = [
+      module.logs_bucket.s3_bucket_arn,
+      "${module.logs_bucket.s3_bucket_arn}/*",
+    ]
+  }
 }
