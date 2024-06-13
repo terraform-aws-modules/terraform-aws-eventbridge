@@ -128,6 +128,7 @@ output "eventbridge_permissions" {
 output "eventbridge_connections" {
   description = "The EventBridge Connections created and their attributes"
   value       = aws_cloudwatch_event_connection.this
+  sensitive   = true
 }
 
 output "eventbridge_api_destinations" {
