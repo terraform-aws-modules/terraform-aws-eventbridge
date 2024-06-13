@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file.
 
+## [3.4.0](https://github.com/terraform-aws-modules/terraform-aws-eventbridge/compare/v3.3.1...v3.4.0) (2024-06-13)
+
+
+### Features
+
+* Make eventbridge connections output sensitive ([#123](https://github.com/terraform-aws-modules/terraform-aws-eventbridge/issues/123)) ([dc77a16](https://github.com/terraform-aws-modules/terraform-aws-eventbridge/commit/dc77a168aca707a2a4b52a73095601f1d41155d6))
+
 ## [3.3.1](https://github.com/terraform-aws-modules/terraform-aws-eventbridge/compare/v3.3.0...v3.3.1) (2024-04-24)
 
 
