@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file.
 
+## [3.5.0](https://github.com/terraform-aws-modules/terraform-aws-eventbridge/compare/v3.4.0...v3.5.0) (2024-06-13)
+
+
+### Features
+
+* Pipes log configuration support ([#125](https://github.com/terraform-aws-modules/terraform-aws-eventbridge/issues/125)) ([9e21611](https://github.com/terraform-aws-modules/terraform-aws-eventbridge/commit/9e216113214216a234e85d363a34bc50cb8b68de))
+
 ## [3.4.0](https://github.com/terraform-aws-modules/terraform-aws-eventbridge/compare/v3.3.1...v3.4.0) (2024-06-13)
 
 
