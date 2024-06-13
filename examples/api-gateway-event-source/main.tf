@@ -55,7 +55,7 @@ resource "random_pet" "this" {
 
 module "api_gateway" {
   source  = "terraform-aws-modules/apigateway-v2/aws"
-  version = "~> 0"
+  version = "~> 4.0"
 
   name          = "${random_pet.this.id}-http"
   description   = "My ${random_pet.this.id} HTTP API Gateway"

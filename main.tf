@@ -92,6 +92,7 @@ resource "aws_cloudwatch_event_rule" "this" {
   schedule_expression = lookup(each.value, "schedule_expression", null)
   role_arn            = lookup(each.value, "role_arn", false) ? aws_iam_role.eventbridge[0].arn : null
   state               = try(each.value.enabled ? "ENABLED" : "DISABLED", tobool(each.value.state) ? "ENABLED" : "DISABLED", upper(each.value.state), null)
+  force_destroy       = try(each.value.force_destroy, null)
 
   tags = merge(var.tags, {
     Name = each.value.Name
@@ -108,9 +109,10 @@ resource "aws_cloudwatch_event_target" "this" {
 
   role_arn = can(length(each.value.attach_role_arn) > 0) ? each.value.attach_role_arn : (try(each.value.attach_role_arn, null) == true ? aws_iam_role.eventbridge[0].arn : null)
 
-  target_id  = lookup(each.value, "target_id", null)
-  input      = lookup(each.value, "input", null)
-  input_path = lookup(each.value, "input_path", null)
+  target_id     = lookup(each.value, "target_id", null)
+  input         = lookup(each.value, "input", null)
+  input_path    = lookup(each.value, "input_path", null)
+  force_destroy = try(each.value.force_destroy, null)
 
   dynamic "run_command_targets" {
     for_each = try([each.value.run_command_targets], [])
@@ -771,6 +773,37 @@ resource "aws_pipes_pipe" "this" {
           path_parameter_values   = try(http_parameters.value.path_parameter_values, null)
           header_parameters       = try(http_parameters.value.header_parameters, null)
           query_string_parameters = try(http_parameters.value.query_string_parameters, null)
+        }
+      }
+    }
+  }
+
+  dynamic "log_configuration" {
+    for_each = try([each.value.log_configuration], [])
+    content {
+      level = log_configuration.value.level
+
+      dynamic "cloudwatch_logs_log_destination" {
+        for_each = try([log_configuration.value.cloudwatch_logs_log_destination], [])
+        content {
+          log_group_arn = cloudwatch_logs_log_destination.value.log_group_arn
+        }
+      }
+
+      dynamic "firehose_log_destination" {
+        for_each = try([log_configuration.value.firehose_log_destination], [])
+        content {
+          delivery_stream_arn = firehose_log_destination.value.delivery_stream_arn
+        }
+      }
+
+      dynamic "s3_log_destination" {
+        for_each = try([log_configuration.value.s3_log_destination], [])
+        content {
+          bucket_name   = s3_log_destination.value.bucket_name
+          bucket_owner  = s3_log_destination.value.bucket_owner
+          output_format = try(s3_log_destination.value.output_format, null)
+          prefix        = try(s3_log_destination.value.prefix, null)
         }
       }
     }
