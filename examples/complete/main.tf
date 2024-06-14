@@ -105,11 +105,12 @@ module "eventbridge" {
         attach_role_arn = true
       },
       {
-        name              = "send-orders-to-kinesis"
-        arn               = aws_kinesis_stream.this.arn
-        dead_letter_arn   = aws_sqs_queue.dlq.arn
-        input_transformer = local.order_input_transformer
-        attach_role_arn   = true
+        name               = "send-orders-to-kinesis"
+        arn                = aws_kinesis_stream.this.arn
+        dead_letter_arn    = aws_sqs_queue.dlq.arn
+        input_transformer  = local.order_input_transformer
+        partition_key_path = "$.id"
+        attach_role_arn    = true
       },
       {
         name            = "process-email-with-ecs-task",
