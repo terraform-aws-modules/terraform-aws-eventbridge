@@ -220,6 +220,12 @@ variable "role_path" {
   default     = null
 }
 
+variable "policy_path" {
+  description = "Path of IAM policy to use for EventBridge"
+  type        = string
+  default     = null
+}
+
 variable "role_force_detach_policies" {
   description = "Specifies to force detaching any policies the IAM role has before destroying it."
   type        = bool
