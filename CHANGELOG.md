@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file.
 
+## [3.6.0](https://github.com/terraform-aws-modules/terraform-aws-eventbridge/compare/v3.5.0...v3.6.0) (2024-07-04)
+
+
+### Features
+
+* Added path parameter for aws_iam_policy resources ([#127](https://github.com/terraform-aws-modules/terraform-aws-eventbridge/issues/127)) ([f10f6a4](https://github.com/terraform-aws-modules/terraform-aws-eventbridge/commit/f10f6a421c4e9778a089afd6d6b474531e700d11))
+
 ## [3.5.0](https://github.com/terraform-aws-modules/terraform-aws-eventbridge/compare/v3.4.0...v3.5.0) (2024-06-13)
 
 
