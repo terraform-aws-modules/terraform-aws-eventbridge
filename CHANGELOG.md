@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file.
 
+## [3.7.0](https://github.com/terraform-aws-modules/terraform-aws-eventbridge/compare/v3.6.0...v3.7.0) (2024-07-05)
+
+
+### Features
+
+* Added sns_kms_arns parameter for granular kms access inside sns aws_iam_policy resource ([#129](https://github.com/terraform-aws-modules/terraform-aws-eventbridge/issues/129)) ([c4188b7](https://github.com/terraform-aws-modules/terraform-aws-eventbridge/commit/c4188b77746d11b5bdfade5850bda01540b32928))
+
 ## [3.6.0](https://github.com/terraform-aws-modules/terraform-aws-eventbridge/compare/v3.5.0...v3.6.0) (2024-07-04)
 
 
