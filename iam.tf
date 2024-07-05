@@ -190,14 +190,18 @@ data "aws_iam_policy_document" "sns" {
     resources = var.sns_target_arns
   }
 
-  statement {
-    sid    = "SNSKMSAccess"
-    effect = "Allow"
-    actions = [
-      "kms:Decrypt",
-      "kms:GenerateDataKey"
-    ]
-    resources = ["*"]
+  dynamic "statement" {
+    for_each = length(var.sns_kms_arns) > 0 ? [1] : []
+
+    content {
+      sid    = "SNSKMSAccess"
+      effect = "Allow"
+      actions = [
+        "kms:Decrypt",
+        "kms:GenerateDataKey"
+      ]
+      resources = var.sns_kms_arns
+    }
   }
 
 }
