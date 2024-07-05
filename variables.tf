@@ -332,6 +332,12 @@ variable "sns_target_arns" {
   default     = []
 }
 
+variable "sns_kms_arns" {
+  description = "The Amazon Resource Name (ARN) of the AWS KMS's configured for AWS SNS you want Decrypt/GenerateDataKey for"
+  type        = list(string)
+  default     = ["*"]
+}
+
 variable "ecs_target_arns" {
   description = "The Amazon Resource Name (ARN) of the AWS ECS Tasks you want to use as EventBridge targets"
   type        = list(string)
