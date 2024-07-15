@@ -42,6 +42,12 @@ module "eventbridge" {
       schedule_expression = "rate(10 hours)"
       arn                 = module.lambda.lambda_function_arn
     }
+    kinesis-cron = {
+      group_name          = "prod"
+      schedule_expression = "rate(10 hours)"
+      arn                 = aws_kinesis_stream.this.arn
+      partition_key       = "foo"
+    }
   }
 }
 
@@ -51,6 +57,11 @@ module "eventbridge" {
 
 resource "random_pet" "this" {
   length = 2
+}
+
+resource "aws_kinesis_stream" "this" {
+  name        = random_pet.this.id
+  shard_count = 1
 }
 
 #############################################
