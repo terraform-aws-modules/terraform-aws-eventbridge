@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file.
 
+## [3.7.1](https://github.com/terraform-aws-modules/terraform-aws-eventbridge/compare/v3.7.0...v3.7.1) (2024-07-15)
+
+
+### Bug Fixes
+
+* Fix kinesis_target and kinesis_parameters dynamic blocks ([#124](https://github.com/terraform-aws-modules/terraform-aws-eventbridge/issues/124)) ([51578aa](https://github.com/terraform-aws-modules/terraform-aws-eventbridge/commit/51578aa8d9b5692685616da85a8a2516b163bc83))
+
 ## [3.7.0](https://github.com/terraform-aws-modules/terraform-aws-eventbridge/compare/v3.6.0...v3.7.0) (2024-07-05)
 
 
