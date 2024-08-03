@@ -260,7 +260,8 @@ locals {
 
     ecs = {
       actions = [
-        "ecs:RunTask"
+        "ecs:RunTask",
+        "ecs:TagResource"
       ]
     }
 

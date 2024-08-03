@@ -232,9 +232,12 @@ data "aws_iam_policy_document" "ecs" {
   count = local.create_role && var.attach_ecs_policy ? 1 : 0
 
   statement {
-    sid       = "ECSAccess"
-    effect    = "Allow"
-    actions   = ["ecs:RunTask"]
+    sid    = "ECSAccess"
+    effect = "Allow"
+    actions = [
+      "ecs:RunTask",
+      "ecs:TagResource"
+    ]
     resources = [for arn in var.ecs_target_arns : replace(arn, "/:\\d+$/", ":*")]
   }
 
