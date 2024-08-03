@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file.
 
+## [3.8.0](https://github.com/terraform-aws-modules/terraform-aws-eventbridge/compare/v3.7.1...v3.8.0) (2024-08-03)
+
+
+### Features
+
+* Updating default ECS policies to allow for Tagging ([#130](https://github.com/terraform-aws-modules/terraform-aws-eventbridge/issues/130)) ([0e246a5](https://github.com/terraform-aws-modules/terraform-aws-eventbridge/commit/0e246a5901222488b99e1cf368d56d46826da745))
+
 ## [3.7.1](https://github.com/terraform-aws-modules/terraform-aws-eventbridge/compare/v3.7.0...v3.7.1) (2024-07-15)
 
 
