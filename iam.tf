@@ -245,7 +245,7 @@ data "aws_iam_policy_document" "ecs" {
     sid       = "PassRole"
     effect    = "Allow"
     actions   = ["iam:PassRole"]
-    resources = ["*"]
+    resources = coalesce(var.pass_role_resources, ["*"])
   }
 }
 
