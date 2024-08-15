@@ -247,7 +247,7 @@ variable "role_tags" {
 variable "pass_role_resources" {
   description = "List of approved roles to be passed"
   type        = list(string)
-  default     = null
+  default     = []
 }
 
 ###########
