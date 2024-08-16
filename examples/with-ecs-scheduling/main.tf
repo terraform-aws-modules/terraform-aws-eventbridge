@@ -26,6 +26,9 @@ data "aws_subnets" "default" {
   }
 }
 
+data "aws_caller_identity" "current" {}
+data "aws_region" "current" {}
+
 ####################
 # Actual Eventbridge
 ####################
@@ -38,7 +41,12 @@ module "eventbridge" {
   create_role       = true
   role_name         = "ecs-eventbridge-${random_pet.this.id}"
   attach_ecs_policy = true
-  ecs_target_arns   = [module.ecs_cluster.services["hello-world"].task_definition_arn]
+  ecs_target_arns = [
+    module.ecs_cluster.services["hello-world"].task_definition_arn,
+    "arn:aws:ecs:${data.aws_region.current.id}:${data.aws_caller_identity.current.account_id}:task/${random_pet.this.id}/*"
+  ]
+
+  ecs_pass_role_resources = [module.ecs_cluster.services["hello-world"].task_exec_iam_role_arn]
 
   # Fire every five minutes
   rules = {

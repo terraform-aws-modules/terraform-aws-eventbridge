@@ -244,6 +244,12 @@ variable "role_tags" {
   default     = {}
 }
 
+variable "ecs_pass_role_resources" {
+  description = "List of approved roles to be passed"
+  type        = list(string)
+  default     = []
+}
+
 ###########
 # Policies
 ###########
