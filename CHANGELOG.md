@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file.
 
+## [3.9.0](https://github.com/terraform-aws-modules/terraform-aws-eventbridge/compare/v3.8.0...v3.9.0) (2024-08-16)
+
+
+### Features
+
+* Allow specifying ecs policy passrole resources ([#131](https://github.com/terraform-aws-modules/terraform-aws-eventbridge/issues/131)) ([1dcad03](https://github.com/terraform-aws-modules/terraform-aws-eventbridge/commit/1dcad03ec3736e6942974ff8f0d8083aa3693087))
+
 ## [3.8.0](https://github.com/terraform-aws-modules/terraform-aws-eventbridge/compare/v3.7.1...v3.8.0) (2024-08-03)
 
 
