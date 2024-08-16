@@ -46,7 +46,7 @@ module "eventbridge" {
     "arn:aws:ecs:${data.aws_region.current.id}:${data.aws_caller_identity.current.account_id}:task/${random_pet.this.id}/*"
   ]
 
-  pass_role_resources = [module.ecs_cluster.services["hello-world"].task_exec_iam_role_arn]
+  ecs_pass_role_resources = [module.ecs_cluster.services["hello-world"].task_exec_iam_role_arn]
 
   # Fire every five minutes
   rules = {
