@@ -39,7 +39,7 @@ Note that this example may create resources which cost money. Run `terraform des
 | <a name="module_eventbridge"></a> [eventbridge](#module\_eventbridge) | ../../ | n/a |
 | <a name="module_firehose_to_s3"></a> [firehose\_to\_s3](#module\_firehose\_to\_s3) | terraform-aws-modules/iam/aws//modules/iam-assumable-role | ~> 5.0 |
 | <a name="module_firehose_to_s3_policy"></a> [firehose\_to\_s3\_policy](#module\_firehose\_to\_s3\_policy) | terraform-aws-modules/iam/aws//modules/iam-policy | ~> 5.0 |
-| <a name="module_kms"></a> [kms](#module\_kms) | terraform-aws-modules/kms/aws | ~> 3.0 |
+| <a name="module_kms"></a> [kms](#module\_kms) | terraform-aws-modules/kms/aws | ~> 2.0 |
 | <a name="module_lambda_target"></a> [lambda\_target](#module\_lambda\_target) | terraform-aws-modules/lambda/aws | ~> 6.0 |
 | <a name="module_logs_bucket"></a> [logs\_bucket](#module\_logs\_bucket) | terraform-aws-modules/s3-bucket/aws | ~> 4.0 |
 | <a name="module_step_function_target"></a> [step\_function\_target](#module\_step\_function\_target) | terraform-aws-modules/step-functions/aws | ~> 2.0 |
