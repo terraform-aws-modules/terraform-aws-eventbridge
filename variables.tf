@@ -126,6 +126,12 @@ variable "event_source_name" {
   default     = null
 }
 
+variable "kms_key_identifier" {
+  description = "The identifier of the AWS KMS customer managed key for EventBridge to use, if you choose to use a customer managed key to encrypt events on this event bus. The identifier can be the key Amazon Resource Name (ARN), KeyId, key alias, or key alias ARN."
+  type        = string
+  default     = null
+}
+
 variable "schemas_discoverer_description" {
   description = "Default schemas discoverer description"
   type        = string

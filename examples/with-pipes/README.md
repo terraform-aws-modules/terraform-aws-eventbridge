@@ -20,7 +20,7 @@ Note that this example may create resources which cost money. Run `terraform des
 | Name | Version |
 |------|---------|
 | <a name="requirement_terraform"></a> [terraform](#requirement\_terraform) | >= 1.0 |
-| <a name="requirement_aws"></a> [aws](#requirement\_aws) | >= 5.53 |
+| <a name="requirement_aws"></a> [aws](#requirement\_aws) | >= 5.61 |
 | <a name="requirement_null"></a> [null](#requirement\_null) | >= 2.0 |
 | <a name="requirement_random"></a> [random](#requirement\_random) | >= 3.0 |
 
@@ -28,7 +28,7 @@ Note that this example may create resources which cost money. Run `terraform des
 
 | Name | Version |
 |------|---------|
-| <a name="provider_aws"></a> [aws](#provider\_aws) | >= 5.53 |
+| <a name="provider_aws"></a> [aws](#provider\_aws) | >= 5.61 |
 | <a name="provider_null"></a> [null](#provider\_null) | >= 2.0 |
 | <a name="provider_random"></a> [random](#provider\_random) | >= 3.0 |
 
@@ -39,6 +39,7 @@ Note that this example may create resources which cost money. Run `terraform des
 | <a name="module_eventbridge"></a> [eventbridge](#module\_eventbridge) | ../../ | n/a |
 | <a name="module_firehose_to_s3"></a> [firehose\_to\_s3](#module\_firehose\_to\_s3) | terraform-aws-modules/iam/aws//modules/iam-assumable-role | ~> 5.0 |
 | <a name="module_firehose_to_s3_policy"></a> [firehose\_to\_s3\_policy](#module\_firehose\_to\_s3\_policy) | terraform-aws-modules/iam/aws//modules/iam-policy | ~> 5.0 |
+| <a name="module_kms"></a> [kms](#module\_kms) | terraform-aws-modules/kms/aws | ~> 1.0 |
 | <a name="module_lambda_target"></a> [lambda\_target](#module\_lambda\_target) | terraform-aws-modules/lambda/aws | ~> 6.0 |
 | <a name="module_logs_bucket"></a> [logs\_bucket](#module\_logs\_bucket) | terraform-aws-modules/s3-bucket/aws | ~> 4.0 |
 | <a name="module_step_function_target"></a> [step\_function\_target](#module\_step\_function\_target) | terraform-aws-modules/step-functions/aws | ~> 2.0 |
@@ -66,6 +67,7 @@ Note that this example may create resources which cost money. Run `terraform des
 | [aws_caller_identity.current](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/caller_identity) | data source |
 | [aws_iam_policy_document.assume_role_pipe](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/iam_policy_document) | data source |
 | [aws_iam_policy_document.firehose_to_s3](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/iam_policy_document) | data source |
+| [aws_region.current](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/region) | data source |
 
 ## Inputs
 
