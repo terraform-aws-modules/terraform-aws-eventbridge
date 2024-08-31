@@ -581,7 +581,7 @@ data "aws_iam_policy_document" "firehose_to_s3" {
 
 module "kms" {
   source      = "terraform-aws-modules/kms/aws"
-  version     = "~> 1.0"
+  version     = "~> 3.0"
   description = "KMS key for cross region automated backups replication"
 
   # Aliases
