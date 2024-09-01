@@ -810,4 +810,9 @@ resource "aws_pipes_pipe" "this" {
   }
 
   tags = merge(var.tags, try(each.value.tags, {}))
+
+  depends_on = [
+    aws_iam_policy.service,
+    aws_iam_policy_attachment.service
+  ]
 }
