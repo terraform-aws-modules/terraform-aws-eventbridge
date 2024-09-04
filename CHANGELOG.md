@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file.
 
+## [3.9.1](https://github.com/terraform-aws-modules/terraform-aws-eventbridge/compare/v3.9.0...v3.9.1) (2024-09-04)
+
+
+### Bug Fixes
+
+* Add `depends_on` policy and policy attachments for pipes ([#133](https://github.com/terraform-aws-modules/terraform-aws-eventbridge/issues/133)) ([d4938fc](https://github.com/terraform-aws-modules/terraform-aws-eventbridge/commit/d4938fc595b4ae167efe37912f3d6de6e71fc565))
+
 ## [3.9.0](https://github.com/terraform-aws-modules/terraform-aws-eventbridge/compare/v3.8.0...v3.9.0) (2024-08-16)
 
 
