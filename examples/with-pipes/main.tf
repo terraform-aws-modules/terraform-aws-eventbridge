@@ -8,12 +8,14 @@ provider "aws" {
 }
 
 data "aws_caller_identity" "current" {}
+data "aws_region" "current" {}
 
 module "eventbridge" {
   source = "../../"
 
-  create_bus = true
-  bus_name   = "example"
+  create_bus         = true
+  bus_name           = "example"
+  kms_key_identifier = module.kms.key_arn
 
   create_api_destinations = true
   create_connections      = true
@@ -104,7 +106,8 @@ module "eventbridge" {
       }
 
       log_configuration = {
-        level = "TRACE"
+        level                  = "TRACE"
+        include_execution_data = ["ALL"]
         cloudwatch_logs_log_destination = {
           log_group_arn = aws_cloudwatch_log_group.logs.arn
         }
@@ -574,4 +577,49 @@ data "aws_iam_policy_document" "firehose_to_s3" {
       "${module.logs_bucket.s3_bucket_arn}/*",
     ]
   }
+}
+
+module "kms" {
+  source      = "terraform-aws-modules/kms/aws"
+  version     = "~> 2.0"
+  description = "KMS key for cross region automated backups replication"
+
+  # Aliases
+  aliases                 = ["test"]
+  aliases_use_name_prefix = true
+  key_statements = [
+    {
+      sid = "Allow eventbridge"
+      principals = [
+        {
+          type        = "Service"
+          identifiers = ["events.amazonaws.com"]
+        }
+      ]
+      actions = [
+        "kms:DescribeKey",
+        "kms:GenerateDataKey",
+        "kms:Decrypt"
+      ]
+      resources = ["*"]
+      conditions = [
+        {
+          test     = "StringEquals"
+          variable = "kms:EncryptionContext:aws:events:event-bus:arn"
+          values = [
+            "arn:aws:events:${data.aws_region.current.id}:${data.aws_caller_identity.current.account_id}:event-bus/example",
+          ]
+        },
+        {
+          test     = "StringEquals"
+          variable = "aws:SourceArn"
+          values = [
+            "arn:aws:events:${data.aws_region.current.id}:${data.aws_caller_identity.current.account_id}:event-bus/example",
+          ]
+        }
+      ]
+    }
+  ]
+
+  key_owners = [data.aws_caller_identity.current.arn]
 }

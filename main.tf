@@ -64,8 +64,9 @@ data "aws_cloudwatch_event_bus" "this" {
 resource "aws_cloudwatch_event_bus" "this" {
   count = var.create && var.create_bus ? 1 : 0
 
-  name              = var.bus_name
-  event_source_name = try(var.event_source_name, null)
+  name               = var.bus_name
+  event_source_name  = var.event_source_name
+  kms_key_identifier = var.kms_key_identifier
 
   tags = var.tags
 }
@@ -781,7 +782,8 @@ resource "aws_pipes_pipe" "this" {
   dynamic "log_configuration" {
     for_each = try([each.value.log_configuration], [])
     content {
-      level = log_configuration.value.level
+      include_execution_data = try(log_configuration.value.include_execution_data, null)
+      level                  = log_configuration.value.level
 
       dynamic "cloudwatch_logs_log_destination" {
         for_each = try([log_configuration.value.cloudwatch_logs_log_destination], [])
