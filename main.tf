@@ -65,8 +65,8 @@ resource "aws_cloudwatch_event_bus" "this" {
   count = var.create && var.create_bus ? 1 : 0
 
   name               = var.bus_name
-  event_source_name  = try(var.event_source_name, null)
-  kms_key_identifier = try(var.kms_key_identifier, null)
+  event_source_name  = var.event_source_name
+  kms_key_identifier = var.kms_key_identifier
 
   tags = var.tags
 }
