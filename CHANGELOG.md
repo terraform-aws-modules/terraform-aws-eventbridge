@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file.
 
+## [3.10.0](https://github.com/terraform-aws-modules/terraform-aws-eventbridge/compare/v3.9.1...v3.10.0) (2024-09-05)
+
+
+### Features
+
+* Adding `kms_key_identifier`to `aws_cloudwatch_event_bus` and `log_configuration.include_execution_data` to `aws_pipes_pipe` ([#132](https://github.com/terraform-aws-modules/terraform-aws-eventbridge/issues/132)) ([b7dadc0](https://github.com/terraform-aws-modules/terraform-aws-eventbridge/commit/b7dadc08aa72fdccf88aec764c61ef70bb1c19a7))
+
 ## [3.9.1](https://github.com/terraform-aws-modules/terraform-aws-eventbridge/compare/v3.9.0...v3.9.1) (2024-09-04)
 
 
