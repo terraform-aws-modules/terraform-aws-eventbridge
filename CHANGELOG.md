@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file.
 
+## [3.11.0](https://github.com/terraform-aws-modules/terraform-aws-eventbridge/compare/v3.10.0...v3.11.0) (2024-09-12)
+
+
+### Features
+
+* Update IAM pipes to support step function sync executions ([#134](https://github.com/terraform-aws-modules/terraform-aws-eventbridge/issues/134)) ([58f2efb](https://github.com/terraform-aws-modules/terraform-aws-eventbridge/commit/58f2efb90258e8688db25a9c286d08e2e9d8560c))
+
 ## [3.10.0](https://github.com/terraform-aws-modules/terraform-aws-eventbridge/compare/v3.9.1...v3.10.0) (2024-09-05)
 
 
