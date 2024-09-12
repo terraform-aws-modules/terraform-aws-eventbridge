@@ -227,7 +227,8 @@ locals {
 
     step_functions = {
       actions = [
-        "states:StartExecution"
+        "states:StartExecution",
+        "states:StartSyncExecution"
       ]
     }
 
