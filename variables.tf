@@ -455,3 +455,9 @@ variable "policy_statements" {
   type        = any
   default     = {}
 }
+
+variable "use_tags" {
+  description = "Whether or not to tag the IAM resources"
+  type        = bool
+  default     = true
+}
