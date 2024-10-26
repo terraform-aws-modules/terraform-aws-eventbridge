@@ -2,6 +2,18 @@
 
 All notable changes to this project will be documented in this file.
 
+## [3.12.0](https://github.com/terraform-aws-modules/terraform-aws-eventbridge/compare/v3.11.0...v3.12.0) (2024-10-26)
+
+
+### Features
+
+* Support `aws_cloudwatch_event_target.appsync_target` ([#139](https://github.com/terraform-aws-modules/terraform-aws-eventbridge/issues/139)) ([48699d7](https://github.com/terraform-aws-modules/terraform-aws-eventbridge/commit/48699d7e14d034867b576be67df5361789abb68c))
+
+
+### Bug Fixes
+
+* Update CI workflow versions to latest ([#137](https://github.com/terraform-aws-modules/terraform-aws-eventbridge/issues/137)) ([7ff8bf1](https://github.com/terraform-aws-modules/terraform-aws-eventbridge/commit/7ff8bf122f83858479a9fc2854e1ef960fdddc09))
+
 ## [3.11.0](https://github.com/terraform-aws-modules/terraform-aws-eventbridge/compare/v3.10.0...v3.11.0) (2024-09-12)
 
 
