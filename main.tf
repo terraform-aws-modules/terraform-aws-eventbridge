@@ -223,6 +223,13 @@ resource "aws_cloudwatch_event_target" "this" {
     }
   }
 
+  dynamic "appsync_target" {
+    for_each = try([each.value.appsync_target], [])
+    content {
+      graphql_operation = try(appsync_target.value.graphql_operation, null)
+    }
+  }
+
   dynamic "input_transformer" {
     for_each = lookup(each.value, "input_transformer", null) != null ? [
       each.value.input_transformer
