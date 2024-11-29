@@ -60,7 +60,16 @@ locals {
           matching_services = ["batch"]
         },
         logs = {
-          values            = [v.target],
+          values = flatten([
+            "${v.target}:*",
+            [
+              for pipe in var.pipes : [
+                for log_config in try([pipe.log_configuration], []) : [
+                  for cloudwatch_log in try([log_config.cloudwatch_logs_log_destination], []) : "${cloudwatch_log.log_group_arn}:*"
+                ]
+              ]
+            ]
+          ]),
           matching_services = ["logs"]
         },
         ecs = {
