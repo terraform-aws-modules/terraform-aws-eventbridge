@@ -14,7 +14,8 @@ module "eventbridge" {
   create_connections      = true
   create_api_destinations = true
 
-  bus_name = "${random_pet.this.id}-bus"
+  bus_name        = "${random_pet.this.id}-bus"
+  bus_description = "Event bus with API destination"
 
   attach_api_destination_policy = true
 

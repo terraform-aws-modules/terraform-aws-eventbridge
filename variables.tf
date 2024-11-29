@@ -120,6 +120,12 @@ variable "bus_name" {
   default     = "default"
 }
 
+variable "bus_description" {
+  description = "Event bus description"
+  type        = string
+  default     = null
+}
+
 variable "event_source_name" {
   description = "The partner event source that the new event bus will be matched with. Must match name."
   type        = string

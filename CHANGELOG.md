@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file.
 
+## [3.13.0](https://github.com/terraform-aws-modules/terraform-aws-eventbridge/compare/v3.12.0...v3.13.0) (2024-11-27)
+
+
+### Features
+
+* Add Event Bus `description` argument ([#142](https://github.com/terraform-aws-modules/terraform-aws-eventbridge/issues/142)) ([200310d](https://github.com/terraform-aws-modules/terraform-aws-eventbridge/commit/200310d8dd3deb5c10ac99c5d0e7f128b386d566))
+
 ## [3.12.0](https://github.com/terraform-aws-modules/terraform-aws-eventbridge/compare/v3.11.0...v3.12.0) (2024-10-26)
 
 
