@@ -717,6 +717,13 @@ resource "aws_pipes_pipe" "this" {
           message_group_id         = try(sqs_queue_parameters.value.message_group_id, null)
         }
       }
+      dynamic "kinesis_stream_parameters" {
+        for_each = try([target_parameters.value.kinesis_stream_parameters], [])
+
+        content {
+          partition_key = try(kinesis_stream_parameters.value.partition_key, null)
+        }
+      }
 
       dynamic "cloudwatch_logs_parameters" {
         for_each = try([target_parameters.value.cloudwatch_logs_parameters], [])
