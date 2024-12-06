@@ -187,6 +187,39 @@ module "eventbridge" {
       }
     }
 
+    # With Kinesis Stream source and Kinesis Straem target
+    kinesis_source_kinesis_target = {
+      source = aws_kinesis_stream.source.arn
+      target = aws_kinesis_stream.target.arn
+
+      source_parameters = {
+        kinesis_stream_parameters = {
+          batch_size                         = 7
+          maximum_batching_window_in_seconds = 90
+          maximum_record_age_in_seconds      = 100
+          maximum_retry_attempts             = 4
+          on_partial_batch_item_failure      = "AUTOMATIC_BISECT"
+          parallelization_factor             = 5
+          starting_position                  = "TRIM_HORIZON"
+          starting_position_timestamp        = null
+          dead_letter_config = {
+            arn = aws_sqs_queue.dlq.arn
+          }
+        }
+      }
+
+      target_parameters = {
+        kinesis_stream_parameters = {
+          # Must be a json path and start with $.
+          partition_key = "$.id"
+        }
+      }
+
+      tags = {
+        Pipe = "kinesis_source_kinesis_target"
+      }
+    }
+
     # With SQS Queue source and EventBridge target
     sqs_source_eventbridge_target = {
       source = aws_sqs_queue.source.arn
@@ -425,6 +458,12 @@ resource "aws_dynamodb_table" "source" {
 
 resource "aws_kinesis_stream" "source" {
   name = "${random_pet.this.id}-source"
+
+  shard_count = 1
+}
+
+resource "aws_kinesis_stream" "target" {
+  name = "${random_pet.this.id}-target"
 
   shard_count = 1
 }
