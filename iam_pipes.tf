@@ -182,7 +182,8 @@ locals {
 
     kinesis_target = {
       actions = [
-        "kinesis:PutRecord"
+        "kinesis:PutRecord",
+        "kinesis:PutRecords"
       ]
     }
 
