@@ -338,6 +338,16 @@ data "aws_iam_policy_document" "assume_role_pipe" {
       values   = ["arn:aws:pipes:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:pipe/${each.value.Name}"]
     }
   }
+
+  statement {
+    effect  = "Allow"
+    actions = ["sts:AssumeRole"]
+
+    principals {
+      type        = "Service"
+      identifiers = ["kinesis.${data.aws_partition.current.dns_suffix}"]
+    }
+  }
 }
 
 resource "aws_iam_role" "eventbridge_pipe" {
