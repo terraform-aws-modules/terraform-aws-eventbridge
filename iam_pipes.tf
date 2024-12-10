@@ -29,7 +29,7 @@ locals {
 
         # Enrichment / Target
         lambda = {
-          values            = [v.target, try(aws_cloudwatch_event_api_destination.this[v.enrichment].arn, null)],
+          values            = [v.target, try(v.enrichment, null), try(aws_cloudwatch_event_api_destination.this[v.enrichment].arn, null)],
           matching_services = ["lambda"]
         },
         step_functions = {
