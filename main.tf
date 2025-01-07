@@ -679,6 +679,27 @@ resource "aws_pipes_pipe" "this" {
         }
       }
 
+      dynamic "managed_streaming_kafka_parameters" {
+        for_each = try([source_parameters.value.managed_streaming_kafka_parameters], [])
+
+        content {
+          batch_size                         = try(managed_streaming_kafka_parameters.value.batch_size, null)
+          maximum_batching_window_in_seconds = try(managed_streaming_kafka_parameters.value.maximum_batching_window_in_seconds, null)
+          consumer_group_id                  = try(managed_streaming_kafka_parameters.value.consumer_group_id, null)
+          starting_position                  = try(managed_streaming_kafka_parameters.value.starting_position, null)
+          topic_name                         = try(managed_streaming_kafka_parameters.value.topic_name, null)
+
+          dynamic "credentials" {
+            for_each = try([managed_streaming_kafka_parameters.value.credentials], [])
+
+            content {
+              client_certificate_tls_auth = credentials.value.client_certificate_tls_auth
+              sasl_scram_512_auth = credentials.value.sasl_scram_512_auth
+            }
+          }
+        }
+      }
+
       dynamic "kinesis_stream_parameters" {
         for_each = try([source_parameters.value.kinesis_stream_parameters], [])
 
