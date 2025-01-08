@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file.
 
+## [3.14.0](https://github.com/terraform-aws-modules/terraform-aws-eventbridge/compare/v3.13.0...v3.14.0) (2025-01-07)
+
+
+### Features
+
+* Added dynamic block for managed_streaming_kafka_parameters ([#148](https://github.com/terraform-aws-modules/terraform-aws-eventbridge/issues/148)) ([7621d52](https://github.com/terraform-aws-modules/terraform-aws-eventbridge/commit/7621d52f7143c8f142bc2f8ab0093d6653e4907f))
+
 ## [3.13.0](https://github.com/terraform-aws-modules/terraform-aws-eventbridge/compare/v3.12.0...v3.13.0) (2024-11-27)
 
 
