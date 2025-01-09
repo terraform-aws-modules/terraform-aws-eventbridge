@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file.
 
+## [3.14.1](https://github.com/terraform-aws-modules/terraform-aws-eventbridge/compare/v3.14.0...v3.14.1) (2025-01-08)
+
+
+### Bug Fixes
+
+* Cloudwatch policy for pipes ([#140](https://github.com/terraform-aws-modules/terraform-aws-eventbridge/issues/140)) ([57626e4](https://github.com/terraform-aws-modules/terraform-aws-eventbridge/commit/57626e4826fee0fa3969d706aa54285f24b81bdd))
+
 ## [3.14.0](https://github.com/terraform-aws-modules/terraform-aws-eventbridge/compare/v3.13.0...v3.14.0) (2025-01-07)
 
 
