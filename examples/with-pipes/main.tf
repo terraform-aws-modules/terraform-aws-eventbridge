@@ -187,7 +187,7 @@ module "eventbridge" {
       }
     }
 
-    # With Kinesis Stream source and Kinesis Straem target
+    # With Kinesis Stream source and Kinesis Stream target
     kinesis_source_kinesis_target = {
       source = aws_kinesis_stream.source.arn
       target = aws_kinesis_stream.target.arn
