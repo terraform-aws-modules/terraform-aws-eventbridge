@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file.
 
+## [3.14.2](https://github.com/terraform-aws-modules/terraform-aws-eventbridge/compare/v3.14.1...v3.14.2) (2025-01-10)
+
+
+### Bug Fixes
+
+* Allow Pipes with Kinesis Targets ([#143](https://github.com/terraform-aws-modules/terraform-aws-eventbridge/issues/143)) ([b4b29bf](https://github.com/terraform-aws-modules/terraform-aws-eventbridge/commit/b4b29bfc85816b55306704da65b4d96b511955cd))
+
 ## [3.14.1](https://github.com/terraform-aws-modules/terraform-aws-eventbridge/compare/v3.14.0...v3.14.1) (2025-01-08)
 
 
