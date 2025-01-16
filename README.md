@@ -341,6 +341,7 @@ module "eventbridge" {
   create_archives         = false  # to control creation of EventBridge Archives
   create_permissions      = false  # to control creation of EventBridge Permissions
   create_role             = false  # to control creation of the IAM role and policies required for EventBridge
+  create_pipe_role_only   = false  # to control creation of the IAM role and policies required for EventBridge Pipes only
   create_connections      = false  # to control creation of EventBridge Connection resources
   create_api_destinations = false  # to control creation of EventBridge Destination resources
   create_schedule_groups  = false  # to control creation of EventBridge Schedule Group resources
@@ -496,6 +497,7 @@ No modules.
 | <a name="input_create_bus"></a> [create\_bus](#input\_create\_bus) | Controls whether EventBridge Bus resource should be created | `bool` | `true` | no |
 | <a name="input_create_connections"></a> [create\_connections](#input\_create\_connections) | Controls whether EventBridge Connection resources should be created | `bool` | `false` | no |
 | <a name="input_create_permissions"></a> [create\_permissions](#input\_create\_permissions) | Controls whether EventBridge Permission resources should be created | `bool` | `true` | no |
+| <a name="input_create_pipe_role_only"></a> [create\_pipe\_role\_only](#input\_create\_pipe\_role\_only) | Controls whether an IAM role should be created for the pipes only | `bool` | `false` | no |
 | <a name="input_create_pipes"></a> [create\_pipes](#input\_create\_pipes) | Controls whether EventBridge Pipes resources should be created | `bool` | `true` | no |
 | <a name="input_create_role"></a> [create\_role](#input\_create\_role) | Controls whether IAM roles should be created | `bool` | `true` | no |
 | <a name="input_create_rules"></a> [create\_rules](#input\_create\_rules) | Controls whether EventBridge Rule resources should be created | `bool` | `true` | no |

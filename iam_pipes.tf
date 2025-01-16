@@ -33,7 +33,7 @@ locals {
           matching_services = ["lambda"]
         },
         step_functions = {
-          values            = [v.target, try(aws_cloudwatch_event_api_destination.this[v.enrichment].arn, null)],
+          values            = [v.target, try(v.enrichment, null)],
           matching_services = ["states"]
         },
         api_gateway = {

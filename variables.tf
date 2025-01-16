@@ -10,6 +10,12 @@ variable "create_role" {
   default     = true
 }
 
+variable "create_pipe_role_only" {
+  description = "Controls whether an IAM role should be created for the pipes only"
+  type        = bool
+  default     = false
+}
+
 variable "append_rule_postfix" {
   description = "Controls whether to append '-rule' to the name of the rule"
   type        = bool
