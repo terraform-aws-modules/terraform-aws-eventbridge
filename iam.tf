@@ -1,7 +1,7 @@
 locals {
   create_role           = var.create && var.create_role
   create_pipes          = var.create && var.create_pipes
-  create_role_for_pipes = local.create_pipes && var.create_role ? true : var.create_pipe_role_only
+  create_role_for_pipes = local.create_pipes && (var.create_role || var.create_pipe_role_only)
 
   # Defaulting to "*" (an invalid character for an IAM Role name) will cause an error when
   # attempting to plan if the role_name and bus_name are not set. This is a workaround
