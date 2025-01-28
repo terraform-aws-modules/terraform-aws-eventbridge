@@ -694,7 +694,7 @@ resource "aws_pipes_pipe" "this" {
 
             content {
               client_certificate_tls_auth = credentials.value.client_certificate_tls_auth
-              sasl_scram_512_auth = credentials.value.sasl_scram_512_auth
+              sasl_scram_512_auth         = credentials.value.sasl_scram_512_auth
             }
           }
         }
