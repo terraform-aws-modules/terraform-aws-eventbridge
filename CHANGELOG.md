@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file.
 
+## [3.14.3](https://github.com/terraform-aws-modules/terraform-aws-eventbridge/compare/v3.14.2...v3.14.3) (2025-01-28)
+
+
+### Bug Fixes
+
+* Step function enrichment ([#149](https://github.com/terraform-aws-modules/terraform-aws-eventbridge/issues/149)) ([8e1c345](https://github.com/terraform-aws-modules/terraform-aws-eventbridge/commit/8e1c345c693bc213a5326a589f1d536eff49c3b2))
+
 ## [3.14.2](https://github.com/terraform-aws-modules/terraform-aws-eventbridge/compare/v3.14.1...v3.14.2) (2025-01-10)
 
 
