@@ -117,7 +117,7 @@ resource "aws_cloudwatch_event_target" "this" {
   force_destroy = try(each.value.force_destroy, null)
 
   dynamic "run_command_targets" {
-    for_each = try([each.value.run_command_targets], [])
+    for_each = try(each.value.run_command_targets, [])
 
     content {
       key    = run_command_targets.value.key
