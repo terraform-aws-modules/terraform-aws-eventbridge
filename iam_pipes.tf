@@ -397,6 +397,7 @@ resource "aws_iam_policy" "service" {
   for_each = { for k, v in local.role_for_pipes : k => v if try(v.attach_policies_for_integrations, true) }
 
   name   = "${aws_iam_role.eventbridge_pipe[each.key].name}-${each.key}"
+  path   = try(each.value.role_path, null)
   policy = data.aws_iam_policy_document.service[each.key].json
 }
 
