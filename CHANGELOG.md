@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file.
 
+## [3.14.5](https://github.com/terraform-aws-modules/terraform-aws-eventbridge/compare/v3.14.4...v3.14.5) (2025-03-29)
+
+
+### Bug Fixes
+
+* Event target for SSM (run_command_targets) should support an array of inputs ([#158](https://github.com/terraform-aws-modules/terraform-aws-eventbridge/issues/158)) ([1ad5be3](https://github.com/terraform-aws-modules/terraform-aws-eventbridge/commit/1ad5be3c8440393d540babbc2fc8b5b2efface2c))
+
 ## [3.14.4](https://github.com/terraform-aws-modules/terraform-aws-eventbridge/compare/v3.14.3...v3.14.4) (2025-03-29)
 
 
