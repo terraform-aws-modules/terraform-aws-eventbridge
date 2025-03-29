@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file.
 
+## [3.14.4](https://github.com/terraform-aws-modules/terraform-aws-eventbridge/compare/v3.14.3...v3.14.4) (2025-03-29)
+
+
+### Bug Fixes
+
+* Add role path to service `aws_iam_policy` ([#155](https://github.com/terraform-aws-modules/terraform-aws-eventbridge/issues/155)) ([19aacdb](https://github.com/terraform-aws-modules/terraform-aws-eventbridge/commit/19aacdbe501436902e3b51341c312e2ef45b3587))
+
 ## [3.14.3](https://github.com/terraform-aws-modules/terraform-aws-eventbridge/compare/v3.14.2...v3.14.3) (2025-01-28)
 
 
