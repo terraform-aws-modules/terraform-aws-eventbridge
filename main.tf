@@ -425,6 +425,16 @@ resource "aws_cloudwatch_event_connection" "this" {
       }
     }
   }
+
+  dynamic "invocation_connectivity_parameters" {
+    for_each = try([each.value.invocation_connectivity_parameters], [])
+
+    content {
+      resource_parameters {
+        resource_configuration_arn = invocation_connectivity_parameters.value.resource_configuration_arn
+      }
+    }
+  }
 }
 
 resource "aws_cloudwatch_event_api_destination" "this" {
@@ -695,6 +705,55 @@ resource "aws_pipes_pipe" "this" {
             content {
               client_certificate_tls_auth = credentials.value.client_certificate_tls_auth
               sasl_scram_512_auth         = credentials.value.sasl_scram_512_auth
+            }
+          }
+        }
+      }
+
+      dynamic "rabbitmq_broker_parameters" {
+        for_each = try([source_parameters.value.rabbitmq_broker_parameters], [])
+
+        content {
+          batch_size                         = try(rabbitmq_broker_parameters.value.batch_size, null)
+          maximum_batching_window_in_seconds = try(rabbitmq_broker_parameters.value.maximum_batching_window_in_seconds, null)
+          queue_name                         = rabbitmq_broker_parameters.value.queue_name
+          virtual_host                       = try(rabbitmq_broker_parameters.value.virtual_host, null)
+
+          credentials {
+            basic_auth = rabbitmq_broker_parameters.value.basic_auth
+          }
+        }
+      }
+
+      dynamic "self_managed_kafka_parameters" {
+        for_each = try([source_parameters.value.self_managed_kafka_parameters], [])
+
+        content {
+          additional_bootstrap_servers       = try(self_managed_kafka_parameters.value.additional_bootstrap_servers, null)
+          batch_size                         = try(self_managed_kafka_parameters.value.batch_size, null)
+          consumer_group_id                  = try(self_managed_kafka_parameters.value.consumer_group_id, null)
+          maximum_batching_window_in_seconds = try(self_managed_kafka_parameters.value.maximum_batching_window_in_seconds, null)
+          server_root_ca_certificate         = try(self_managed_kafka_parameters.value.server_root_ca_certificate, null)
+          starting_position                  = try(self_managed_kafka_parameters.value.starting_position, null)
+          topic_name                         = try(self_managed_kafka_parameters.value.topic_name, null)
+
+          dynamic "credentials" {
+            for_each = try([self_managed_kafka_parameters.value.credentials], [])
+
+            content {
+              basic_auth                  = try(credentials.value.basic_auth, null)
+              client_certificate_tls_auth = try(credentials.value.client_certificate_tls_auth, null)
+              sasl_scram_256_auth         = try(credentials.value.sasl_scram_256_auth, null)
+              sasl_scram_512_auth         = try(credentials.value.sasl_scram_512_auth, null)
+            }
+          }
+
+          dynamic "vpc" {
+            for_each = try([self_managed_kafka_parameters.value.vpc], [])
+
+            content {
+              security_groups = try(vpc.value.security_groups, null)
+              subnets         = try(vpc.value.vpc, null)
             }
           }
         }
