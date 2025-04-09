@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file.
 
+## [3.15.0](https://github.com/terraform-aws-modules/terraform-aws-eventbridge/compare/v3.14.5...v3.15.0) (2025-04-09)
+
+
+### Features
+
+* Support Event Connection `invocation_connectivity_parameters` and pipes `self_managed_kafka_parameters`, `rabbitmq_broker_parameters`  ([#159](https://github.com/terraform-aws-modules/terraform-aws-eventbridge/issues/159)) ([632f548](https://github.com/terraform-aws-modules/terraform-aws-eventbridge/commit/632f548a5c9d27579667f54605a90c79d5e24d31))
+
 ## [3.14.5](https://github.com/terraform-aws-modules/terraform-aws-eventbridge/compare/v3.14.4...v3.14.5) (2025-03-29)
 
 
