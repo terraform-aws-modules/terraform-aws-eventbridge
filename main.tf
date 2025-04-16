@@ -851,6 +851,47 @@ resource "aws_pipes_pipe" "this" {
           query_string_parameters = try(http_parameters.value.query_string_parameters, null)
         }
       }
+
+      dynamic "ecs_task_parameters" {
+        for_each = try([target_parameters.value.ecs_task_parameters], [])
+
+        content {
+          enable_ecs_managed_tags = try(ecs_task_parameters.value.enable_ecs_managed_tags, null)
+          enable_execute_command  = try(ecs_task_parameters.value.enable_execute_command, null)
+          launch_type             = try(ecs_task_parameters.value.launch_type, null)
+          platform_version        = try(ecs_task_parameters.value.platform_version, null)
+          task_count              = try(ecs_task_parameters.value.task_count, null)
+          task_definition_arn     = try(ecs_task_parameters.value.task_definition_arn, null)
+
+          network_configuration {
+            aws_vpc_configuration {
+              assign_public_ip = try(ecs_task_parameters.value.assign_public_ip, "DISABLED")
+              security_groups  = try(ecs_task_parameters.value.security_groups, [])
+              subnets          = try(ecs_task_parameters.value.subnets, [])
+            }
+          }
+
+          overrides {
+            container_override {
+              command            = try(ecs_task_parameters.value.command, [])
+              cpu                = try(ecs_task_parameters.value.cpu, 0)
+              memory             = try(ecs_task_parameters.value.memory, 0)
+              memory_reservation = try(ecs_task_parameters.value.memory_reservation, 0)
+              name               = ecs_task_parameters.value.container_name
+
+              dynamic "environment" {
+                for_each = try(ecs_task_parameters.value.environment, [])
+
+                content {
+                  name  = try(environment.value.name, "")
+                  value = try(environment.value.value, "")
+                }
+              }
+            }
+          }
+        }
+      }
+
     }
   }
 
