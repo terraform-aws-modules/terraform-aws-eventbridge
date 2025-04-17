@@ -874,9 +874,6 @@ resource "aws_pipes_pipe" "this" {
           overrides {
             container_override {
               command            = try(ecs_task_parameters.value.command, [])
-              cpu                = try(ecs_task_parameters.value.cpu, 0)
-              memory             = try(ecs_task_parameters.value.memory, 0)
-              memory_reservation = try(ecs_task_parameters.value.memory_reservation, 0)
               name               = ecs_task_parameters.value.container_name
 
               dynamic "environment" {
