@@ -873,8 +873,8 @@ resource "aws_pipes_pipe" "this" {
 
           overrides {
             container_override {
-              command            = try(ecs_task_parameters.value.command, [])
-              name               = ecs_task_parameters.value.container_name
+              command = try(ecs_task_parameters.value.command, [])
+              name    = ecs_task_parameters.value.container_name
 
               dynamic "environment" {
                 for_each = try(ecs_task_parameters.value.environment, [])
