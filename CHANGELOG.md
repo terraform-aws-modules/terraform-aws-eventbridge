@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file.
 
+## [3.16.0](https://github.com/terraform-aws-modules/terraform-aws-eventbridge/compare/v3.15.0...v3.16.0) (2025-04-18)
+
+
+### Features
+
+* Enable ECS-Task as target in the EventBridge Pipes ([#160](https://github.com/terraform-aws-modules/terraform-aws-eventbridge/issues/160)) ([85b63f9](https://github.com/terraform-aws-modules/terraform-aws-eventbridge/commit/85b63f98735e061eea79d358b6826c59d2100d72))
+
 ## [3.15.0](https://github.com/terraform-aws-modules/terraform-aws-eventbridge/compare/v3.14.5...v3.15.0) (2025-04-09)
 
 
