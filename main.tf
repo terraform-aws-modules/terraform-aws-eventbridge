@@ -703,8 +703,8 @@ resource "aws_pipes_pipe" "this" {
             for_each = try([managed_streaming_kafka_parameters.value.credentials], [])
 
             content {
-              client_certificate_tls_auth = credentials.value.client_certificate_tls_auth
-              sasl_scram_512_auth         = credentials.value.sasl_scram_512_auth
+              client_certificate_tls_auth = try(credentials.value.client_certificate_tls_auth, null)
+              sasl_scram_512_auth         = try(credentials.value.sasl_scram_512_auth, null)
             }
           }
         }
