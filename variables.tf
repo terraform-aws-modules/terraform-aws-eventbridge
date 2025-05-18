@@ -144,6 +144,12 @@ variable "kms_key_identifier" {
   default     = null
 }
 
+variable "dead_letter_config" {
+  description = "Configuration details of the Amazon SQS queue for EventBridge to use as a dead-letter queue (DLQ)"
+  type        = any
+  default     = {}
+}
+
 variable "schemas_discoverer_description" {
   description = "Default schemas discoverer description"
   type        = string
