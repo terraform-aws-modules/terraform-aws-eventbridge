@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file.
 
+## [3.17.1](https://github.com/terraform-aws-modules/terraform-aws-eventbridge/compare/v3.17.0...v3.17.1) (2025-05-19)
+
+
+### Bug Fixes
+
+* Usage of managed streaming kafka credentials ([#162](https://github.com/terraform-aws-modules/terraform-aws-eventbridge/issues/162)) ([11f446f](https://github.com/terraform-aws-modules/terraform-aws-eventbridge/commit/11f446fd274beecd71ed37b1b02c3289bed77f91))
+
 ## [3.17.0](https://github.com/terraform-aws-modules/terraform-aws-eventbridge/compare/v3.16.0...v3.17.0) (2025-05-19)
 
 
