@@ -18,9 +18,6 @@ module "eventbridge" {
 
   bus_name        = "${random_pet.this.id}-bus"
   bus_description = "Event bus with API destination"
-  dead_letter_config = {
-    arn = aws_sqs_queue.dlq.arn
-  }
 
   attach_api_destination_policy = true
 
@@ -250,8 +247,4 @@ module "kms" {
   }
 
   key_owners = [data.aws_caller_identity.current.arn]
-}
-
-resource "aws_sqs_queue" "dlq" {
-  name = "${random_pet.this.id}-dlq"
 }
