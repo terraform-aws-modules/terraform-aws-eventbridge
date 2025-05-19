@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file.
 
+## [3.17.0](https://github.com/terraform-aws-modules/terraform-aws-eventbridge/compare/v3.16.0...v3.17.0) (2025-05-19)
+
+
+### Features
+
+* Event Bus DLQ and Event Connection CMK Encryption ([#163](https://github.com/terraform-aws-modules/terraform-aws-eventbridge/issues/163)) ([1ec8e44](https://github.com/terraform-aws-modules/terraform-aws-eventbridge/commit/1ec8e4421aeca1e61f487dd92f88a9b17c79c52a))
+
 ## [3.16.0](https://github.com/terraform-aws-modules/terraform-aws-eventbridge/compare/v3.15.0...v3.16.0) (2025-04-18)
 
 
