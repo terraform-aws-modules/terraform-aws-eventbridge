@@ -7,6 +7,8 @@ provider "aws" {
   skip_credentials_validation = true
 }
 
+data "aws_caller_identity" "current" {}
+
 module "eventbridge" {
   source = "../../"
 
@@ -143,6 +145,7 @@ module "eventbridge" {
           value = random_pet.this.id
         }
       }
+      kms_key_identifier = module.kms.key_arn
     }
   }
 
@@ -199,4 +202,49 @@ data "aws_iam_policy_document" "assume_role" {
       identifiers = ["events.amazonaws.com"]
     }
   }
+}
+
+module "kms" {
+  source      = "terraform-aws-modules/kms/aws"
+  version     = "~> 2.0"
+  description = "KMS key for EventBridge"
+
+  # Aliases
+  aliases                 = ["test"]
+  aliases_use_name_prefix = true
+  key_statements = [
+    {
+      sid = "Allow use of the key"
+      principals = [
+        {
+          type        = "AWS"
+          identifiers = ["arn:aws:iam::${data.aws_caller_identity.current.account_id}:root"]
+        }
+      ]
+      actions = [
+        "kms:DescribeKey",
+        "kms:GenerateDataKey",
+        "kms:Decrypt"
+      ]
+      resources = ["*"]
+      conditions = [
+        {
+          test     = "StringLike"
+          values   = ["secretsmanager.*.amazonaws.com"]
+          variable = "kms:ViaService"
+        },
+        {
+          test     = "StringLike"
+          values   = ["arn:aws:secretsmanager:*:*:secret:events!connection/*"]
+          variable = "kms:EncryptionContext:SecretARN"
+        }
+      ]
+    }
+  ]
+
+  tags = {
+    EventBridgeApiDestinations = "true"
+  }
+
+  key_owners = [data.aws_caller_identity.current.arn]
 }

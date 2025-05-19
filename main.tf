@@ -69,6 +69,13 @@ resource "aws_cloudwatch_event_bus" "this" {
   event_source_name  = var.event_source_name
   kms_key_identifier = var.kms_key_identifier
 
+  dynamic "dead_letter_config" {
+    for_each = length(var.dead_letter_config) > 0 ? [var.dead_letter_config] : []
+    content {
+      arn = try(dead_letter_config.value.arn, null)
+    }
+  }
+
   tags = var.tags
 }
 
@@ -301,6 +308,7 @@ resource "aws_cloudwatch_event_connection" "this" {
   name               = each.value.Name
   description        = lookup(each.value, "description", null)
   authorization_type = each.value.authorization_type
+  kms_key_identifier = try(each.value.kms_key_identifier, null)
 
   dynamic "auth_parameters" {
     for_each = [each.value.auth_parameters]
