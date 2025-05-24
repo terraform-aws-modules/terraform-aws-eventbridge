@@ -155,6 +155,20 @@ module "eventbridge" {
       }
     }
 
+    # With MSK source and SQS target
+    msk_source_sqs_target = {
+      source = aws_msk_cluster.source.arn
+      target = aws_sqs_queue.target.arn
+      source_parameters = {
+        managed_streaming_kafka_parameters = {
+          topic_name                         = "sample.topic"
+          starting_position                  = "LATEST"
+          batch_size                         = 10
+          maximum_batching_window_in_seconds = 30
+        }
+      }
+    }
+
     # With Kinesis Stream source and CloudWatch Log
     kinesis_source_cloudwatch_target = {
       source = aws_kinesis_stream.source.arn
@@ -661,4 +675,59 @@ module "kms" {
   ]
 
   key_owners = [data.aws_caller_identity.current.arn]
+}
+
+####################
+# MSK
+####################
+resource "aws_vpc" "main" {
+  cidr_block = "10.0.0.0/16"
+}
+
+resource "aws_subnet" "public" {
+  count             = 2
+  vpc_id            = aws_vpc.main.id
+  cidr_block        = cidrsubnet(aws_vpc.main.cidr_block, 8, count.index)
+  availability_zone = data.aws_availability_zones.available.names[count.index]
+}
+
+data "aws_availability_zones" "available" {}
+
+resource "aws_security_group" "msk_sg" {
+  name        = "msk_sg"
+  description = "Allow MSK client access"
+  vpc_id      = aws_vpc.main.id
+
+  ingress {
+    from_port   = 9094
+    to_port     = 9094
+    protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+
+  egress {
+    from_port   = 0
+    to_port     = 0
+    protocol    = "-1"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+}
+
+resource "aws_msk_cluster" "source" {
+  cluster_name           = "${random_pet.this.id}-msk-cluster"
+  kafka_version          = "2.8.1"
+  number_of_broker_nodes = 2
+
+  broker_node_group_info {
+    instance_type   = "kafka.t3.small"
+    client_subnets  = aws_subnet.public[*].id
+    security_groups = [aws_security_group.msk_sg.id]
+  }
+
+  encryption_info {
+    encryption_in_transit {
+      client_broker = "TLS"
+      in_cluster    = true
+    }
+  }
 }
