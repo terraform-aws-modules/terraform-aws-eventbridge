@@ -18,6 +18,10 @@ locals {
           values            = [v.source],
           matching_services = ["kafka"]
         },
+        msk_ec2 = {
+          values            = [v.source],
+          matching_services = ["kafka"]
+        },
         sqs_source = {
           values            = [v.source],
           matching_services = ["sqs"]
@@ -212,17 +216,22 @@ locals {
       ]
     }
 
-    msk = {
-      # Read this for more: https://docs.aws.amazon.com/eventbridge/latest/userguide/eb-pipes-msk.html#pipes-msk-permissions-iam-policy
+    msk_ec2 = {
       actions = [
-        "kafka:DescribeClusterV2",
-        "kafka:GetBootstrapBrokers",
-        "ec2:CreateNetworkInterface",
-        "ec2:DeleteNetworkInterface",
         "ec2:DescribeNetworkInterfaces",
         "ec2:DescribeSecurityGroups",
         "ec2:DescribeSubnets",
         "ec2:DescribeVpcs",
+        "ec2:CreateNetworkInterface",
+        "ec2:DeleteNetworkInterface",
+      ]
+      resources = ["*"]
+    }
+
+    msk = {
+      actions = [
+        "kafka:DescribeClusterV2",
+        "kafka:GetBootstrapBrokers",
         "logs:CreateLogGroup",
         "logs:CreateLogStream",
         "logs:PutLogEvents"
@@ -379,7 +388,7 @@ data "aws_iam_policy_document" "service" {
       effect    = lookup(local.aws_service_policies[statement.key], "effect", "Allow")
       sid       = replace(replace(title(replace("${each.key}${title(statement.key)}", "/[_-]/", " ")), " ", ""), "/[^0-9A-Za-z]*/", "")
       actions   = local.aws_service_policies[statement.key]["actions"]
-      resources = tolist(statement.value)
+      resources = try(local.aws_service_policies[statement.key].resources, tolist(statement.value))
 
       dynamic "condition" {
         for_each = lookup(local.aws_service_policies[statement.key], "condition", [])
