@@ -5,33 +5,33 @@ data "aws_partition" "current" {}
 locals {
   eventbridge_rules = flatten([
     for index, rule in var.rules :
-    merge(rule, {
+    merge({
       "name" = index
       "Name" = var.append_rule_postfix ? "${replace(index, "_", "-")}-rule" : index
-    })
+    }, rule)
   ])
   eventbridge_targets = flatten([
     for index, rule in var.rules : [
       for target in var.targets[index] :
-      merge(target, {
+      merge({
         "rule" = index
         "Name" = var.append_rule_postfix ? "${replace(index, "_", "-")}-rule" : index
-      })
+      }, target)
     ] if length(var.targets) != 0
   ])
   eventbridge_connections = flatten([
     for index, conn in var.connections :
-    merge(conn, {
+    merge({
       "name" = index
       "Name" = var.append_connection_postfix ? "${replace(index, "_", "-")}-connection" : index
-    })
+    }, conn)
   ])
   eventbridge_api_destinations = flatten([
     for index, dest in var.api_destinations :
-    merge(dest, {
+    merge({
       "name" = index
       "Name" = var.append_destination_postfix ? "${replace(index, "_", "-")}-destination" : index
-    })
+    }, dest)
   ])
   eventbridge_schedule_groups = {
     for index, group in var.schedule_groups :
@@ -41,17 +41,17 @@ locals {
   }
   eventbridge_schedules = flatten([
     for index, sched in var.schedules :
-    merge(sched, {
+    merge({
       "name" = index
       "Name" = var.append_schedule_postfix ? "${replace(index, "_", "-")}-schedule" : index
-    })
+    }, sched)
   ])
   eventbridge_pipes = flatten([
     for index, pipe in var.pipes :
-    merge(pipe, {
+    merge({
       "name" = index
       "Name" = var.append_pipe_postfix ? "${replace(index, "_", "-")}-pipe" : index
-    })
+    }, pipe)
   ])
 }
 
