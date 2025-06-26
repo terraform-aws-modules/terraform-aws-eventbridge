@@ -495,11 +495,11 @@ resource "aws_cloudwatch_event_bus" "target" {
 
 module "lambda_target" {
   source  = "terraform-aws-modules/lambda/aws"
-  version = "~> 6.0"
+  version = "~> 8.0"
 
   function_name = "${random_pet.this.id}-lambda"
   handler       = "index.lambda_handler"
-  runtime       = "python3.8"
+  runtime       = "python3.12"
 
   create_package         = false
   local_existing_package = local.downloaded
@@ -526,7 +526,7 @@ resource "null_resource" "download_package" {
 
 module "step_function_target" {
   source  = "terraform-aws-modules/step-functions/aws"
-  version = "~> 2.0"
+  version = "~> 5.0"
 
   name = "${random_pet.this.id}-target"
 
@@ -551,7 +551,7 @@ resource "aws_cloudwatch_log_group" "logs" {
 
 module "logs_bucket" {
   source  = "terraform-aws-modules/s3-bucket/aws"
-  version = "~> 4.0"
+  version = "~> 5.0"
 
   bucket_prefix = "${random_pet.this.id}-logs"
 
