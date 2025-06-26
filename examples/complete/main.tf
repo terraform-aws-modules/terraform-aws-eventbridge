@@ -353,11 +353,11 @@ EOF
 
 module "lambda" {
   source  = "terraform-aws-modules/lambda/aws"
-  version = "~> 6.0"
+  version = "~> 8.0"
 
   function_name = "${random_pet.this.id}-lambda"
   handler       = "index.lambda_handler"
-  runtime       = "python3.8"
+  runtime       = "python3.12"
 
   create_package         = false
   local_existing_package = local.downloaded
@@ -438,7 +438,7 @@ data "aws_caller_identity" "current" {}
 
 module "bucket" {
   source  = "terraform-aws-modules/s3-bucket/aws"
-  version = "~> 3.0"
+  version = "~> 5.0"
 
   bucket        = "${random_pet.this.id}-bucket"
   attach_policy = true
@@ -461,7 +461,7 @@ data "aws_iam_policy_document" "bucket_policy" {
     ]
     condition {
       test     = "StringEquals"
-      values   = ["arn:aws:cloudtrail:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:trail/${random_pet.this.id}-trail"]
+      values   = ["arn:aws:cloudtrail:${data.aws_region.current.region}:${data.aws_caller_identity.current.account_id}:trail/${random_pet.this.id}-trail"]
       variable = "aws:SourceArn"
     }
   }
@@ -483,7 +483,7 @@ data "aws_iam_policy_document" "bucket_policy" {
     }
     condition {
       test     = "StringEquals"
-      values   = ["arn:aws:cloudtrail:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:trail/${random_pet.this.id}-trail"]
+      values   = ["arn:aws:cloudtrail:${data.aws_region.current.region}:${data.aws_caller_identity.current.account_id}:trail/${random_pet.this.id}-trail"]
       variable = "aws:SourceArn"
     }
   }
@@ -495,7 +495,7 @@ data "aws_iam_policy_document" "bucket_policy" {
 #######
 #module "lambda" {
 #  source  = "terraform-aws-modules/lambda/aws"
-#  version = "~> 2.0"
+#  version = "~> 8.0"
 #
 #  function_name = "dev-cron-job"
 #  description   = "Lambda Serverless Job"
