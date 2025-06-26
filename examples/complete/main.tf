@@ -293,7 +293,7 @@ resource "aws_cloudwatch_log_group" "this" {
 
 module "step_function" {
   source  = "terraform-aws-modules/step-functions/aws"
-  version = "~> 2.0"
+  version = "~> 5.0"
 
   name = random_pet.this.id
 

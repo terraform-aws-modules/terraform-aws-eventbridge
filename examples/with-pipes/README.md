@@ -42,7 +42,7 @@ Note that this example may create resources which cost money. Run `terraform des
 | <a name="module_kms"></a> [kms](#module\_kms) | terraform-aws-modules/kms/aws | ~> 2.0 |
 | <a name="module_lambda_target"></a> [lambda\_target](#module\_lambda\_target) | terraform-aws-modules/lambda/aws | ~> 8.0 |
 | <a name="module_logs_bucket"></a> [logs\_bucket](#module\_logs\_bucket) | terraform-aws-modules/s3-bucket/aws | ~> 5.0 |
-| <a name="module_step_function_target"></a> [step\_function\_target](#module\_step\_function\_target) | terraform-aws-modules/step-functions/aws | ~> 2.0 |
+| <a name="module_step_function_target"></a> [step\_function\_target](#module\_step\_function\_target) | terraform-aws-modules/step-functions/aws | ~> 5.0 |
 
 ## Resources
 

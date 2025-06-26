@@ -526,7 +526,7 @@ resource "null_resource" "download_package" {
 
 module "step_function_target" {
   source  = "terraform-aws-modules/step-functions/aws"
-  version = "~> 2.0"
+  version = "~> 5.0"
 
   name = "${random_pet.this.id}-target"
 
