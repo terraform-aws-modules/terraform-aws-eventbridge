@@ -667,6 +667,7 @@ resource "aws_pipes_pipe" "this" {
   source = each.value.source
   target = each.value.target
 
+  kms_key_identifier = var.kms_key_identifier
   description   = lookup(each.value, "description", null)
   desired_state = lookup(each.value, "desired_state", null)
 
