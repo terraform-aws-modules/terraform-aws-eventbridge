@@ -345,7 +345,7 @@ data "aws_iam_policy_document" "assume_role_pipe" {
     condition {
       test     = "StringEquals"
       variable = "aws:SourceArn"
-      values   = ["arn:aws:pipes:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:pipe/${each.value.Name}"]
+      values   = ["arn:aws:pipes:${data.aws_region.current.region}:${data.aws_caller_identity.current.account_id}:pipe/${each.value.Name}"]
     }
   }
 }

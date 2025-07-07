@@ -64,6 +64,8 @@ data "aws_cloudwatch_event_bus" "this" {
 resource "aws_cloudwatch_event_bus" "this" {
   count = var.create && var.create_bus ? 1 : 0
 
+  region = var.region
+
   name               = var.bus_name
   description        = var.bus_description
   event_source_name  = var.event_source_name
@@ -82,6 +84,8 @@ resource "aws_cloudwatch_event_bus" "this" {
 resource "aws_schemas_discoverer" "this" {
   count = var.create && var.create_schemas_discoverer ? 1 : 0
 
+  region = var.region
+
   source_arn  = var.create_bus ? aws_cloudwatch_event_bus.this[0].arn : data.aws_cloudwatch_event_bus.this[0].arn
   description = var.schemas_discoverer_description
 
@@ -90,6 +94,8 @@ resource "aws_schemas_discoverer" "this" {
 
 resource "aws_cloudwatch_event_rule" "this" {
   for_each = { for k, v in local.eventbridge_rules : v.name => v if var.create && var.create_rules }
+
+  region = var.region
 
   name        = each.value.Name
   name_prefix = lookup(each.value, "name_prefix", null)
@@ -110,6 +116,8 @@ resource "aws_cloudwatch_event_rule" "this" {
 
 resource "aws_cloudwatch_event_target" "this" {
   for_each = { for k, v in local.eventbridge_targets : v.name => v if var.create && var.create_targets }
+
+  region = var.region
 
   event_bus_name = var.create_bus ? aws_cloudwatch_event_bus.this[0].name : var.bus_name
 
@@ -274,6 +282,8 @@ resource "aws_cloudwatch_event_target" "this" {
 resource "aws_cloudwatch_event_archive" "this" {
   for_each = var.create && var.create_archives ? var.archives : {}
 
+  region = var.region
+
   name             = lookup(each.value, "name", each.key)
   event_source_arn = try(each.value["event_source_arn"], aws_cloudwatch_event_bus.this[0].arn)
 
@@ -284,6 +294,8 @@ resource "aws_cloudwatch_event_archive" "this" {
 
 resource "aws_cloudwatch_event_permission" "this" {
   for_each = var.create && var.create_permissions ? var.permissions : {}
+
+  region = var.region
 
   principal    = compact(split(" ", each.key))[0]
   statement_id = compact(split(" ", each.key))[1]
@@ -304,6 +316,8 @@ resource "aws_cloudwatch_event_permission" "this" {
 
 resource "aws_cloudwatch_event_connection" "this" {
   for_each = { for k, v in local.eventbridge_connections : v.name => v if var.create && var.create_connections }
+
+  region = var.region
 
   name               = each.value.Name
   description        = lookup(each.value, "description", null)
@@ -448,6 +462,8 @@ resource "aws_cloudwatch_event_connection" "this" {
 resource "aws_cloudwatch_event_api_destination" "this" {
   for_each = { for k, v in local.eventbridge_api_destinations : v.name => v if var.create && var.create_api_destinations }
 
+  region = var.region
+
   name                             = each.value.Name
   description                      = lookup(each.value, "description", null)
   invocation_endpoint              = each.value.invocation_endpoint
@@ -458,6 +474,8 @@ resource "aws_cloudwatch_event_api_destination" "this" {
 
 resource "aws_scheduler_schedule_group" "this" {
   for_each = { for k, v in local.eventbridge_schedule_groups : k => v if var.create && var.create_schedule_groups }
+
+  region = var.region
 
   name        = lookup(each.value, "name_prefix", null) == null ? try(each.value.name, each.key) : null
   name_prefix = lookup(each.value, "name_prefix", null) != null ? each.value.name_prefix : null
@@ -476,6 +494,8 @@ resource "aws_scheduler_schedule_group" "this" {
 
 resource "aws_scheduler_schedule" "this" {
   for_each = { for k, v in local.eventbridge_schedules : v.name => v if var.create && var.create_schedules }
+
+  region = var.region
 
   name        = each.value.Name
   name_prefix = lookup(each.value, "name_prefix", null)
@@ -637,6 +657,8 @@ resource "aws_scheduler_schedule" "this" {
 
 resource "aws_pipes_pipe" "this" {
   for_each = { for k, v in local.eventbridge_pipes : v.name => v if local.create_pipes }
+
+  region = var.region
 
   name = each.value.Name
 
