@@ -286,6 +286,7 @@ resource "aws_cloudwatch_event_archive" "this" {
 
   name             = lookup(each.value, "name", each.key)
   event_source_arn = try(each.value["event_source_arn"], aws_cloudwatch_event_bus.this[0].arn)
+  kms_key_identifier = var.kms_key_identifier
 
   description    = lookup(each.value, "description", null)
   event_pattern  = lookup(each.value, "event_pattern", null)
