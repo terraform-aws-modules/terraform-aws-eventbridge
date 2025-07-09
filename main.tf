@@ -669,8 +669,8 @@ resource "aws_pipes_pipe" "this" {
   target = each.value.target
 
   kms_key_identifier = var.kms_key_identifier
-  description   = lookup(each.value, "description", null)
-  desired_state = lookup(each.value, "desired_state", null)
+  description        = lookup(each.value, "description", null)
+  desired_state      = lookup(each.value, "desired_state", null)
 
   dynamic "source_parameters" {
     for_each = try([each.value.source_parameters], [])
