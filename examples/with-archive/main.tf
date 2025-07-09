@@ -113,7 +113,7 @@ module "kms" {
           test     = "StringEquals"
           variable = "kms:EncryptionContext:aws:events:event-bus:arn"
           values = [
-            "arn:aws:events:${data.aws_region.current.id}:${data.aws_caller_identity.current.account_id}:event-bus/example",
+            "arn:aws:events:${data.aws_region.current.region}:${data.aws_caller_identity.current.account_id}:event-bus/example",
           ]
         },
         {
