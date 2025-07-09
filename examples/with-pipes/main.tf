@@ -33,7 +33,8 @@ module "eventbridge" {
   }
 
   api_destinations = {
-    smee = { # This key should match the key inside "connections"
+    smee = {
+      # This key should match the key inside "connections"
       description                      = "my smee endpoint"
       invocation_endpoint              = "https://smee.io/6hx6fuQaVUKLfALn"
       http_method                      = "POST"
@@ -47,7 +48,8 @@ module "eventbridge" {
       source = aws_sqs_queue.source.arn
       target = aws_sqs_queue.target.arn
 
-      enrichment = "smee" # This key should match the key inside "api_destinations"
+      enrichment = "smee"
+      # This key should match the key inside "api_destinations"
       enrichment_parameters = {
         input_template = jsonencode({ input : "yes" })
 
@@ -325,6 +327,16 @@ module "eventbridge" {
       }
     }
 
+    custom_kms_key = {
+      source             = aws_sqs_queue.source.arn
+      target             = aws_sqs_queue.target.arn
+      kms_key_identifier = module.kms.key_id
+
+      tags = {
+        Pipe = "minimal"
+      }
+    }
+
     # Minimal with IAM role created outside of the module
     minimal_external_role = {
       create_role = false
@@ -350,39 +362,12 @@ module "eventbridge" {
   }
 }
 
-module "eventbridge_pipe_only" {
-  source = "../../"
-
-  create_bus = false
-
-  pipes = {
-    "pipe-for-existing-bus" = {
-      source             = aws_sqs_queue.source.arn
-      target             = aws_sqs_queue.target.arn
-      kms_key_identifier = module.kms.key_id
-    }
-
-    tags = {
-      Pipe = "pipe-for-existing-bus"
-    }
-  }
-  depends_on = [aws_cloudwatch_event_bus.existing_bus]
-}
-
 ##################
 # Extra resources
 ##################
 
 resource "random_pet" "this" {
   length = 2
-}
-
-###############################
-# Event Bus
-###############################
-
-resource "aws_cloudwatch_event_bus" "existing_bus" {
-  name = "${random_pet.this.id}-existing-bus"
 }
 
 ###############################
