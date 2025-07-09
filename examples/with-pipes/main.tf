@@ -350,6 +350,25 @@ module "eventbridge" {
   }
 }
 
+module "eventbridge_pipe_only" {
+  source = "../../"
+
+  create_bus = false
+
+  pipes = {
+    "pipe-for-existing-bus" = {
+      source             = aws_sqs_queue.source.arn
+      target             = aws_sqs_queue.target.arn
+      kms_key_identifier = module.kms.key_id
+    }
+
+    tags = {
+      Pipe = "pipe-for-existing-bus"
+    }
+  }
+  depends_on = [aws_cloudwatch_event_bus.existing_bus]
+}
+
 ##################
 # Extra resources
 ##################
@@ -358,6 +377,13 @@ resource "random_pet" "this" {
   length = 2
 }
 
+###############################
+# Event Bus
+###############################
+
+resource "aws_cloudwatch_event_bus" "existing_bus" {
+  name = "${random_pet.this.id}-existing-bus"
+}
 
 ###############################
 # API Destination / Connection

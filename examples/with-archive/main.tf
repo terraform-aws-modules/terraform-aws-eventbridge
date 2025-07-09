@@ -52,9 +52,8 @@ module "eventbridge" {
 module "eventbridge_archive_only" {
   source = "../../"
 
-  create_bus         = false
-  create_archives    = true
-  kms_key_identifier = module.kms.key_id
+  create_bus      = false
+  create_archives = true
 
   archives = {
     "launch-archive-existing-bus" = {
@@ -67,6 +66,7 @@ module "eventbridge_archive_only" {
           "detail-type" : ["EC2 Instance Launch Successful"]
         }
       )
+      kms_key_identifier = module.kms.key_id
     }
   }
 

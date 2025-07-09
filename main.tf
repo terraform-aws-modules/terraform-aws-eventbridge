@@ -284,13 +284,13 @@ resource "aws_cloudwatch_event_archive" "this" {
 
   region = var.region
 
-  name               = lookup(each.value, "name", each.key)
-  event_source_arn   = try(each.value["event_source_arn"], aws_cloudwatch_event_bus.this[0].arn)
-  kms_key_identifier = var.kms_key_identifier
+  name             = lookup(each.value, "name", each.key)
+  event_source_arn = try(each.value["event_source_arn"], aws_cloudwatch_event_bus.this[0].arn)
 
-  description    = lookup(each.value, "description", null)
-  event_pattern  = lookup(each.value, "event_pattern", null)
-  retention_days = lookup(each.value, "retention_days", null)
+  description        = lookup(each.value, "description", null)
+  event_pattern      = lookup(each.value, "event_pattern", null)
+  retention_days     = lookup(each.value, "retention_days", null)
+  kms_key_identifier = lookup(each.value, "kms_key_identifier", null)
 }
 
 resource "aws_cloudwatch_event_permission" "this" {
@@ -668,7 +668,7 @@ resource "aws_pipes_pipe" "this" {
   source = each.value.source
   target = each.value.target
 
-  kms_key_identifier = var.kms_key_identifier
+  kms_key_identifier = lookup(each.value, "kms_key_identifier", null)
   description        = lookup(each.value, "description", null)
   desired_state      = lookup(each.value, "desired_state", null)
 
