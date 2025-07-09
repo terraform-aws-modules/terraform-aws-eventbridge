@@ -7,6 +7,10 @@ provider "aws" {
   skip_credentials_validation = true
 }
 
+data "aws_caller_identity" "current" {}
+data "aws_region" "current" {}
+
+
 module "eventbridge" {
   source = "../../"
 
@@ -62,6 +66,7 @@ module "eventbridge_archive_only" {
           "detail-type" : ["EC2 Instance Launch Successful"]
         }
       )
+      kms_key_identifier = module.kms.key_id
     }
   }
 
@@ -78,4 +83,49 @@ resource "random_pet" "this" {
 
 resource "aws_cloudwatch_event_bus" "existing_bus" {
   name = "${random_pet.this.id}-existing-bus"
+}
+
+module "kms" {
+  source      = "terraform-aws-modules/kms/aws"
+  version     = "~> 2.0"
+  description = "KMS key for cross region automated backups replication"
+
+  # Aliases
+  aliases                 = ["test"]
+  aliases_use_name_prefix = true
+  key_statements = [
+    {
+      sid = "Allow eventbridge"
+      principals = [
+        {
+          type        = "Service"
+          identifiers = ["events.amazonaws.com"]
+        }
+      ]
+      actions = [
+        "kms:DescribeKey",
+        "kms:GenerateDataKey",
+        "kms:Decrypt"
+      ]
+      resources = ["*"]
+      conditions = [
+        {
+          test     = "StringEquals"
+          variable = "kms:EncryptionContext:aws:events:event-bus:arn"
+          values = [
+            "arn:aws:events:${data.aws_region.current.region}:${data.aws_caller_identity.current.account_id}:event-bus/example",
+          ]
+        },
+        {
+          test     = "StringEquals"
+          variable = "aws:SourceArn"
+          values = [
+            "arn:aws:events:${data.aws_region.current.region}:${data.aws_caller_identity.current.account_id}:event-bus/example",
+          ]
+        }
+      ]
+    }
+  ]
+
+  key_owners = [data.aws_caller_identity.current.arn]
 }

@@ -33,7 +33,8 @@ module "eventbridge" {
   }
 
   api_destinations = {
-    smee = { # This key should match the key inside "connections"
+    smee = {
+      # This key should match the key inside "connections"
       description                      = "my smee endpoint"
       invocation_endpoint              = "https://smee.io/6hx6fuQaVUKLfALn"
       http_method                      = "POST"
@@ -47,7 +48,8 @@ module "eventbridge" {
       source = aws_sqs_queue.source.arn
       target = aws_sqs_queue.target.arn
 
-      enrichment = "smee" # This key should match the key inside "api_destinations"
+      enrichment = "smee"
+      # This key should match the key inside "api_destinations"
       enrichment_parameters = {
         input_template = jsonencode({ input : "yes" })
 
@@ -325,6 +327,16 @@ module "eventbridge" {
       }
     }
 
+    custom_kms_key = {
+      source             = aws_sqs_queue.source.arn
+      target             = aws_sqs_queue.target.arn
+      kms_key_identifier = module.kms.key_id
+
+      tags = {
+        Pipe = "minimal"
+      }
+    }
+
     # Minimal with IAM role created outside of the module
     minimal_external_role = {
       create_role = false
@@ -357,7 +369,6 @@ module "eventbridge" {
 resource "random_pet" "this" {
   length = 2
 }
-
 
 ###############################
 # API Destination / Connection
