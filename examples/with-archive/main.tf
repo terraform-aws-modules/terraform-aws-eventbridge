@@ -120,7 +120,7 @@ module "kms" {
           test     = "StringEquals"
           variable = "aws:SourceArn"
           values = [
-            "arn:aws:events:${data.aws_region.current.id}:${data.aws_caller_identity.current.account_id}:event-bus/example",
+            "arn:aws:events:${data.aws_region.current.region}:${data.aws_caller_identity.current.account_id}:event-bus/example",
           ]
         }
       ]
