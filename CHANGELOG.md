@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file.
 
+## [4.1.0](https://github.com/terraform-aws-modules/terraform-aws-eventbridge/compare/v4.0.0...v4.1.0) (2025-07-09)
+
+
+### Features
+
+* Set kms_key_identifier for EventBridge archives ([#175](https://github.com/terraform-aws-modules/terraform-aws-eventbridge/issues/175)) ([72fa89e](https://github.com/terraform-aws-modules/terraform-aws-eventbridge/commit/72fa89e50ba7f54cf5f33015cfb2b82bd3baf5dd))
+
 ## [4.0.0](https://github.com/terraform-aws-modules/terraform-aws-eventbridge/compare/v3.17.1...v4.0.0) (2025-06-26)
 
 
