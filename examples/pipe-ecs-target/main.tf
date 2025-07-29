@@ -44,18 +44,9 @@ module "eventbridge" {
 
   create_role       = true
   role_name         = "ecs-eventbridge-${random_pet.this.id}"
-  attach_ecs_policy = true
-  ecs_target_arns = [
-    module.ecs_cluster.services["hello-world"].task_definition_arn,
-    "arn:aws:ecs:${data.aws_region.current.id}:${data.aws_caller_identity.current.account_id}:task/${random_pet.this.id}/*"
-  ]
-
-  ecs_pass_role_resources = [module.ecs_cluster.services["hello-world"].task_exec_iam_role_arn]
 
   pipes = {
     test_ecs_pipe = {
-
-      attach_policies_for_integrations = true
 
       source = aws_sqs_queue.source.arn
       target = module.ecs_cluster.cluster_arn
@@ -70,7 +61,7 @@ module "eventbridge" {
           task_definition_arn = module.ecs_cluster.services["hello-world"].task_definition_arn
           container_name      = "hello-world"
 
-          security_groups = [module.ecs_cluster.services["hello-world"].security_group_id]
+          security_groups = [data.aws_security_group.default.id]
           subnets         = data.aws_subnets.default.ids
 
           memory = 512
@@ -130,20 +121,14 @@ resource "aws_iam_role_policy_attachment" "eventbridge_pipes_ecs_policy" {
 
 module "ecs_cluster" {
   source  = "terraform-aws-modules/ecs/aws"
-  version = "~> 5.0"
+  version = "~> 6.1"
 
   cluster_name = random_pet.this.id
 
-  fargate_capacity_providers = {
-    FARGATE = {
-      default_capacity_provider_strategy = {
-        weight = 100
-      }
-    }
-    FARGATE_SPOT = {
-      default_capacity_provider_strategy = {
-        weight = 100
-      }
+
+  default_capacity_provider_strategy = {
+    "FARGATE" = {
+      weight = 100
     }
   }
 
@@ -154,17 +139,6 @@ module "ecs_cluster" {
       desired_count                      = 1
       deployment_maximum_percent         = 100
       deployment_minimum_healthy_percent = 0
-
-      security_group_rules = {
-        egress = {
-          type        = "egress"
-          description = "container-pull-egress"
-          from_port   = 443
-          to_port     = 443
-          protocol    = "tcp"
-          cidr_blocks = ["0.0.0.0/0"]
-        }
-      }
 
       container_definitions = {
         hello-world = {
@@ -185,12 +159,3 @@ resource "random_pet" "this" {
   length = 2
 }
 
-resource "aws_security_group_rule" "default_egress_https" {
-  type              = "egress"
-  from_port         = 443
-  to_port           = 443
-  protocol          = "tcp"
-  cidr_blocks       = ["0.0.0.0/0"]
-  security_group_id = data.aws_security_group.default.id
-  description       = "Allow HTTPS outbound for ECR image pulls"
-}
