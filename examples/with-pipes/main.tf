@@ -33,7 +33,8 @@ module "eventbridge" {
   }
 
   api_destinations = {
-    smee = { # This key should match the key inside "connections"
+    smee = {
+      # This key should match the key inside "connections"
       description                      = "my smee endpoint"
       invocation_endpoint              = "https://smee.io/6hx6fuQaVUKLfALn"
       http_method                      = "POST"
@@ -47,7 +48,8 @@ module "eventbridge" {
       source = aws_sqs_queue.source.arn
       target = aws_sqs_queue.target.arn
 
-      enrichment = "smee" # This key should match the key inside "api_destinations"
+      enrichment = "smee"
+      # This key should match the key inside "api_destinations"
       enrichment_parameters = {
         input_template = jsonencode({ input : "yes" })
 
@@ -339,6 +341,16 @@ module "eventbridge" {
       }
     }
 
+    custom_kms_key = {
+      source             = aws_sqs_queue.source.arn
+      target             = aws_sqs_queue.target.arn
+      kms_key_identifier = module.kms.key_id
+
+      tags = {
+        Pipe = "minimal"
+      }
+    }
+
     # Minimal with IAM role created outside of the module
     minimal_external_role = {
       create_role = false
@@ -371,7 +383,6 @@ module "eventbridge" {
 resource "random_pet" "this" {
   length = 2
 }
-
 
 ###############################
 # API Destination / Connection
@@ -509,11 +520,11 @@ resource "aws_cloudwatch_event_bus" "target" {
 
 module "lambda_target" {
   source  = "terraform-aws-modules/lambda/aws"
-  version = "~> 6.0"
+  version = "~> 8.0"
 
   function_name = "${random_pet.this.id}-lambda"
   handler       = "index.lambda_handler"
-  runtime       = "python3.8"
+  runtime       = "python3.12"
 
   create_package         = false
   local_existing_package = local.downloaded
@@ -540,7 +551,7 @@ resource "null_resource" "download_package" {
 
 module "step_function_target" {
   source  = "terraform-aws-modules/step-functions/aws"
-  version = "~> 2.0"
+  version = "~> 5.0"
 
   name = "${random_pet.this.id}-target"
 
@@ -565,7 +576,7 @@ resource "aws_cloudwatch_log_group" "logs" {
 
 module "logs_bucket" {
   source  = "terraform-aws-modules/s3-bucket/aws"
-  version = "~> 4.0"
+  version = "~> 5.0"
 
   bucket_prefix = "${random_pet.this.id}-logs"
 

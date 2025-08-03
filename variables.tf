@@ -120,6 +120,12 @@ variable "create_pipes" {
 
 #######################
 
+variable "region" {
+  description = "Region where the resource(s) will be managed. Defaults to the region set in the provider configuration"
+  type        = string
+  default     = null
+}
+
 variable "bus_name" {
   description = "A unique name for your EventBridge Bus"
   type        = string
