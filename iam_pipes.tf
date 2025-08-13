@@ -358,7 +358,7 @@ resource "aws_iam_role" "eventbridge_pipe" {
   description           = try(each.value.role_description, null)
   path                  = try(each.value.role_path, null)
   force_detach_policies = try(each.value.role_force_detach_policies, null)
-  permissions_boundary  = try(each.value.role_permissions_boundary, null)
+  permissions_boundary  = var.role_permissions_boundary
   assume_role_policy    = data.aws_iam_policy_document.assume_role_pipe[each.key].json
 
   tags = merge({ Name = each.value.role_name }, try(each.value.role_tags, {}), var.tags)
