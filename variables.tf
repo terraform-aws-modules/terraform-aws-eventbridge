@@ -138,6 +138,30 @@ variable "bus_description" {
   default     = null
 }
 
+variable "bus_log_config" {
+  description = "The configuration block for the EventBridge bus logging"
+  type = object({
+    include_detail = optional(string)
+    level          = optional(string)
+
+    cloudwatch = optional(object({
+      enabled       = optional(bool, false)
+      log_group_arn = optional(string)
+    }))
+
+    s3 = optional(object({
+      enabled    = optional(bool, false)
+      bucket_arn = optional(string)
+    }))
+
+    firehose = optional(object({
+      enabled             = optional(bool, false)
+      delivery_stream_arn = optional(string)
+    }))
+  })
+  default = null
+}
+
 variable "event_source_name" {
   description = "The partner event source that the new event bus will be matched with. Must match name."
   type        = string
