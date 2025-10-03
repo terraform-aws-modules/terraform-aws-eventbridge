@@ -118,6 +118,12 @@ variable "create_pipes" {
   default     = true
 }
 
+variable "create_logging" {
+  description = "Controls whether EventBridge Logging resources should be created"
+  type        = bool
+  default     = true
+}
+
 #######################
 
 variable "region" {
@@ -138,28 +144,47 @@ variable "bus_description" {
   default     = null
 }
 
-variable "bus_log_config" {
+variable "logging" {
   description = "The configuration block for the EventBridge bus logging"
   type = object({
     include_detail = optional(string)
     level          = optional(string)
 
-    cloudwatch = optional(object({
-      enabled       = optional(bool, false)
-      log_group_arn = optional(string)
+    cloudwatch_logs = optional(object({
+      enabled         = optional(bool, false)
+      name            = optional(string)
+      arn             = string
+      field_delimiter = optional(string)
+      record_fields   = optional(list(string))
     }))
 
     s3 = optional(object({
-      enabled    = optional(bool, false)
-      bucket_arn = optional(string)
+      enabled         = optional(bool, false)
+      name            = optional(string)
+      arn             = string
+      field_delimiter = optional(string)
+      record_fields   = optional(list(string))
+      s3_delivery_configuration = optional(object({
+        enable_hive_compatible_path = optional(bool)
+        suffix_path                 = optional(string)
+      }))
     }))
 
     firehose = optional(object({
-      enabled             = optional(bool, false)
-      delivery_stream_arn = optional(string)
+      enabled         = optional(bool, false)
+      name            = optional(string)
+      arn             = string
+      field_delimiter = optional(string)
+      record_fields   = optional(list(string))
     }))
   })
   default = null
+}
+
+variable "log_delivery_source_name" {
+  description = "Name of log delivery source"
+  type        = string
+  default     = null
 }
 
 variable "event_source_name" {

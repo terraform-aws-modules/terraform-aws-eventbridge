@@ -53,7 +53,8 @@ locals {
       "Name" = var.append_pipe_postfix ? "${replace(index, "_", "-")}-pipe" : index
     })
   ])
-  enabled_bus_log_type = var.bus_log_config != null ? "${upper(var.bus_log_config.level)}_LOGS" : null
+
+  create_logging = var.create && var.create_bus && var.create_logging && var.logging != null
 }
 
 data "aws_cloudwatch_event_bus" "this" {
@@ -80,7 +81,7 @@ resource "aws_cloudwatch_event_bus" "this" {
   }
 
   dynamic "log_config" {
-    for_each = var.bus_log_config != null ? [var.bus_log_config] : []
+    for_each = var.logging != null ? [var.logging] : []
     content {
       include_detail = log_config.value.include_detail
       level          = log_config.value.level
@@ -91,108 +92,53 @@ resource "aws_cloudwatch_event_bus" "this" {
 }
 
 resource "aws_cloudwatch_log_delivery_source" "this" {
-  count = (
-    var.create &&
-    var.create_bus &&
-    var.bus_log_config != null
-  ) ? 1 : 0
+  count = local.create_logging ? 1 : 0
 
-  name         = "EventBusSource-${var.bus_name}-${local.enabled_bus_log_type}"
-  log_type     = local.enabled_bus_log_type
+  region = var.region
+
+  name         = coalesce(var.log_delivery_source_name, var.bus_name)
+  log_type     = "${upper(var.logging.level)}_LOGS"
   resource_arn = aws_cloudwatch_event_bus.this[0].arn
+
+  tags = var.tags
 }
 
-resource "aws_cloudwatch_log_delivery_destination" "cwlogs" {
-  count = (
-    var.create &&
-    var.create_bus &&
-    var.bus_log_config != null &&
-    var.bus_log_config.cloudwatch != null &&
-    var.bus_log_config.cloudwatch.enabled
-  ) ? 1 : 0
+resource "aws_cloudwatch_log_delivery_destination" "this" {
+  for_each = { for k, v in var.logging : k => v if(local.create_logging && contains(["s3", "cloudwatch_logs", "firehose"], k) && try(v.enabled, true) && v != null) }
 
-  name = "EventsDeliveryDestination-${var.bus_name}-CWLogs"
+  region = var.region
+
+  name          = coalesce(each.value.name, "${var.bus_name}-${each.key}")
+  output_format = try(each.value.output_format, null)
 
   delivery_destination_configuration {
-    destination_resource_arn = var.bus_log_config.cloudwatch.log_group_arn
+    destination_resource_arn = each.value.arn
   }
 
   tags = var.tags
 }
 
-resource "aws_cloudwatch_log_delivery" "cwlogs" {
-  count = (
-    var.create &&
-    var.create_bus &&
-    var.bus_log_config != null &&
-    var.bus_log_config.cloudwatch != null &&
-    var.bus_log_config.cloudwatch.enabled
-  ) ? 1 : 0
+resource "aws_cloudwatch_log_delivery" "this" {
+  for_each = { for k, v in var.logging : k => v if(local.create_logging && contains(["s3", "cloudwatch_logs", "firehose"], k) && try(v.enabled, true) && v != null) }
 
-  delivery_destination_arn = aws_cloudwatch_log_delivery_destination.cwlogs[0].arn
+  region = var.region
+
   delivery_source_name     = aws_cloudwatch_log_delivery_source.this[0].name
-}
+  delivery_destination_arn = aws_cloudwatch_log_delivery_destination.this[each.key].arn
 
-resource "aws_cloudwatch_log_delivery_destination" "s3" {
-  count = (
-    var.create &&
-    var.create_bus &&
-    var.bus_log_config != null &&
-    var.bus_log_config.s3 != null &&
-    var.bus_log_config.s3.enabled
-  ) ? 1 : 0
+  field_delimiter = each.value.field_delimiter
+  record_fields   = each.value.record_fields
 
-  name = "EventsDeliveryDestination-${var.bus_name}-S3"
+  dynamic "s3_delivery_configuration" {
+    for_each = try(each.value.s3_delivery_configuration, null) != null ? [true] : []
 
-  delivery_destination_configuration {
-    destination_resource_arn = var.bus_log_config.s3.bucket_arn
+    content {
+      enable_hive_compatible_path = each.value.s3_delivery_configuration.enable_hive_compatible_path
+      suffix_path                 = each.value.s3_delivery_configuration.suffix_path
+    }
   }
 
   tags = var.tags
-}
-
-resource "aws_cloudwatch_log_delivery" "s3" {
-  count = (
-    var.create &&
-    var.create_bus &&
-    var.bus_log_config != null &&
-    var.bus_log_config.s3 != null &&
-    var.bus_log_config.s3.enabled
-  ) ? 1 : 0
-
-  delivery_destination_arn = aws_cloudwatch_log_delivery_destination.s3[0].arn
-  delivery_source_name     = aws_cloudwatch_log_delivery_source.this[0].name
-}
-
-resource "aws_cloudwatch_log_delivery_destination" "firehose" {
-  count = (
-    var.create &&
-    var.create_bus &&
-    var.bus_log_config != null &&
-    var.bus_log_config.firehose != null &&
-    var.bus_log_config.firehose.enabled
-  ) ? 1 : 0
-
-  name = "EventsDeliveryDestination-${var.bus_name}-Firehose"
-
-  delivery_destination_configuration {
-    destination_resource_arn = var.bus_log_config.firehose.delivery_stream_arn
-  }
-
-  tags = var.tags
-}
-
-resource "aws_cloudwatch_log_delivery" "firehose" {
-  count = (
-    var.create &&
-    var.create_bus &&
-    var.bus_log_config != null &&
-    var.bus_log_config.firehose != null &&
-    var.bus_log_config.firehose.enabled
-  ) ? 1 : 0
-
-  delivery_destination_arn = aws_cloudwatch_log_delivery_destination.firehose[0].arn
-  delivery_source_name     = aws_cloudwatch_log_delivery_source.this[0].name
 }
 
 resource "aws_schemas_discoverer" "this" {

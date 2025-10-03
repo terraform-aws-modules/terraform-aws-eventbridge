@@ -31,7 +31,7 @@ $ terraform apply
 
 | Name | Source | Version |
 |------|--------|---------|
-| <a name="module_cloudwatch_log_group"></a> [cloudwatch\_log\_group](#module\_cloudwatch\_log\_group) | terraform-aws-modules/cloudwatch/aws//modules/log-group | ~> 3.0 |
+| <a name="module_cloudwatch_log_group"></a> [cloudwatch\_log\_group](#module\_cloudwatch\_log\_group) | terraform-aws-modules/cloudwatch/aws//modules/log-group | ~> 5.0 |
 | <a name="module_eventbridge"></a> [eventbridge](#module\_eventbridge) | ../../ | n/a |
 | <a name="module_s3_bucket"></a> [s3\_bucket](#module\_s3\_bucket) | terraform-aws-modules/s3-bucket/aws | ~> 5.0 |
 
@@ -42,7 +42,6 @@ $ terraform apply
 | [random_pet.this](https://registry.terraform.io/providers/hashicorp/random/latest/docs/resources/pet) | resource |
 | [aws_caller_identity.current](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/caller_identity) | data source |
 | [aws_iam_policy_document.bucket_policy](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/iam_policy_document) | data source |
-| [aws_iam_policy_document.cwlogs](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/iam_policy_document) | data source |
 
 ## Inputs
 

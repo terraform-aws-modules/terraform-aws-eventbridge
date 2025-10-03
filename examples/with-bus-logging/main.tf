@@ -14,17 +14,18 @@ module "eventbridge" {
 
   create_bus = true
 
-  bus_name = "${random_pet.this.id}-bus"
-  bus_log_config = {
+  bus_name = random_pet.this.id
+
+  logging = {
     include_detail = "FULL"
     level          = "INFO"
-    cloudwatch = {
-      enabled       = true
-      log_group_arn = module.cloudwatch_log_group.cloudwatch_log_group_arn
+    cloudwatch_logs = {
+      enabled = true
+      arn     = module.cloudwatch_log_group.cloudwatch_log_group_arn
     }
     s3 = {
-      enabled    = true
-      bucket_arn = module.s3_bucket.s3_bucket_arn
+      enabled = true
+      arn     = module.s3_bucket.s3_bucket_arn
     }
   }
 }
@@ -42,39 +43,10 @@ resource "random_pet" "this" {
 ######################
 module "cloudwatch_log_group" {
   source  = "terraform-aws-modules/cloudwatch/aws//modules/log-group"
-  version = "~> 3.0"
+  version = "~> 5.0"
 
   name              = "/aws/vendedlogs/events/event-bus/${random_pet.this.id}-bus"
   retention_in_days = 14
-}
-
-data "aws_iam_policy_document" "cwlogs" {
-  statement {
-    effect = "Allow"
-    principals {
-      type        = "Service"
-      identifiers = ["delivery.logs.amazonaws.com"]
-    }
-    actions = [
-      "logs:CreateLogStream",
-      "logs:PutLogEvents"
-    ]
-    resources = [
-      "${module.cloudwatch_log_group.arn}:log-stream:*"
-    ]
-    condition {
-      test     = "StringEquals"
-      variable = "aws:SourceAccount"
-      values   = [data.aws_caller_identity.current.account_id]
-    }
-    condition {
-      test     = "ArnLike"
-      variable = "aws:SourceArn"
-      values = [
-        module.eventbridge.eventbridge_log_delivery_source.arn
-      ]
-    }
-  }
 }
 
 ####
@@ -85,6 +57,8 @@ module "s3_bucket" {
   version = "~> 5.0"
 
   bucket        = "${random_pet.this.id}-eventbridge-bus-logs-bucket"
+  force_destroy = true
+
   attach_policy = true
   policy        = data.aws_iam_policy_document.bucket_policy.json
 
@@ -125,13 +99,8 @@ data "aws_iam_policy_document" "bucket_policy" {
       test     = "ArnLike"
       variable = "aws:SourceArn"
       values = [
-        module.eventbridge.eventbridge_log_delivery_source.arn
+        module.eventbridge.eventbridge_log_delivery_source[0].arn
       ]
     }
   }
 }
-
-#
-# Kinesis Fire
-#
-
