@@ -118,6 +118,18 @@ variable "create_pipes" {
   default     = true
 }
 
+variable "create_log_delivery_source" {
+  description = "Controls whether EventBridge log delivery source resource should be created"
+  type        = bool
+  default     = true
+}
+
+variable "create_log_delivery" {
+  description = "Controls whether EventBridge log delivery resources should be created"
+  type        = bool
+  default     = true
+}
+
 #######################
 
 variable "region" {
@@ -134,6 +146,39 @@ variable "bus_name" {
 
 variable "bus_description" {
   description = "Event bus description"
+  type        = string
+  default     = null
+}
+
+variable "log_config" {
+  description = "The configuration block for the EventBridge bus log config settings"
+  type = object({
+    include_detail = string
+    level          = string
+  })
+  default = null
+}
+
+variable "log_delivery" {
+  description = "Map of the configuration block for the EventBridge bus log delivery settings (key is the type of log delivery: cloudwatch_logs, s3, firehose)"
+  type = map(object({
+    enabled         = optional(bool, true)
+    destination_arn = string
+    source_name     = optional(string)
+    name            = optional(string)
+    output_format   = optional(string)
+    field_delimiter = optional(string)
+    record_fields   = optional(list(string))
+    s3_delivery_configuration = optional(object({
+      enable_hive_compatible_path = optional(bool)
+      suffix_path                 = optional(string)
+    }))
+  }))
+  default = {}
+}
+
+variable "log_delivery_source_name" {
+  description = "Name of log delivery source"
   type        = string
   default     = null
 }

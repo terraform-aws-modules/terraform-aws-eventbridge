@@ -161,6 +161,17 @@ output "eventbridge_pipes" {
   value       = aws_pipes_pipe.this
 }
 
+# EventBridge Log Delivery Source
+output "eventbridge_log_delivery_source_arn" {
+  description = "The EventBridge Bus CloudWatch Log Delivery Source ARN"
+  value       = try(aws_cloudwatch_log_delivery_source.this[0].arn, "")
+}
+
+output "eventbridge_log_delivery_source_name" {
+  description = "The EventBridge Bus CloudWatch Log Delivery Source Name"
+  value       = try(aws_cloudwatch_log_delivery_source.this[0].name, "")
+}
+
 # IAM Roles
 output "eventbridge_pipes_iam_roles" {
   description = "The EventBridge Pipes IAM roles created and their attributes"

@@ -14,13 +14,27 @@ Terraform module to create EventBridge resources.
 
 ### EventBridge Complete
 
-Most common use-case which creates custom bus, rules and targets.
+Most common use-case which creates custom bus, logging, rules and targets.
 
 ```hcl
 module "eventbridge" {
   source = "terraform-aws-modules/eventbridge/aws"
 
   bus_name = "my-bus"
+
+  log_config = {
+    include_detail = "FULL"
+    level          = "INFO"
+  }
+
+  log_delivery = {
+    cloudwatch_logs = {
+      destination_arn = "arn:aws:logs:us-east-1:123456789012:log-group:my-log-group"
+    }
+    s3 = {
+      destination_arn = "arn:aws:s3:::my-log-bucket"
+    }
+  }
 
   rules = {
     orders = {
@@ -347,6 +361,8 @@ module "eventbridge" {
   create_schedule_groups  = false  # to control creation of EventBridge Schedule Group resources
   create_schedules        = false  # to control creation of EventBridge Schedule resources
   create_pipes            = false  # to control creation of EventBridge Pipes resources
+  create_log_delivery_source = false  # to control creation of EventBridge Log Delivery Source resources
+  create_log_delivery = false  # to control creation of EventBridge Log Delivery resources
 
   attach_cloudwatch_policy       = false
   attach_ecs_policy              = false
@@ -368,6 +384,7 @@ module "eventbridge" {
 * [HTTP API Gateway](https://github.com/terraform-aws-modules/terraform-aws-eventbridge/tree/master/examples/api-gateway-event-source) - Creates an integration with HTTP API Gateway as event source.
 * [Using Default Bus](https://github.com/terraform-aws-modules/terraform-aws-eventbridge/tree/master/examples/default-bus) - Creates resources in the `default` bus.
 * [Archive](https://github.com/terraform-aws-modules/terraform-aws-eventbridge/tree/master/examples/with-archive) - EventBridge Archives resources in various configurations.
+* [Logging](https://github.com/terraform-aws-modules/terraform-aws-eventbridge/tree/master/examples/with-bus-logging) - EventBridge Logging resources in various configurations.
 * [Permissions](https://github.com/terraform-aws-modules/terraform-aws-eventbridge/tree/master/examples/with-permissions) - Controls permissions to EventBridge.
 * [Scheduler](https://github.com/terraform-aws-modules/terraform-aws-eventbridge/tree/master/examples/with-schedules) - EventBridge Scheduler which works with any bus (recommended way).
 * [ECS Scheduling Events](https://github.com/terraform-aws-modules/terraform-aws-eventbridge/tree/master/examples/with-ecs-scheduling) - Use default bus to schedule events on ECS.
@@ -382,13 +399,13 @@ module "eventbridge" {
 | Name | Version |
 |------|---------|
 | <a name="requirement_terraform"></a> [terraform](#requirement\_terraform) | >= 1.5.7 |
-| <a name="requirement_aws"></a> [aws](#requirement\_aws) | >= 6.0 |
+| <a name="requirement_aws"></a> [aws](#requirement\_aws) | >= 6.6 |
 
 ## Providers
 
 | Name | Version |
 |------|---------|
-| <a name="provider_aws"></a> [aws](#provider\_aws) | >= 6.0 |
+| <a name="provider_aws"></a> [aws](#provider\_aws) | >= 6.6 |
 
 ## Modules
 
@@ -405,6 +422,9 @@ No modules.
 | [aws_cloudwatch_event_permission.this](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/cloudwatch_event_permission) | resource |
 | [aws_cloudwatch_event_rule.this](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/cloudwatch_event_rule) | resource |
 | [aws_cloudwatch_event_target.this](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/cloudwatch_event_target) | resource |
+| [aws_cloudwatch_log_delivery.this](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/cloudwatch_log_delivery) | resource |
+| [aws_cloudwatch_log_delivery_destination.this](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/cloudwatch_log_delivery_destination) | resource |
+| [aws_cloudwatch_log_delivery_source.this](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/cloudwatch_log_delivery_source) | resource |
 | [aws_iam_policy.additional_inline](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/iam_policy) | resource |
 | [aws_iam_policy.additional_json](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/iam_policy) | resource |
 | [aws_iam_policy.additional_jsons](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/iam_policy) | resource |
@@ -496,6 +516,8 @@ No modules.
 | <a name="input_create_archives"></a> [create\_archives](#input\_create\_archives) | Controls whether EventBridge Archive resources should be created | `bool` | `false` | no |
 | <a name="input_create_bus"></a> [create\_bus](#input\_create\_bus) | Controls whether EventBridge Bus resource should be created | `bool` | `true` | no |
 | <a name="input_create_connections"></a> [create\_connections](#input\_create\_connections) | Controls whether EventBridge Connection resources should be created | `bool` | `false` | no |
+| <a name="input_create_log_delivery"></a> [create\_log\_delivery](#input\_create\_log\_delivery) | Controls whether EventBridge log delivery resources should be created | `bool` | `true` | no |
+| <a name="input_create_log_delivery_source"></a> [create\_log\_delivery\_source](#input\_create\_log\_delivery\_source) | Controls whether EventBridge log delivery source resource should be created | `bool` | `true` | no |
 | <a name="input_create_permissions"></a> [create\_permissions](#input\_create\_permissions) | Controls whether EventBridge Permission resources should be created | `bool` | `true` | no |
 | <a name="input_create_pipe_role_only"></a> [create\_pipe\_role\_only](#input\_create\_pipe\_role\_only) | Controls whether an IAM role should be created for the pipes only | `bool` | `false` | no |
 | <a name="input_create_pipes"></a> [create\_pipes](#input\_create\_pipes) | Controls whether EventBridge Pipes resources should be created | `bool` | `true` | no |
@@ -513,6 +535,9 @@ No modules.
 | <a name="input_kinesis_target_arns"></a> [kinesis\_target\_arns](#input\_kinesis\_target\_arns) | The Amazon Resource Name (ARN) of the Kinesis Streams you want to use as EventBridge targets | `list(string)` | `[]` | no |
 | <a name="input_kms_key_identifier"></a> [kms\_key\_identifier](#input\_kms\_key\_identifier) | The identifier of the AWS KMS customer managed key for EventBridge to use, if you choose to use a customer managed key to encrypt events on this event bus. The identifier can be the key Amazon Resource Name (ARN), KeyId, key alias, or key alias ARN. | `string` | `null` | no |
 | <a name="input_lambda_target_arns"></a> [lambda\_target\_arns](#input\_lambda\_target\_arns) | The Amazon Resource Name (ARN) of the Lambda Functions you want to use as EventBridge targets | `list(string)` | `[]` | no |
+| <a name="input_log_config"></a> [log\_config](#input\_log\_config) | The configuration block for the EventBridge bus log config settings | <pre>object({<br/>    include_detail = string<br/>    level          = string<br/>  })</pre> | `null` | no |
+| <a name="input_log_delivery"></a> [log\_delivery](#input\_log\_delivery) | Map of the configuration block for the EventBridge bus log delivery settings (key is the type of log delivery: cloudwatch\_logs, s3, firehose) | <pre>map(object({<br/>    enabled         = optional(bool, true)<br/>    destination_arn = string<br/>    source_name     = optional(string)<br/>    name            = optional(string)<br/>    output_format   = optional(string)<br/>    field_delimiter = optional(string)<br/>    record_fields   = optional(list(string))<br/>    s3_delivery_configuration = optional(object({<br/>      enable_hive_compatible_path = optional(bool)<br/>      suffix_path                 = optional(string)<br/>    }))<br/>  }))</pre> | `{}` | no |
+| <a name="input_log_delivery_source_name"></a> [log\_delivery\_source\_name](#input\_log\_delivery\_source\_name) | Name of log delivery source | `string` | `null` | no |
 | <a name="input_number_of_policies"></a> [number\_of\_policies](#input\_number\_of\_policies) | Number of policies to attach to IAM role | `number` | `0` | no |
 | <a name="input_number_of_policy_jsons"></a> [number\_of\_policy\_jsons](#input\_number\_of\_policy\_jsons) | Number of policies JSON to attach to IAM role | `number` | `0` | no |
 | <a name="input_permissions"></a> [permissions](#input\_permissions) | A map of objects with EventBridge Permission definitions. | `map(any)` | `{}` | no |
@@ -558,6 +583,8 @@ No modules.
 | <a name="output_eventbridge_connection_ids"></a> [eventbridge\_connection\_ids](#output\_eventbridge\_connection\_ids) | The EventBridge Connection IDs |
 | <a name="output_eventbridge_connections"></a> [eventbridge\_connections](#output\_eventbridge\_connections) | The EventBridge Connections created and their attributes |
 | <a name="output_eventbridge_iam_roles"></a> [eventbridge\_iam\_roles](#output\_eventbridge\_iam\_roles) | The EventBridge IAM roles created and their attributes |
+| <a name="output_eventbridge_log_delivery_source_arn"></a> [eventbridge\_log\_delivery\_source\_arn](#output\_eventbridge\_log\_delivery\_source\_arn) | The EventBridge Bus CloudWatch Log Delivery Source ARN |
+| <a name="output_eventbridge_log_delivery_source_name"></a> [eventbridge\_log\_delivery\_source\_name](#output\_eventbridge\_log\_delivery\_source\_name) | The EventBridge Bus CloudWatch Log Delivery Source Name |
 | <a name="output_eventbridge_permission_ids"></a> [eventbridge\_permission\_ids](#output\_eventbridge\_permission\_ids) | The EventBridge Permission IDs |
 | <a name="output_eventbridge_permissions"></a> [eventbridge\_permissions](#output\_eventbridge\_permissions) | The EventBridge Permissions created and their attributes |
 | <a name="output_eventbridge_pipe_arns"></a> [eventbridge\_pipe\_arns](#output\_eventbridge\_pipe\_arns) | The EventBridge Pipes ARNs |

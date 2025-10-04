@@ -53,6 +53,8 @@ locals {
       "Name" = var.append_pipe_postfix ? "${replace(index, "_", "-")}-pipe" : index
     })
   ])
+
+  create_log_delivery = var.create && var.create_log_delivery
 }
 
 data "aws_cloudwatch_event_bus" "this" {
@@ -73,8 +75,68 @@ resource "aws_cloudwatch_event_bus" "this" {
 
   dynamic "dead_letter_config" {
     for_each = length(var.dead_letter_config) > 0 ? [var.dead_letter_config] : []
+
     content {
       arn = try(dead_letter_config.value.arn, null)
+    }
+  }
+
+  dynamic "log_config" {
+    for_each = var.log_config != null ? [var.log_config] : []
+
+    content {
+      include_detail = try(log_config.value.include_detail, null)
+      level          = try(upper(log_config.value.level), null)
+    }
+  }
+
+  tags = var.tags
+}
+
+resource "aws_cloudwatch_log_delivery_source" "this" {
+  count = local.create_log_delivery && var.create_log_delivery_source ? 1 : 0
+
+  region = var.region
+
+  name         = coalesce(var.log_delivery_source_name, var.bus_name)
+  log_type     = try(format("%s_LOGS", contains(["INFO", "ERROR", "TRACE"], upper(var.log_config.level)) ? upper(var.log_config.level) : "ERROR"), "ERROR_LOGS")
+  resource_arn = var.create_bus ? aws_cloudwatch_event_bus.this[0].arn : data.aws_cloudwatch_event_bus.this[0].arn
+
+  tags = var.tags
+}
+
+resource "aws_cloudwatch_log_delivery_destination" "this" {
+  for_each = { for k, v in var.log_delivery : k => v if(local.create_log_delivery && try(v.enabled, true)) }
+
+  region = var.region
+
+  name          = coalesce(each.value.name, "${var.bus_name}-${each.key}")
+  output_format = each.value.output_format
+
+  delivery_destination_configuration {
+    destination_resource_arn = each.value.destination_arn
+  }
+
+  tags = var.tags
+}
+
+resource "aws_cloudwatch_log_delivery" "this" {
+  for_each = { for k, v in var.log_delivery : k => v if(local.create_log_delivery && try(v.enabled, true)) }
+
+  region = var.region
+
+  delivery_source_name     = var.create_log_delivery_source ? aws_cloudwatch_log_delivery_source.this[0].name : each.value.source_name
+  delivery_destination_arn = aws_cloudwatch_log_delivery_destination.this[each.key].arn
+
+  field_delimiter = each.value.field_delimiter
+  record_fields   = each.value.record_fields
+
+  dynamic "s3_delivery_configuration" {
+    for_each = each.value.s3_delivery_configuration != null ? [each.value.s3_delivery_configuration] : []
+
+    content {
+      enable_hive_compatible_path = s3_delivery_configuration.value.enable_hive_compatible_path
+      suffix_path                 = s3_delivery_configuration.value.suffix_path
     }
   }
 
