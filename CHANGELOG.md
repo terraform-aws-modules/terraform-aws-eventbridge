@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file.
 
+## [4.2.0](https://github.com/terraform-aws-modules/terraform-aws-eventbridge/compare/v4.1.0...v4.2.0) (2025-10-04)
+
+
+### Features
+
+* Add EventBridge bus logging configuration ([#185](https://github.com/terraform-aws-modules/terraform-aws-eventbridge/issues/185)) ([e1f974b](https://github.com/terraform-aws-modules/terraform-aws-eventbridge/commit/e1f974b9f29e8e7e97df940dfd5f91b1f1a5321b))
+
 ## [4.1.0](https://github.com/terraform-aws-modules/terraform-aws-eventbridge/compare/v4.0.0...v4.1.0) (2025-07-09)
 
 
