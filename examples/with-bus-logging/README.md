@@ -33,6 +33,8 @@ $ terraform apply
 |------|--------|---------|
 | <a name="module_cloudwatch_log_group"></a> [cloudwatch\_log\_group](#module\_cloudwatch\_log\_group) | terraform-aws-modules/cloudwatch/aws//modules/log-group | ~> 5.0 |
 | <a name="module_eventbridge"></a> [eventbridge](#module\_eventbridge) | ../../ | n/a |
+| <a name="module_eventbridge_external"></a> [eventbridge\_external](#module\_eventbridge\_external) | ../../ | n/a |
+| <a name="module_eventbridge_log_delivery_only"></a> [eventbridge\_log\_delivery\_only](#module\_eventbridge\_log\_delivery\_only) | ../../ | n/a |
 | <a name="module_s3_bucket"></a> [s3\_bucket](#module\_s3\_bucket) | terraform-aws-modules/s3-bucket/aws | ~> 5.0 |
 
 ## Resources

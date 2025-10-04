@@ -54,7 +54,7 @@ locals {
     })
   ])
 
-  create_logging = var.create && var.create_bus && var.create_logging && var.logging != null
+  create_log_delivery = var.create && var.create_log_delivery
 }
 
 data "aws_cloudwatch_event_bus" "this" {
@@ -75,16 +75,18 @@ resource "aws_cloudwatch_event_bus" "this" {
 
   dynamic "dead_letter_config" {
     for_each = length(var.dead_letter_config) > 0 ? [var.dead_letter_config] : []
+
     content {
       arn = try(dead_letter_config.value.arn, null)
     }
   }
 
   dynamic "log_config" {
-    for_each = var.logging != null ? [var.logging] : []
+    for_each = var.log_config != null ? [var.log_config] : []
+
     content {
-      include_detail = log_config.value.include_detail
-      level          = log_config.value.level
+      include_detail = try(log_config.value.include_detail, null)
+      level          = try(upper(log_config.value.level), null)
     }
   }
 
@@ -92,49 +94,49 @@ resource "aws_cloudwatch_event_bus" "this" {
 }
 
 resource "aws_cloudwatch_log_delivery_source" "this" {
-  count = local.create_logging ? 1 : 0
+  count = local.create_log_delivery && var.create_log_delivery_source ? 1 : 0
 
   region = var.region
 
   name         = coalesce(var.log_delivery_source_name, var.bus_name)
-  log_type     = "${upper(var.logging.level)}_LOGS"
-  resource_arn = aws_cloudwatch_event_bus.this[0].arn
+  log_type     = format("%s_LOGS", try(contains(["INFO", "ERROR", "TRACE"], upper(var.log_config.level)), false) ? upper(var.log_config.level) : "ERROR")
+  resource_arn = var.create_bus ? aws_cloudwatch_event_bus.this[0].arn : data.aws_cloudwatch_event_bus.this[0].arn
 
   tags = var.tags
 }
 
 resource "aws_cloudwatch_log_delivery_destination" "this" {
-  for_each = { for k, v in var.logging : k => v if(local.create_logging && contains(["s3", "cloudwatch_logs", "firehose"], k) && try(v.enabled, true) && v != null) }
+  for_each = { for k, v in var.log_delivery : k => v if(local.create_log_delivery && try(v.enabled, true)) }
 
   region = var.region
 
   name          = coalesce(each.value.name, "${var.bus_name}-${each.key}")
-  output_format = try(each.value.output_format, null)
+  output_format = each.value.output_format
 
   delivery_destination_configuration {
-    destination_resource_arn = each.value.arn
+    destination_resource_arn = each.value.destination_arn
   }
 
   tags = var.tags
 }
 
 resource "aws_cloudwatch_log_delivery" "this" {
-  for_each = { for k, v in var.logging : k => v if(local.create_logging && contains(["s3", "cloudwatch_logs", "firehose"], k) && try(v.enabled, true) && v != null) }
+  for_each = { for k, v in var.log_delivery : k => v if(local.create_log_delivery && try(v.enabled, true)) }
 
   region = var.region
 
-  delivery_source_name     = aws_cloudwatch_log_delivery_source.this[0].name
+  delivery_source_name     = var.create_log_delivery_source ? aws_cloudwatch_log_delivery_source.this[0].name : each.value.source_name
   delivery_destination_arn = aws_cloudwatch_log_delivery_destination.this[each.key].arn
 
   field_delimiter = each.value.field_delimiter
   record_fields   = each.value.record_fields
 
   dynamic "s3_delivery_configuration" {
-    for_each = try(each.value.s3_delivery_configuration, null) != null ? [true] : []
+    for_each = each.value.s3_delivery_configuration != null ? [each.value.s3_delivery_configuration] : []
 
     content {
-      enable_hive_compatible_path = each.value.s3_delivery_configuration.enable_hive_compatible_path
-      suffix_path                 = each.value.s3_delivery_configuration.suffix_path
+      enable_hive_compatible_path = s3_delivery_configuration.value.enable_hive_compatible_path
+      suffix_path                 = s3_delivery_configuration.value.suffix_path
     }
   }
 

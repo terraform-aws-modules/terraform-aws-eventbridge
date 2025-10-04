@@ -118,8 +118,14 @@ variable "create_pipes" {
   default     = true
 }
 
-variable "create_logging" {
-  description = "Controls whether EventBridge Logging resources should be created"
+variable "create_log_delivery_source" {
+  description = "Controls whether EventBridge log delivery source resource should be created"
+  type        = bool
+  default     = true
+}
+
+variable "create_log_delivery" {
+  description = "Controls whether EventBridge log delivery resources should be created"
   type        = bool
   default     = true
 }
@@ -144,41 +150,31 @@ variable "bus_description" {
   default     = null
 }
 
-variable "logging" {
-  description = "The configuration block for the EventBridge bus logging"
+variable "log_config" {
+  description = "The configuration block for the EventBridge bus log config settings"
   type = object({
-    include_detail = optional(string)
-    level          = optional(string)
-
-    cloudwatch_logs = optional(object({
-      enabled         = optional(bool, false)
-      name            = optional(string)
-      arn             = string
-      field_delimiter = optional(string)
-      record_fields   = optional(list(string))
-    }))
-
-    s3 = optional(object({
-      enabled         = optional(bool, false)
-      name            = optional(string)
-      arn             = string
-      field_delimiter = optional(string)
-      record_fields   = optional(list(string))
-      s3_delivery_configuration = optional(object({
-        enable_hive_compatible_path = optional(bool)
-        suffix_path                 = optional(string)
-      }))
-    }))
-
-    firehose = optional(object({
-      enabled         = optional(bool, false)
-      name            = optional(string)
-      arn             = string
-      field_delimiter = optional(string)
-      record_fields   = optional(list(string))
-    }))
+    include_detail = string
+    level          = string
   })
   default = null
+}
+
+variable "log_delivery" {
+  description = "Map of the configuration block for the EventBridge bus log delivery settings (key is the type of log delivery: cloudwatch_logs, s3, firehose)"
+  type = map(object({
+    enabled         = optional(bool, true)
+    destination_arn = string
+    source_name     = optional(string)
+    name            = optional(string)
+    output_format   = optional(string)
+    field_delimiter = optional(string)
+    record_fields   = optional(list(string))
+    s3_delivery_configuration = optional(object({
+      enable_hive_compatible_path = optional(bool)
+      suffix_path                 = optional(string)
+    }))
+  }))
+  default = {}
 }
 
 variable "log_delivery_source_name" {

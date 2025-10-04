@@ -16,18 +16,57 @@ module "eventbridge" {
 
   bus_name = random_pet.this.id
 
-  logging = {
+  log_config = {
     include_detail = "FULL"
     level          = "INFO"
+  }
+
+  log_delivery = {
     cloudwatch_logs = {
-      enabled = true
-      arn     = module.cloudwatch_log_group.cloudwatch_log_group_arn
+      destination_arn = module.cloudwatch_log_group.cloudwatch_log_group_arn
     }
     s3 = {
-      enabled = true
-      arn     = module.s3_bucket.s3_bucket_arn
+      destination_arn = module.s3_bucket.s3_bucket_arn
     }
   }
+}
+
+# External EventBridge bus with log delivery attached to the bus
+module "eventbridge_external" {
+  source = "../../"
+
+  create_bus = true
+
+  bus_name = "${random_pet.this.id}-external-bus"
+
+  log_config = {
+    include_detail = "FULL"
+    level          = "TRACE"
+  }
+}
+
+module "eventbridge_log_delivery_only" {
+  source = "../../"
+
+  create_bus  = false
+  create_role = false
+
+  bus_name = module.eventbridge_external.eventbridge_bus_name
+
+  create_log_delivery_source = false
+
+  log_delivery = {
+    cloudwatch_logs = {
+      destination_arn = module.cloudwatch_log_group.cloudwatch_log_group_arn
+      source_name     = module.eventbridge_external.eventbridge_log_delivery_source_name
+    }
+    s3 = {
+      destination_arn = module.s3_bucket.s3_bucket_arn
+      source_name     = module.eventbridge_external.eventbridge_log_delivery_source_name
+    }
+  }
+
+  depends_on = [module.eventbridge_external]
 }
 
 #################
@@ -99,7 +138,8 @@ data "aws_iam_policy_document" "bucket_policy" {
       test     = "ArnLike"
       variable = "aws:SourceArn"
       values = [
-        module.eventbridge.eventbridge_log_delivery_source[0].arn
+        module.eventbridge.eventbridge_log_delivery_source_arn,
+        module.eventbridge_external.eventbridge_log_delivery_source_arn
       ]
     }
   }
