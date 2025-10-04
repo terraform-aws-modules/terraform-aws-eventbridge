@@ -17,7 +17,7 @@ module "eventbridge" {
   bus_name = random_pet.this.id
 
   log_config = {
-    include_detail = "FULL"
+    include_detail = "NONE"
     level          = "INFO"
   }
 

@@ -99,7 +99,7 @@ resource "aws_cloudwatch_log_delivery_source" "this" {
   region = var.region
 
   name         = coalesce(var.log_delivery_source_name, var.bus_name)
-  log_type     = format("%s_LOGS", try(contains(["INFO", "ERROR", "TRACE"], upper(var.log_config.level)), false) ? upper(var.log_config.level) : "ERROR")
+  log_type     = try(format("%s_LOGS", contains(["INFO", "ERROR", "TRACE"], upper(var.log_config.level)) ? upper(var.log_config.level) : "ERROR"), "ERROR_LOGS")
   resource_arn = var.create_bus ? aws_cloudwatch_event_bus.this[0].arn : data.aws_cloudwatch_event_bus.this[0].arn
 
   tags = var.tags

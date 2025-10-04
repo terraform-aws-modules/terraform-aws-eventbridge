@@ -22,16 +22,17 @@ module "eventbridge" {
 
   bus_name = "my-bus"
 
-  logging = {
+  log_config = {
     include_detail = "FULL"
     level          = "INFO"
+  }
+
+  log_delivery = {
     cloudwatch_logs = {
-      enabled = true
-      arn     = "arn:aws:logs:us-east-1:123456789012:log-group:my-log-group"
+      destination_arn = "arn:aws:logs:us-east-1:123456789012:log-group:my-log-group"
     }
     s3 = {
-      enabled = true
-      arn     = "arn:aws:s3:::my-log-bucket"
+      destination_arn = "arn:aws:s3:::my-log-bucket"
     }
   }
 
@@ -360,7 +361,8 @@ module "eventbridge" {
   create_schedule_groups  = false  # to control creation of EventBridge Schedule Group resources
   create_schedules        = false  # to control creation of EventBridge Schedule resources
   create_pipes            = false  # to control creation of EventBridge Pipes resources
-  create_logging          = false  # to control creation of EventBridge Logging resources
+  create_log_delivery_source = false  # to control creation of EventBridge Log Delivery Source resources
+  create_log_delivery = false  # to control creation of EventBridge Log Delivery resources
 
   attach_cloudwatch_policy       = false
   attach_ecs_policy              = false
