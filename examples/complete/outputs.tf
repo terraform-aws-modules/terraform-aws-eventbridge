@@ -32,6 +32,7 @@ output "eventbridge_permissions" {
 output "eventbridge_connections" {
   description = "The EventBridge Connections created and their attributes"
   value       = module.eventbridge.eventbridge_connections
+  sensitive   = true
 }
 
 output "eventbridge_api_destinations" {

@@ -106,20 +106,17 @@ module "eventbridge" {
 
 module "ecs_cluster" {
   source  = "terraform-aws-modules/ecs/aws"
-  version = "~> 5.0"
+  version = "~> 6.0"
 
   cluster_name = random_pet.this.id
 
-  fargate_capacity_providers = {
+  default_capacity_provider_strategy = {
     FARGATE = {
-      default_capacity_provider_strategy = {
-        weight = 100
-      }
+      weight = 100
+      base   = 20
     }
     FARGATE_SPOT = {
-      default_capacity_provider_strategy = {
-        weight = 100
-      }
+      weight = 100
     }
   }
 

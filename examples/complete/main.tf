@@ -38,7 +38,7 @@ module "eventbridge" {
   append_rule_postfix = false
 
   attach_ecs_policy = true
-  ecs_target_arns   = [aws_ecs_task_definition.hello_world.arn]
+  ecs_target_arns   = [module.ecs.services.hello-world.task_definition_arn]
 
   rules = {
     orders = {
@@ -114,11 +114,11 @@ module "eventbridge" {
       },
       {
         name            = "process-email-with-ecs-task",
-        arn             = module.ecs.ecs_cluster_arn,
+        arn             = module.ecs.cluster_arn,
         attach_role_arn = true
         ecs_target = {
           task_count          = 1
-          task_definition_arn = aws_ecs_task_definition.hello_world.arn
+          task_definition_arn = module.ecs.services.hello-world.task_definition_arn
         }
       }
     ]
@@ -229,6 +229,19 @@ locals {
     EOF
   }
 }
+#############################################################
+# Data sources to get VPC and default security group details
+#############################################################
+data "aws_vpc" "default" {
+  default = true
+}
+
+data "aws_subnets" "default" {
+  filter {
+    name   = "vpc-id"
+    values = [data.aws_vpc.default.id]
+  }
+}
 
 ##################
 # Extra resources
@@ -314,37 +327,36 @@ module "step_function" {
 
 module "ecs" {
   source  = "terraform-aws-modules/ecs/aws"
-  version = "~> 3.0"
+  version = "~> 6.0"
 
-  name = random_pet.this.id
+  cluster_name = random_pet.this.id
 
-  capacity_providers = ["FARGATE", "FARGATE_SPOT"]
-}
-
-resource "aws_ecs_service" "hello_world" {
-  name            = "hello_world-${random_pet.this.id}"
-  cluster         = module.ecs.ecs_cluster_id
-  task_definition = aws_ecs_task_definition.hello_world.arn
-
-  desired_count = 1
-
-  deployment_maximum_percent         = 100
-  deployment_minimum_healthy_percent = 0
-}
-
-resource "aws_ecs_task_definition" "hello_world" {
-  family = "hello_world-${random_pet.this.id}"
-
-  container_definitions = <<EOF
-[
-  {
-    "name": "hello_world-${random_pet.this.id}",
-    "image": "hello-world",
-    "cpu": 0,
-    "memory": 128
+  default_capacity_provider_strategy = {
+    FARGATE = {
+      weight = 100
+      base   = 20
+    }
+    FARGATE_SPOT = {
+      weight = 100
+    }
   }
-]
-EOF
+
+  services = {
+    hello-world = {
+      subnet_ids                         = data.aws_subnets.default.ids
+      desired_count                      = 1
+      deployment_maximum_percent         = 100
+      deployment_minimum_healthy_percent = 0
+
+      container_definitions = {
+        hello-world = {
+          image  = "hello-world",
+          cpu    = 0,
+          memory = 128
+        }
+      }
+    }
+  }
 }
 
 #############################################
@@ -357,7 +369,7 @@ module "lambda" {
 
   function_name = "${random_pet.this.id}-lambda"
   handler       = "index.lambda_handler"
-  runtime       = "python3.12"
+  runtime       = "python3.13"
 
   create_package         = false
   local_existing_package = local.downloaded
@@ -432,84 +444,13 @@ resource "aws_cloudtrail" "trail" {
 # s3
 #######
 
-data "aws_region" "current" {}
-
-data "aws_caller_identity" "current" {}
-
 module "bucket" {
   source  = "terraform-aws-modules/s3-bucket/aws"
   version = "~> 5.0"
 
-  bucket        = "${random_pet.this.id}-bucket"
-  attach_policy = true
-  policy        = data.aws_iam_policy_document.bucket_policy.json
+  bucket = "${random_pet.this.id}-bucket"
+
+  attach_cloudtrail_log_delivery_policy = true
 
   force_destroy = true
 }
-
-# https://docs.aws.amazon.com/awscloudtrail/latest/userguide/create-s3-bucket-policy-for-cloudtrail.html
-data "aws_iam_policy_document" "bucket_policy" {
-  statement {
-    sid = "AWSCloudTrailAclCheck"
-    principals {
-      identifiers = ["cloudtrail.amazonaws.com"]
-      type        = "Service"
-    }
-    actions = ["s3:GetBucketAcl"]
-    resources = [
-      "arn:aws:s3:::${random_pet.this.id}-bucket"
-    ]
-    condition {
-      test     = "StringEquals"
-      values   = ["arn:aws:cloudtrail:${data.aws_region.current.region}:${data.aws_caller_identity.current.account_id}:trail/${random_pet.this.id}-trail"]
-      variable = "aws:SourceArn"
-    }
-  }
-
-  statement {
-    sid = "AWSCloudTrailWrite"
-    principals {
-      identifiers = ["cloudtrail.amazonaws.com"]
-      type        = "Service"
-    }
-    actions = ["s3:PutObject"]
-    resources = [
-      "arn:aws:s3:::${random_pet.this.id}-bucket/*"
-    ]
-    condition {
-      test     = "StringEquals"
-      values   = ["bucket-owner-full-control"]
-      variable = "s3:x-amz-acl"
-    }
-    condition {
-      test     = "StringEquals"
-      values   = ["arn:aws:cloudtrail:${data.aws_region.current.region}:${data.aws_caller_identity.current.account_id}:trail/${random_pet.this.id}-trail"]
-      variable = "aws:SourceArn"
-    }
-  }
-
-}
-
-#######
-## Lambda
-#######
-#module "lambda" {
-#  source  = "terraform-aws-modules/lambda/aws"
-#  version = "~> 8.0"
-#
-#  function_name = "dev-cron-job"
-#  description   = "Lambda Serverless Job"
-#  handler       = "index.handler"
-#  runtime       = "nodejs14.x"
-#  timeout       = 900
-#
-#  source_path = "../with-lambda-shceduling/lambda"
-#}
-#
-#resource "aws_lambda_permission" "crons_invoke" {
-#  statement_id  = "AllowExecutionFromCloudWatch"
-#  action        = "lambda:InvokeFunction"
-#  function_name = module.lambda.lambda_function_name
-#  principal     = "events.amazonaws.com"
-#  source_arn    = module.eventbridge.eventbridge_rule_arns.orders
-#}
