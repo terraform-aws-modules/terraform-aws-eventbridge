@@ -347,7 +347,7 @@ resource "aws_cloudwatch_event_archive" "this" {
   region = var.region
 
   name             = lookup(each.value, "name", each.key)
-  event_source_arn = try(each.value["event_source_arn"], aws_cloudwatch_event_bus.this[0].arn)
+  event_source_arn = try(each.value["event_source_arn"], var.create_bus ? aws_cloudwatch_event_bus.this[0].arn : data.aws_cloudwatch_event_bus.this[0].arn)
 
   description        = lookup(each.value, "description", null)
   event_pattern      = lookup(each.value, "event_pattern", null)
