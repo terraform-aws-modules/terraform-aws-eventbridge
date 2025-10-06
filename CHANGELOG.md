@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file.
 
+## [4.2.1](https://github.com/terraform-aws-modules/terraform-aws-eventbridge/compare/v4.2.0...v4.2.1) (2025-10-06)
+
+
+### Bug Fixes
+
+* Use externally created eventbus for event archive when `create_bus` is set to `false` ([#176](https://github.com/terraform-aws-modules/terraform-aws-eventbridge/issues/176)) ([e30c402](https://github.com/terraform-aws-modules/terraform-aws-eventbridge/commit/e30c4024c2f153fabeacbd54a347b8786c79b095))
+
 ## [4.2.0](https://github.com/terraform-aws-modules/terraform-aws-eventbridge/compare/v4.1.0...v4.2.0) (2025-10-04)
 
 
