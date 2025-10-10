@@ -42,6 +42,8 @@ module "eventbridge" {
 
   rules = {
     orders = {
+      name = "order-processor" # optional different AWS resource name to Terraform "orders" map key identifier
+
       description   = "Capture all order data"
       event_pattern = jsonencode({ "source" : ["myapp.orders"] })
       state         = "DISABLED" # conflicts with enabled which is deprecated
