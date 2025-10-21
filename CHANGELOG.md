@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file.
 
+## [4.2.2](https://github.com/terraform-aws-modules/terraform-aws-eventbridge/compare/v4.2.1...v4.2.2) (2025-10-21)
+
+### Bug Fixes
+
+* Update CI workflow versions to latest ([#188](https://github.com/terraform-aws-modules/terraform-aws-eventbridge/issues/188)) ([ed5c6aa](https://github.com/terraform-aws-modules/terraform-aws-eventbridge/commit/ed5c6aaff433a199f2f54454f58a366382287f69))
+
 ## [4.2.1](https://github.com/terraform-aws-modules/terraform-aws-eventbridge/compare/v4.2.0...v4.2.1) (2025-10-06)
 
 
