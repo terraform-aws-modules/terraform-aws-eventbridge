@@ -7,7 +7,7 @@ locals {
     for index, rule in var.rules :
     merge(rule, {
       "name" = index
-      "Name" = var.append_rule_postfix ? "${replace(index, "_", "-")}-rule" : index
+      "Name" = var.append_rule_postfix ? "${replace(lookup(rule, "name", index), "_", "-")}-rule" : lookup(rule, "name", index)
     })
   ])
   eventbridge_targets = flatten([
@@ -15,7 +15,7 @@ locals {
       for target in var.targets[index] :
       merge(target, {
         "rule" = index
-        "Name" = var.append_rule_postfix ? "${replace(index, "_", "-")}-rule" : index
+        "Name" = var.append_rule_postfix ? "${replace(lookup(rule, "name", index), "_", "-")}-rule" : lookup(rule, "name", index)
       })
     ] if length(var.targets) != 0
   ])
@@ -23,34 +23,34 @@ locals {
     for index, conn in var.connections :
     merge(conn, {
       "name" = index
-      "Name" = var.append_connection_postfix ? "${replace(index, "_", "-")}-connection" : index
+      "Name" = var.append_connection_postfix ? "${replace(lookup(conn, "name", index), "_", "-")}-connection" : lookup(conn, "name", index)
     })
   ])
   eventbridge_api_destinations = flatten([
     for index, dest in var.api_destinations :
     merge(dest, {
       "name" = index
-      "Name" = var.append_destination_postfix ? "${replace(index, "_", "-")}-destination" : index
+      "Name" = var.append_destination_postfix ? "${replace(lookup(dest, "name", index), "_", "-")}-destination" : lookup(dest, "name", index)
     })
   ])
   eventbridge_schedule_groups = {
     for index, group in var.schedule_groups :
     index => merge(group, {
-      "Name" = var.append_schedule_group_postfix ? "${replace(index, "_", "-")}-group" : index
+      "Name" = var.append_schedule_group_postfix ? "${replace(lookup(group, "name", index), "_", "-")}-group" : lookup(group, "name", index)
     })
   }
   eventbridge_schedules = flatten([
     for index, sched in var.schedules :
     merge(sched, {
       "name" = index
-      "Name" = var.append_schedule_postfix ? "${replace(index, "_", "-")}-schedule" : index
+      "Name" = var.append_schedule_postfix ? "${replace(lookup(sched, "name", index), "_", "-")}-schedule" : lookup(sched, "name", index)
     })
   ])
   eventbridge_pipes = flatten([
     for index, pipe in var.pipes :
     merge(pipe, {
       "name" = index
-      "Name" = var.append_pipe_postfix ? "${replace(index, "_", "-")}-pipe" : index
+      "Name" = var.append_pipe_postfix ? "${replace(lookup(pipe, "name", index), "_", "-")}-pipe" : lookup(pipe, "name", index)
     })
   ])
 
