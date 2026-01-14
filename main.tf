@@ -183,7 +183,7 @@ resource "aws_cloudwatch_event_target" "this" {
 
   event_bus_name = var.create_bus ? aws_cloudwatch_event_bus.this[0].name : var.bus_name
 
-  rule = each.value.Name
+  rule = aws_cloudwatch_event_rule.this[each.value.rule].name
   arn  = lookup(each.value, "destination", null) != null ? aws_cloudwatch_event_api_destination.this[each.value.destination].arn : each.value.arn
 
   role_arn = can(length(each.value.attach_role_arn) > 0) ? each.value.attach_role_arn : (try(each.value.attach_role_arn, null) == true ? aws_iam_role.eventbridge[0].arn : null)
@@ -337,8 +337,6 @@ resource "aws_cloudwatch_event_target" "this" {
       maximum_retry_attempts       = retry_policy.value.maximum_retry_attempts
     }
   }
-
-  depends_on = [aws_cloudwatch_event_rule.this]
 }
 
 resource "aws_cloudwatch_event_archive" "this" {
