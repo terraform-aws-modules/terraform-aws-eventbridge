@@ -145,14 +145,24 @@ data "aws_iam_policy_document" "sqs" {
   count = local.create_role && var.attach_sqs_policy ? 1 : 0
 
   statement {
-    sid    = "SQSAccess"
-    effect = "Allow"
-    actions = [
-      "sqs:SendMessage*",
-      "kms:Decrypt",
-      "kms:GenerateDataKey"
-    ]
+    sid       = "SQSAccess"
+    effect    = "Allow"
+    actions   = ["sqs:SendMessage*"]
     resources = var.sqs_target_arns
+  }
+
+  dynamic "statement" {
+    for_each = length(var.sqs_kms_arns) > 0 ? [1] : []
+
+    content {
+      sid    = "SQSKMSAccess"
+      effect = "Allow"
+      actions = [
+        "kms:Decrypt",
+        "kms:GenerateDataKey"
+      ]
+      resources = var.sqs_kms_arns
+    }
   }
 }
 

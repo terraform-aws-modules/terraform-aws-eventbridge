@@ -407,6 +407,12 @@ variable "sqs_target_arns" {
   default     = []
 }
 
+variable "sqs_kms_arns" {
+  description = "The Amazon Resource Name (ARN) of the AWS KMS keys configured for AWS SQS you want Decrypt/GenerateDataKey permissions for"
+  type        = list(string)
+  default     = []
+}
+
 variable "sns_target_arns" {
   description = "The Amazon Resource Name (ARN) of the AWS SNS's you want to use as EventBridge targets"
   type        = list(string)
