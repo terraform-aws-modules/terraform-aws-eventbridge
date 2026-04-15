@@ -6,7 +6,7 @@ output "eventbridge_bus_name" {
 
 output "eventbridge_bus_arn" {
   description = "The EventBridge Bus ARN"
-  value       = try(aws_cloudwatch_event_bus.this[0].arn, "")
+  value       = try(local.event_bus.arn, "")
 }
 
 # EventBridge Archive
@@ -112,7 +112,7 @@ output "eventbridge_pipe_role_names" {
 # Resources
 output "eventbridge_bus" {
   description = "The EventBridge Bus created and their attributes"
-  value       = aws_cloudwatch_event_bus.this
+  value       = local.is_partner_bus ? aws_cloudwatch_event_bus.partner : aws_cloudwatch_event_bus.this
 }
 
 output "eventbridge_archives" {

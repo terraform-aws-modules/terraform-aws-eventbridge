@@ -57,6 +57,14 @@ locals {
   create_log_delivery = var.create && var.create_log_delivery
 }
 
+locals {
+  # Partner event buses have names starting with "aws.partner/"
+  is_partner_bus = var.event_source_name != null || try(startswith(var.bus_name, "aws.partner/"), false)
+
+  # Unified reference to the managed event bus (standard or partner)
+  event_bus = local.is_partner_bus ? try(aws_cloudwatch_event_bus.partner[0], null) : try(aws_cloudwatch_event_bus.this[0], null)
+}
+
 data "aws_cloudwatch_event_bus" "this" {
   count = var.create && var.create_bus ? 0 : 1
 
@@ -64,7 +72,7 @@ data "aws_cloudwatch_event_bus" "this" {
 }
 
 resource "aws_cloudwatch_event_bus" "this" {
-  count = var.create && var.create_bus ? 1 : 0
+  count = var.create && var.create_bus && !local.is_partner_bus ? 1 : 0
 
   region = var.region
 
@@ -93,6 +101,44 @@ resource "aws_cloudwatch_event_bus" "this" {
   tags = var.tags
 }
 
+# Partner event buses already exist (provisioned by the partner integration).
+# They cannot be created via CreateEventBus - only updated. This resource
+# must be imported into state before use:
+#   terraform import 'module.eventbridge.aws_cloudwatch_event_bus.partner[0]' 'aws.partner/example.com/...'
+resource "aws_cloudwatch_event_bus" "partner" {
+  count = var.create && var.create_bus && local.is_partner_bus ? 1 : 0
+
+  region = var.region
+
+  name               = var.bus_name
+  description        = var.bus_description
+  event_source_name  = var.event_source_name
+  kms_key_identifier = var.kms_key_identifier
+
+  dynamic "dead_letter_config" {
+    for_each = length(var.dead_letter_config) > 0 ? [var.dead_letter_config] : []
+
+    content {
+      arn = try(dead_letter_config.value.arn, null)
+    }
+  }
+
+  dynamic "log_config" {
+    for_each = var.log_config != null ? [var.log_config] : []
+
+    content {
+      include_detail = try(log_config.value.include_detail, null)
+      level          = try(upper(log_config.value.level), null)
+    }
+  }
+
+  tags = var.tags
+
+  lifecycle {
+    prevent_destroy = true
+  }
+}
+
 resource "aws_cloudwatch_log_delivery_source" "this" {
   count = local.create_log_delivery && var.create_log_delivery_source ? 1 : 0
 
@@ -100,7 +146,7 @@ resource "aws_cloudwatch_log_delivery_source" "this" {
 
   name         = coalesce(var.log_delivery_source_name, var.bus_name)
   log_type     = try(format("%s_LOGS", contains(["INFO", "ERROR", "TRACE"], upper(var.log_config.level)) ? upper(var.log_config.level) : "ERROR"), "ERROR_LOGS")
-  resource_arn = var.create_bus ? aws_cloudwatch_event_bus.this[0].arn : data.aws_cloudwatch_event_bus.this[0].arn
+  resource_arn = var.create_bus ? local.event_bus.arn : data.aws_cloudwatch_event_bus.this[0].arn
 
   tags = var.tags
 }
@@ -148,7 +194,7 @@ resource "aws_schemas_discoverer" "this" {
 
   region = var.region
 
-  source_arn  = var.create_bus ? aws_cloudwatch_event_bus.this[0].arn : data.aws_cloudwatch_event_bus.this[0].arn
+  source_arn  = var.create_bus ? local.event_bus.arn : data.aws_cloudwatch_event_bus.this[0].arn
   description = var.schemas_discoverer_description
 
   tags = var.tags
@@ -162,7 +208,7 @@ resource "aws_cloudwatch_event_rule" "this" {
   name        = each.value.Name
   name_prefix = lookup(each.value, "name_prefix", null)
 
-  event_bus_name = var.create_bus ? aws_cloudwatch_event_bus.this[0].name : var.bus_name
+  event_bus_name = var.create_bus ? local.event_bus.name : var.bus_name
 
   description         = lookup(each.value, "description", null)
   event_pattern       = lookup(each.value, "event_pattern", null)
@@ -181,7 +227,7 @@ resource "aws_cloudwatch_event_target" "this" {
 
   region = var.region
 
-  event_bus_name = var.create_bus ? aws_cloudwatch_event_bus.this[0].name : var.bus_name
+  event_bus_name = var.create_bus ? local.event_bus.name : var.bus_name
 
   rule = each.value.Name
   arn  = lookup(each.value, "destination", null) != null ? aws_cloudwatch_event_api_destination.this[each.value.destination].arn : each.value.arn
@@ -347,7 +393,7 @@ resource "aws_cloudwatch_event_archive" "this" {
   region = var.region
 
   name             = lookup(each.value, "name", each.key)
-  event_source_arn = try(each.value["event_source_arn"], var.create_bus ? aws_cloudwatch_event_bus.this[0].arn : data.aws_cloudwatch_event_bus.this[0].arn)
+  event_source_arn = try(each.value["event_source_arn"], var.create_bus ? local.event_bus.arn : data.aws_cloudwatch_event_bus.this[0].arn)
 
   description        = lookup(each.value, "description", null)
   event_pattern      = lookup(each.value, "event_pattern", null)
@@ -364,7 +410,7 @@ resource "aws_cloudwatch_event_permission" "this" {
   statement_id = compact(split(" ", each.key))[1]
 
   action         = lookup(each.value, "action", null)
-  event_bus_name = try(each.value["event_bus_name"], aws_cloudwatch_event_bus.this[0].name, var.bus_name, null)
+  event_bus_name = try(each.value["event_bus_name"], local.event_bus.name, var.bus_name, null)
 
   dynamic "condition" {
     for_each = try([each.value.condition_org], [])
