@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file.
 
+## [4.3.1](https://github.com/terraform-aws-modules/terraform-aws-eventbridge/compare/v4.3.0...v4.3.1) (2026-07-28)
+
+### Bug Fixes
+
+* Filter out deprecated `is_enabled` in `eventbridge_rules` output ([#202](https://github.com/terraform-aws-modules/terraform-aws-eventbridge/issues/202)) ([7b99e13](https://github.com/terraform-aws-modules/terraform-aws-eventbridge/commit/7b99e13130f95ad95c8d6d0a52ff96783ac0916c))
+
 ## [4.3.0](https://github.com/terraform-aws-modules/terraform-aws-eventbridge/compare/v4.2.2...v4.3.0) (2026-01-08)
 
 ### Features
