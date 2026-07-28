@@ -143,7 +143,23 @@ output "eventbridge_targets" {
 
 output "eventbridge_rules" {
   description = "The EventBridge Rules created and their attributes"
-  value       = aws_cloudwatch_event_rule.this
+  value = {
+    for k, v in aws_cloudwatch_event_rule.this : k => {
+      arn                 = v.arn
+      description         = v.description
+      event_bus_name      = v.event_bus_name
+      event_pattern       = v.event_pattern
+      force_destroy       = v.force_destroy
+      id                  = v.id
+      name                = v.name
+      name_prefix         = v.name_prefix
+      role_arn            = v.role_arn
+      schedule_expression = v.schedule_expression
+      state               = v.state
+      tags                = v.tags
+      tags_all            = v.tags_all
+    }
+  }
 }
 
 output "eventbridge_schedule_groups" {
