@@ -56,9 +56,8 @@ locals {
 
   create_log_delivery = var.create && var.create_log_delivery
 
-  # The enabled log deliveries, resolved once. The delivery destination and delivery
-  # resources iterate this directly, and the delivery source is created only when it
-  # is non-empty, so the source can never outlive the deliveries that reference it.
+  # The enabled log deliveries, resolved once and iterated directly by the delivery
+  # destination and delivery resources.
   log_delivery_enabled = { for k, v in var.log_delivery : k => v if local.create_log_delivery && try(v.enabled, true) }
 }
 
@@ -99,9 +98,11 @@ resource "aws_cloudwatch_event_bus" "this" {
 }
 
 resource "aws_cloudwatch_log_delivery_source" "this" {
-  # Only create the delivery source when at least one enabled log delivery is configured;
-  # otherwise it is created for every bus even when no `log_delivery` is set.
-  count = var.create_log_delivery_source && length(local.log_delivery_enabled) > 0 ? 1 : 0
+  # Create the source when the bus actually emits logs (`log_config`) or when an enabled
+  # delivery references it. Without either, the source was created for every bus even
+  # though nothing consumed it (#201). The `log_delivery` half of the predicate also keeps
+  # the reference on `aws_cloudwatch_log_delivery.this` below from dangling.
+  count = local.create_log_delivery && var.create_log_delivery_source && (var.log_config != null || length(local.log_delivery_enabled) > 0) ? 1 : 0
 
   region = var.region
 
