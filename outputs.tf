@@ -189,7 +189,6 @@ output "eventbridge_log_delivery_source_name" {
 }
 
 # IAM Roles
-# IAM Roles
 output "eventbridge_pipes_iam_roles" {
   description = "The EventBridge Pipes IAM roles created and their key attributes"
   value = {
