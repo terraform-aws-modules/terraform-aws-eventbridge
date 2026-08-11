@@ -290,7 +290,8 @@ locals {
 
     firehose = {
       actions = [
-        "firehose:PutRecord"
+        "firehose:PutRecord",
+        "firehose:PutRecordBatch"
       ]
     }
 
