@@ -55,6 +55,10 @@ locals {
   ])
 
   create_log_delivery = var.create && var.create_log_delivery
+
+  # The enabled log deliveries, resolved once and iterated directly by the delivery
+  # destination and delivery resources.
+  log_delivery_enabled = { for k, v in var.log_delivery : k => v if local.create_log_delivery && try(v.enabled, true) }
 }
 
 data "aws_cloudwatch_event_bus" "this" {
@@ -94,7 +98,11 @@ resource "aws_cloudwatch_event_bus" "this" {
 }
 
 resource "aws_cloudwatch_log_delivery_source" "this" {
-  count = local.create_log_delivery && var.create_log_delivery_source ? 1 : 0
+  # Create the source when the bus actually emits logs (`log_config`) or when an enabled
+  # delivery references it. Without either, the source was created for every bus even
+  # though nothing consumed it (#201). The `log_delivery` half of the predicate also keeps
+  # the reference on `aws_cloudwatch_log_delivery.this` below from dangling.
+  count = local.create_log_delivery && var.create_log_delivery_source && (var.log_config != null || length(local.log_delivery_enabled) > 0) ? 1 : 0
 
   region = var.region
 
@@ -106,7 +114,7 @@ resource "aws_cloudwatch_log_delivery_source" "this" {
 }
 
 resource "aws_cloudwatch_log_delivery_destination" "this" {
-  for_each = { for k, v in var.log_delivery : k => v if(local.create_log_delivery && try(v.enabled, true)) }
+  for_each = local.log_delivery_enabled
 
   region = var.region
 
@@ -121,7 +129,7 @@ resource "aws_cloudwatch_log_delivery_destination" "this" {
 }
 
 resource "aws_cloudwatch_log_delivery" "this" {
-  for_each = { for k, v in var.log_delivery : k => v if(local.create_log_delivery && try(v.enabled, true)) }
+  for_each = local.log_delivery_enabled
 
   region = var.region
 
