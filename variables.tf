@@ -209,8 +209,18 @@ variable "schemas_discoverer_description" {
 
 variable "rules" {
   description = "A map of objects with EventBridge Rule definitions."
-  type        = map(any)
-  default     = {}
+  type = map(object({
+    description         = optional(string, null)
+    event_pattern       = optional(string, null)
+    schedule_expression = optional(string, null)
+    state               = optional(string, "ENABLED")
+    role_arn            = optional(string, null)
+    name                = optional(string, null)
+    name_prefix         = optional(string, null)
+    force_destroy       = optional(bool, false)
+    tags                = optional(map(string), {})
+  }))
+  default = {}
 }
 
 variable "targets" {

@@ -45,6 +45,9 @@ module "eventbridge" {
       description   = "Capture all order data"
       event_pattern = jsonencode({ "source" : ["myapp.orders"] })
       state         = "DISABLED" # conflicts with enabled which is deprecated
+      tags = {
+        RuleType = "Orders"
+      }
     }
     emails = {
       description   = "Capture all emails data"

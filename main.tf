@@ -171,7 +171,7 @@ resource "aws_cloudwatch_event_rule" "this" {
   state               = try(each.value.enabled ? "ENABLED" : "DISABLED", tobool(each.value.state) ? "ENABLED" : "DISABLED", upper(each.value.state), null)
   force_destroy       = try(each.value.force_destroy, null)
 
-  tags = merge(var.tags, {
+  tags = merge(var.tags, lookup(each.value, "tags", {}), {
     Name = each.value.Name
   })
 }
