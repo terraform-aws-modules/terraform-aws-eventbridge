@@ -273,6 +273,22 @@ module "eventbridge" {
       }
     }
 
+    # With SQS Queue source and Firehose target
+    sqs_source_firehose_target = {
+      source = aws_sqs_queue.source.arn
+      target = aws_kinesis_firehose_delivery_stream.logs.arn
+
+      source_parameters = {
+        sqs_queue_parameters = {
+          batch_size = 2
+        }
+      }
+
+      tags = {
+        Pipe = "sqs_source_firehose_target"
+      }
+    }
+
     # With SQS Queue source and StepFunction target
     sqs_source_step_function_target = {
       source = aws_sqs_queue.source.arn

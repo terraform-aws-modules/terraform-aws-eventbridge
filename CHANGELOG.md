@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file.
 
+## [4.3.2](https://github.com/terraform-aws-modules/terraform-aws-eventbridge/compare/v4.3.1...v4.3.2) (2026-08-11)
+
+### Bug Fixes
+
+* Add Firehose batch permission for pipes ([#207](https://github.com/terraform-aws-modules/terraform-aws-eventbridge/issues/207)) ([de95050](https://github.com/terraform-aws-modules/terraform-aws-eventbridge/commit/de95050ba25e84a2bb7a91b274beebd2d578ca2c))
+* Update GitHub Actions and pre-commit hook versions ([#204](https://github.com/terraform-aws-modules/terraform-aws-eventbridge/issues/204)) ([4631f36](https://github.com/terraform-aws-modules/terraform-aws-eventbridge/commit/4631f367a89d949a8ecd2188ccb04c7c65208b36))
+
 ## [4.3.1](https://github.com/terraform-aws-modules/terraform-aws-eventbridge/compare/v4.3.0...v4.3.1) (2026-07-28)
 
 ### Bug Fixes
