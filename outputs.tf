@@ -190,11 +190,39 @@ output "eventbridge_log_delivery_source_name" {
 
 # IAM Roles
 output "eventbridge_pipes_iam_roles" {
-  description = "The EventBridge Pipes IAM roles created and their attributes"
-  value       = aws_iam_role.eventbridge_pipe
+  description = "The EventBridge Pipes IAM roles created and their key attributes"
+  value = {
+    for k, v in aws_iam_role.eventbridge_pipe : k => {
+      arn                  = v.arn
+      create_date          = v.create_date
+      description          = v.description
+      force_detach_policies = v.force_detach_policies
+      id                   = v.id
+      max_session_duration = v.max_session_duration
+      name                 = v.name
+      path                 = v.path
+      permissions_boundary = v.permissions_boundary
+      tags                 = v.tags
+      unique_id            = v.unique_id
+    }
+  }
 }
 
 output "eventbridge_iam_roles" {
-  description = "The EventBridge IAM roles created and their attributes"
-  value       = aws_iam_role.eventbridge
+  description = "The EventBridge IAM roles created and their key attributes"
+  value = [
+    for v in aws_iam_role.eventbridge : {
+      arn                  = v.arn
+      create_date          = v.create_date
+      description          = v.description
+      force_detach_policies = v.force_detach_policies
+      id                   = v.id
+      max_session_duration = v.max_session_duration
+      name                 = v.name
+      path                 = v.path
+      permissions_boundary = v.permissions_boundary
+      tags                 = v.tags
+      unique_id            = v.unique_id
+    }
+  ]
 }

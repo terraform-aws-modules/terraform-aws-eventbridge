@@ -582,7 +582,7 @@ No modules.
 | <a name="output_eventbridge_connection_arns"></a> [eventbridge\_connection\_arns](#output\_eventbridge\_connection\_arns) | The EventBridge Connection Arns |
 | <a name="output_eventbridge_connection_ids"></a> [eventbridge\_connection\_ids](#output\_eventbridge\_connection\_ids) | The EventBridge Connection IDs |
 | <a name="output_eventbridge_connections"></a> [eventbridge\_connections](#output\_eventbridge\_connections) | The EventBridge Connections created and their attributes |
-| <a name="output_eventbridge_iam_roles"></a> [eventbridge\_iam\_roles](#output\_eventbridge\_iam\_roles) | The EventBridge IAM roles created and their attributes |
+| <a name="output_eventbridge_iam_roles"></a> [eventbridge\_iam\_roles](#output\_eventbridge\_iam\_roles) | The EventBridge IAM roles created and their key attributes |
 | <a name="output_eventbridge_log_delivery_source_arn"></a> [eventbridge\_log\_delivery\_source\_arn](#output\_eventbridge\_log\_delivery\_source\_arn) | The EventBridge Bus CloudWatch Log Delivery Source ARN |
 | <a name="output_eventbridge_log_delivery_source_name"></a> [eventbridge\_log\_delivery\_source\_name](#output\_eventbridge\_log\_delivery\_source\_name) | The EventBridge Bus CloudWatch Log Delivery Source Name |
 | <a name="output_eventbridge_permission_ids"></a> [eventbridge\_permission\_ids](#output\_eventbridge\_permission\_ids) | The EventBridge Permission IDs |
@@ -592,7 +592,7 @@ No modules.
 | <a name="output_eventbridge_pipe_role_arns"></a> [eventbridge\_pipe\_role\_arns](#output\_eventbridge\_pipe\_role\_arns) | The ARNs of the IAM role created for EventBridge Pipes |
 | <a name="output_eventbridge_pipe_role_names"></a> [eventbridge\_pipe\_role\_names](#output\_eventbridge\_pipe\_role\_names) | The names of the IAM role created for EventBridge Pipes |
 | <a name="output_eventbridge_pipes"></a> [eventbridge\_pipes](#output\_eventbridge\_pipes) | The EventBridge Pipes created and their attributes |
-| <a name="output_eventbridge_pipes_iam_roles"></a> [eventbridge\_pipes\_iam\_roles](#output\_eventbridge\_pipes\_iam\_roles) | The EventBridge Pipes IAM roles created and their attributes |
+| <a name="output_eventbridge_pipes_iam_roles"></a> [eventbridge\_pipes\_iam\_roles](#output\_eventbridge\_pipes\_iam\_roles) | The EventBridge Pipes IAM roles created and their key attributes |
 | <a name="output_eventbridge_role_arn"></a> [eventbridge\_role\_arn](#output\_eventbridge\_role\_arn) | The ARN of the IAM role created for EventBridge |
 | <a name="output_eventbridge_role_name"></a> [eventbridge\_role\_name](#output\_eventbridge\_role\_name) | The name of the IAM role created for EventBridge |
 | <a name="output_eventbridge_rule_arns"></a> [eventbridge\_rule\_arns](#output\_eventbridge\_rule\_arns) | The EventBridge Rule ARNs |
