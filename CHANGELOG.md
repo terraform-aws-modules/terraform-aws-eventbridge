@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file.
 
+## [4.3.3](https://github.com/terraform-aws-modules/terraform-aws-eventbridge/compare/v4.3.2...v4.3.3) (2026-10-20)
+
+### Bug Fixes
+
+* Add region to aws_cloudwatch_event_bus data source ([#212](https://github.com/terraform-aws-modules/terraform-aws-eventbridge/issues/212)) ([008683f](https://github.com/terraform-aws-modules/terraform-aws-eventbridge/commit/008683f1b80cd9d2ca1032a3d80600416c2ecce3))
+
 ## [4.3.2](https://github.com/terraform-aws-modules/terraform-aws-eventbridge/compare/v4.3.1...v4.3.2) (2026-08-11)
 
 ### Bug Fixes
