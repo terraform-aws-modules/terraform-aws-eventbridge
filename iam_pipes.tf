@@ -400,6 +400,8 @@ resource "aws_iam_policy" "service" {
   name   = "${aws_iam_role.eventbridge_pipe[each.key].name}-${each.key}"
   path   = try(each.value.role_path, null)
   policy = data.aws_iam_policy_document.service[each.key].json
+
+  tags = merge({ Name = "${aws_iam_role.eventbridge_pipe[each.key].name}-${each.key}" }, var.tags)
 }
 
 resource "aws_iam_policy_attachment" "service" {
