@@ -209,7 +209,7 @@ variable "schemas_discoverer_description" {
 
 variable "rules" {
   description = "A map of objects with EventBridge Rule definitions."
-  type        = map(any)
+  type        = any
   default     = {}
 }
 

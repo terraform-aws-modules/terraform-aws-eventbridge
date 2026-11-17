@@ -2,6 +2,18 @@
 
 All notable changes to this project will be documented in this file.
 
+## [4.4.0](https://github.com/terraform-aws-modules/terraform-aws-eventbridge/compare/v4.3.4...v4.4.0) (2026-11-17)
+
+### Features
+
+* Allow individual resource tags for rules. ([#210](https://github.com/terraform-aws-modules/terraform-aws-eventbridge/issues/210)) ([5983973](https://github.com/terraform-aws-modules/terraform-aws-eventbridge/commit/59839739cb8bb2bfd17c781c40f25a25a3a131b3))
+
+## [4.3.4](https://github.com/terraform-aws-modules/terraform-aws-eventbridge/compare/v4.3.3...v4.3.4) (2026-11-17)
+
+### Bug Fixes
+
+* Add `tags` to pipes service `aws_iam_policy` ([#211](https://github.com/terraform-aws-modules/terraform-aws-eventbridge/issues/211)) ([5407b5b](https://github.com/terraform-aws-modules/terraform-aws-eventbridge/commit/5407b5b6a7b9e451c895aca8c26201caaef9e914))
+
 ## [4.3.3](https://github.com/terraform-aws-modules/terraform-aws-eventbridge/compare/v4.3.2...v4.3.3) (2026-10-20)
 
 ### Bug Fixes
