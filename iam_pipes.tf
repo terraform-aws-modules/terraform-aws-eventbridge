@@ -60,15 +60,19 @@ locals {
           matching_services = ["batch"]
         },
         logs = {
+          # Log-group-level actions (e.g. logs:DescribeLogStreams) need the bare log group ARN,
+          # while log-stream-level actions (logs:CreateLogStream, logs:PutLogEvents) need the `:*` form.
           values = flatten([
-            "${v.target}:*",
-            [
-              for pipe in var.pipes : [
-                for log_config in try([pipe.log_configuration], []) : [
-                  for cloudwatch_log in try([log_config.cloudwatch_logs_log_destination], []) : "${cloudwatch_log.log_group_arn}:*"
+            for log_group_arn in flatten([
+              v.target,
+              [
+                for pipe in var.pipes : [
+                  for log_config in try([pipe.log_configuration], []) : [
+                    for cloudwatch_log in try([log_config.cloudwatch_logs_log_destination], []) : cloudwatch_log.log_group_arn
+                  ]
                 ]
               ]
-            ]
+            ]) : [trimsuffix(log_group_arn, ":*"), "${trimsuffix(log_group_arn, ":*")}:*"]
           ]),
           matching_services = ["logs"]
         },
