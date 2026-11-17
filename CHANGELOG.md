@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file.
 
+## [4.4.1](https://github.com/terraform-aws-modules/terraform-aws-eventbridge/compare/v4.4.0...v4.4.1) (2026-11-17)
+
+### Bug Fixes
+
+* Grant pipes CloudWatch Logs actions on the bare log group ARN ([#213](https://github.com/terraform-aws-modules/terraform-aws-eventbridge/issues/213)) ([d84c1ae](https://github.com/terraform-aws-modules/terraform-aws-eventbridge/commit/d84c1aeb9510ad862365d808a14972b1e5c9d68a))
+
 ## [4.4.0](https://github.com/terraform-aws-modules/terraform-aws-eventbridge/compare/v4.3.4...v4.4.0) (2026-11-17)
 
 ### Features
