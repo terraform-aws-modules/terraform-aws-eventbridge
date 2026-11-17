@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file.
 
+## [4.4.0](https://github.com/terraform-aws-modules/terraform-aws-eventbridge/compare/v4.3.4...v4.4.0) (2026-11-17)
+
+### Features
+
+* Allow individual resource tags for rules. ([#210](https://github.com/terraform-aws-modules/terraform-aws-eventbridge/issues/210)) ([5983973](https://github.com/terraform-aws-modules/terraform-aws-eventbridge/commit/59839739cb8bb2bfd17c781c40f25a25a3a131b3))
+
 ## [4.3.4](https://github.com/terraform-aws-modules/terraform-aws-eventbridge/compare/v4.3.3...v4.3.4) (2026-11-17)
 
 ### Bug Fixes
